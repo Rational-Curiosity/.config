@@ -6,7 +6,7 @@
 - Required wallpapers in =~/Pictures/backgrounds=
 - Required: /xte/, rename all *OOOOO* occurrences with the result of ~uname -n~.
   This allows per-machine configuration
-- Optional: /xdotool/, /nm-applet/, /pasystray/, /dunst/, /keynav/,
+- Optional: /xdotool/, /pactl/, /nm-applet/, /pasystray/, /dunst/, /keynav/,
    [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/easyfocus][easyfocus]],
    [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/capslock-warn][capslock-warn]]
 - [[https://github.com/jordansissel/keynav][keynav]] config in =keynav/keynavrc=
