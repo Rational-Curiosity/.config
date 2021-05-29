@@ -1,0 +1,1 @@
+system.exec_command("fehrand", getOutput=False)

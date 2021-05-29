@@ -2,7 +2,7 @@
 
 * [[https://github.com/baskerville/bspwm][bspwm]] and [[https://github.com/baskerville/sxhkd][sxhkd]] and [[https://github.com/polybar/polybar][polybar]]
 
-- Emacs keybindings everywhere
+- Emacs keybindings everywhere with /sxhkd/
 - Required wallpapers in =~/Pictures/backgrounds=
 - Required: /xte/, rename all *OOOOO* occurrences with the result of ~uname -n~.
   This allows per-machine configuration
@@ -10,6 +10,9 @@
    [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/easyfocus][easyfocus]]
 - [[https://github.com/jordansissel/keynav][keynav]] config in =keynav/keynavrc=
 
+* [[https://github.com/autokey/autokey][AutoKey]]
+
+- Emacs keybindings everywhere with /bspwm/ integration (this replaces /sxhkd/)
 
 * [[https://github.com/neovim/neovim][neovim]]
 

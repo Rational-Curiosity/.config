@@ -1,0 +1,1 @@
+system.exec_command('rofi -m -1 -show run -columns 5 -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0', getOutput=False)

@@ -1,0 +1,1 @@
+system.exec_command("bspc desktop -f prev.local", getOutput=False)

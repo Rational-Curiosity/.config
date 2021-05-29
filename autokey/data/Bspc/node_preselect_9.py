@@ -1,0 +1,1 @@
+system.exec_command("bspc node -o 0.9", getOutput=False)

@@ -1,0 +1,1 @@
+system.exec_command("bspc desktop -f '^3'", getOutput=False)

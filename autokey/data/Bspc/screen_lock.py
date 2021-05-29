@@ -1,0 +1,1 @@
+system.exec_command('sh -c "pgrep -x xscreensaver || xscreensaver -no-splash; xscreensaver-command -lock"', getOutput=False)

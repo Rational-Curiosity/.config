@@ -1,0 +1,1 @@
+system.exec_command("bspc node -f north", getOutput=False)

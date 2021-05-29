@@ -1,0 +1,1 @@
+system.exec_command("bspc node -d '^6'", getOutput=False)

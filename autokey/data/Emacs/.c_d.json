@@ -1,0 +1,30 @@
+{
+    "type": "script",
+    "description": "c_d",
+    "store": {},
+    "modes": [
+        3
+    ],
+    "usageCount": 12,
+    "prompt": false,
+    "omitTrigger": false,
+    "showInTrayMenu": false,
+    "abbreviation": {
+        "abbreviations": [],
+        "backspace": true,
+        "ignoreCase": false,
+        "immediate": false,
+        "triggerInside": false,
+        "wordChars": "[\\w]"
+    },
+    "hotkey": {
+        "modifiers": [
+            "<ctrl>"
+        ],
+        "hotKey": "d"
+    },
+    "filter": {
+        "regex": "^(google-chrome\\.Google-chrome|chromium\\.Chromium|Navigator\\.Firefox|autokey-qt\\.autokey-qt|DBeaver\\.DBeaver)",
+        "isRecursive": false
+    }
+}
