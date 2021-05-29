@@ -4,7 +4,7 @@
 
 - Emacs keybindings everywhere with /sxhkd/
 - Required wallpapers in =~/Pictures/backgrounds=
-- Required: /xte/
+- Required: /xte/, /feh/
 - Rename all *OOOOO* occurrences with the result of ~uname -n~.
   This allows per-machine configuration
 - Optional: /xdotool/, /pactl/, /nm-applet/, /pasystray/, /dunst/, /keynav/,
