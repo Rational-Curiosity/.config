@@ -1,5 +1,12 @@
 #+title: .config
 
+* [[https://github.com/baskerville/bspwm][bspwm]] and [[https://github.com/baskerville/sxhkd][sxhkd]] and [[https://github.com/polybar/polybar][polybar]]
+
+- Emacs keybindings everywhere
+- Required wallpapers in =~/Pictures/backgrounds=
+- Required: /xte/, rename all *OOOOO* occurrences with the result of ~uname -n~ this allows per-machine configuration
+- Optional: /nm-applet/, /pasystray/, /dunst/, /keynav/
+
 * [[https://github.com/davatorium/rofi][Rofi]]
 
 - Colors and transparency

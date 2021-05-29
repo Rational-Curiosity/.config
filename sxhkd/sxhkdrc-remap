@@ -1,0 +1,135 @@
+#
+# movement
+#
+
+
+ctrl{_,+shift}+b
+    xte 'keyup B' 'keyup Alt_L' 'keyup Control_L' 'key Left' 'keydown Control_L'
+
+ctrl{_,+shift}+f
+    xte 'keyup F' 'keyup Alt_L' 'keyup Control_L' 'key Right' 'keydown Control_L'
+
+ctrl{_,+shift}+p
+    xte 'keyup P' 'keyup Alt_L' 'keyup Control_L' 'key Up' 'keydown Control_L'
+
+ctrl{_,+shift}+n
+    xte 'keyup N' 'keyup Alt_L' 'keyup Control_L' 'key Down' 'keydown Control_L'
+
+ctrl{_,+shift}+a
+    xte 'keyup A' 'keyup Alt_L' 'keyup Control_L' 'key Home' 'key Home' 'keydown Control_L'
+
+ctrl{_,+shift}+e
+    xte 'keyup E' 'keyup Alt_L' 'keyup Control_L' 'key End' 'keydown Control_L'
+
+alt{_,+shift}+b
+    xte 'keyup B' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key Left' 'keyup Control_L' 'keydown Alt_L'
+
+alt{_,+shift}+f
+    xte 'keyup F' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key Right' 'keyup Control_L' 'keydown Alt_L'
+
+alt{_,+shift}+v
+    xte 'keyup V' 'keyup Control_L' 'keyup Alt_L' 'key Prior' 'keydown Alt_L'
+
+ctrl{_,+shift}+v
+    xte 'keyup V' 'keyup Alt_L' 'keyup Control_L' 'key Next' 'keydown Control_L'
+
+#
+# search & replace
+#
+
+ctrl+s
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup S' 'keyup Alt_L' 'key F'; eval "kill -USR2 $Ps"
+
+#
+# clipboard
+#
+
+ctrl{_,+shift}+w
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup W' 'keyup Control_L' 'keyup Shift_L' 'keyup Alt_L' 'keydown Control_L' 'key X' 'keyup Control_L' 'keydown Control_L' && echo MODE:>~/.config/polybar/keys.fifo; eval "kill -USR2 $Ps"
+
+ctrl+y
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup Y' 'keyup Alt_L' 'keyup Control_L' 'keydown Control_L' 'key V' 'keyup Control_L' 'keydown Control_L'; eval "kill -USR2 $Ps"
+
+alt{_,+shift}+w
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup W' 'keyup Shift_L' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key C' 'keyup Control_L' 'keydown Alt_L' && echo MODE:>~/.config/polybar/keys.fifo; eval "kill -USR2 $Ps"
+
+#
+# region
+#
+
+ctrl+space
+    xte 'keyup Space' 'keydown Shift_L' && echo MODE:SHIFT>~/.config/polybar/keys.fifo
+
+ctrl+shift+space
+    xte 'keyup Space' 'keyup Shift_L' && echo MODE:>~/.config/polybar/keys.fifo
+
+#
+# edition
+#
+
+ctrl+shift+minus
+    xte 'keyup minus' 'keyup Alt_L' 'keyup Shift_L' 'key Z' 'keydown Shift_L'
+
+alt+shift+minus
+    xte 'keyup minus' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key Z' 'keyup Control_L' 'keydown Alt_L'
+
+ctrl+d
+    xte 'keyup D' 'keyup Alt_L' 'keyup Control_L' 'key Delete' 'keydown Control_L'
+
+alt+d
+    xte 'keyup D' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key Delete' 'keyup Control_L' 'keydown Alt_L'
+
+ctrl+k
+    xte 'keyup K' 'keyup Control_L' 'keydown Shift_L' 'key End' 'keyup Shift_L' 'key Delete' 'keydown Control_L'
+
+alt+BackSpace
+    xte 'keyup BackSpace' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key BackSpace' 'keyup Control_L' 'keydown Alt_L'
+
+ctrl+shift+BackSpace
+    xte 'keyup BackSpace' 'keyup Alt_L' 'keyup Control_L' 'keyup Shift_L' 'key Home' 'keydown Shift_L' 'key End' 'keyup Shift_L' 'key Delete' 'keydown Control_L' 'keydown Shift_L'
+
+#
+# escape
+#
+
+ctrl+c; ctrl+c
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup C' 'keyup Alt_L' 'key C'; eval "kill -USR2 $Ps"
+
+ctrl+c; ctrl+e
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup E' 'keyup Alt_L' 'key E'; eval "kill -USR2 $Ps"
+
+ctrl+c; ctrl+d
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup D' 'keyup Alt_L' 'key D'; eval "kill -USR2 $Ps"
+
+ctrl+x; ctrl+s
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup S' 'keyup Alt_L' 'key S'; eval "kill -USR2 $Ps"
+
+ctrl+x; k
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup K' 'keydown Control_L' 'key W' 'keyup Control_L'; eval "kill -USR2 $Ps"
+
+#
+# emacs
+#
+
+alt+o
+    easyfocus
+
+##########
+# super+q: {ctrl+b,ctrl+f}
+#     send-key() \{ xte "keyup $1" "keyup $2" "key $3" "keydown $1"; \};\
+#     send-key {Control_L b Left,Control_L f Right}
+
+# super+q: {ctrl+b,ctrl+f,ctrl+p,ctrl+n,ctrl+a,ctrl+e,ctrl+d,alt+b,alt+f,alt+v,ctrl+v,ctrl+w,alt+w,ctrl+y}
+#     send-key() \{ xdotool keyup $1 key --clearmodifier $2; \};\
+#     send-key {b Left,f Right,p Up,n Down,a Home,e End,d Delete,b Control+Left,f Control+Right,v Page_Up,v Page_Down,w Control+x,w Control+c,y Control+Shift+v}
+
+# xcape -e "Shift_L=Super_L|Alt_L|q"
+# super+ctrl+q
+#     xprop -id $(xprop -root _NET_ACTIVE_WINDOW | cut -d' ' -f5) WM_CLASS | sed -n '/Google-chrome\|Firefox\|Chromium/q1' && (wmctrl -x -a Google-chrome || wmctrl -x -a Firefox || wmctrl -x -a Chromium); xdotool keyup q key --clearmodifier Super_L+q
+
+# super+q: {ctrl+b,ctrl+f,ctrl+p,ctrl+n,ctrl+a,ctrl+e,ctrl+d,alt+b,alt+f,alt+v,ctrl+v,ctrl+w,alt+w,ctrl+y,alt+o}
+#     send-key() \{ xdotool keyup $1 key --clearmodifier $2; eval $3; \};\
+#     send-key {b Left,f Right,p Up,n Down,a Home,e End,d Delete,b Control+Left,f Control+Right,v Page_Up,v Page_Down,w Control+x,w Control+c,y Control+Shift+v,o Escape rofi-switcher}
+
+# alt+o
+#     rofi-switcher

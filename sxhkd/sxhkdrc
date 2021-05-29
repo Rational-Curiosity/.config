@@ -1,0 +1,245 @@
+#? this help
+super + question
+    sed -rn '/^#\? /\{N;s|^#\? (.*)\n#?|<span foreground="#f193f9">\1</span>  |;p\}' ~/.config/sxhkd/sxhkdrc ~/.config/keynav/keynavrc|rofi -dmenu -i -disable-history -markup-rows -theme-str '#element \{children:[element-text];\}' -fullscreen -kb-page-prev alt+p -kb-page-next alt+n
+
+#? --------  EXTERNAL APPLICATIONS  --------
+
+#? EXTERNAL terminal emulator
+super + @Return
+	alacritty
+
+#? EXTERNAL emacsclient
+super + shift + @Return
+	emacsclient -c -n -a ""
+
+#? EXTERNAL start audio player and play
+super + alt + @space
+      audacious --play-pause
+
+#? EXTERNAL switch to meet
+super + @space
+	xdotool search --onlyvisible --class Google-chrome windowactivate --sync %1 keyup Super_L Super_R Alt_L Alt_R Control_L Control_R Shift_L Shift_R key --delay 30 Escape Control_L+1
+
+#? EXTERNAL program launcher
+super + {_,shift + } d
+	rofi -m -1 -show {run,drun} -columns 5 -kb-accept-entry Control+m,Return,KP_Enter -kb-accept-custom Control+j,Control+Return -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n
+
+#? EXTERNAL next random background
+super + shift + b
+    feh --bg-scale --randomize ~/Pictures/backgrounds/*
+
+#? EXTERNAL sceenshot {to clipboard,window,area,interactive}
+super+Print; {c,w,a,i}
+    gnome-screenshot {-c,-w,-a,-i}
+
+#? EXTERNAL screen locker
+super + Pause
+    pgrep -x xscreensaver || xscreensaver -no-splash; xscreensaver-command -lock
+
+#? EXTERNAL increase volumen
+super + button4
+    pactl set-sink-volume @DEFAULT_SINK@ +10%
+
+#? EXTERNAL increase volumen
+super + button5
+    pactl set-sink-volume @DEFAULT_SINK@ -10%
+
+#? --------  RELOAD  --------
+
+#? RELOAD sxhkd
+super + @Escape
+    eval "kill -USR1 $(ps --no-headers -C sxhkd -o pid | tr -s '\n' ' ')"
+
+#? RELOAD polybar
+super + shift + @Escape
+	pkill -USR1 -x polybar
+
+#? RELOAD keynav
+super + ctrl + shift + @Escape
+    pkill -USR1 -x keynav
+
+#? RELOAD {quit,restart} bspwm
+super + {alt,ctrl} + Escape
+    bspc {quit,wm -r}
+
+#? RELOAD monitors and reset bspwn desktop names
+super + ctrl + s
+    xrandr-monitors && (feh --bg-scale --randomize ~/Pictures/backgrounds/* &); Ms=$(bspc query -M) && [ $(echo "$Ms"|wc -l) -eq 1 ] && bspc monitor -d 1 2 3 4 5 || I=0; for M in $(echo "$Ms"|tr '\n' ' '); do bspc monitor $M -d $((I=I+1)) $((I=I+1)) $((I=I+1)); done
+
+#? --------  LAYOUTS AND ATTRIBUTES  --------
+
+#? LAYOUT alternate tiled and monocle layout
+super + v
+	bspc desktop -l next
+
+#? ATTRIBUTES {close,kill,tiled,pseudo,float,fullscreen,mark,lock,sticky,private}
+super+a; {c,k,t,q,s,f,m,x,y,z}
+    bspc node {-c,-k,-t tiled,-t pseudo_tiled,-t floating,-t fullscreen,-g marked,-g locked,-g sticky,-g private}
+
+#? NODE {close,kill} with rofi selected window
+super + {c,C}
+    W=$(rofi-window) && test -n "$W" && bspc node $W -{c,k}
+
+#? MENU bspwm actions script
+super + shift + a
+	bspwm-actions
+
+#? --------  FOCUS/SWAP NODES  --------
+
+#? FOCUS easy window by letters
+super + o
+    easyfocus
+
+#? SWAP current and biggest in desktop
+super + g
+	bspc node -s biggest.local
+
+#? SWAP current and biggest globaly
+super + shift + g
+	bspc node -s biggest
+
+#? {FOCUS,SWAP} with rofi selected window
+super + {w,W}
+    W=$(rofi-window) && test -n "$W" && bspc node -{f,s} $W
+
+#? SWAP rotate {anticlockwise,clockwise}
+super + {r,R}
+    bspc node @parent -R {90,270}
+
+#? SWAP {horizontal,vertical}
+super + ctrl + {r,R}
+    bspc node @parent -F {horizontal,vertical}
+
+# FOCUS/MOVE the node in the given direction
+super + k
+    bspc node -f north || bspc monitor -f north
+super + j
+    bspc node -f south || bspc monitor -f south
+super + h
+    bspc node -f west || bspc monitor -f west || bspc desktop -f west
+super + l
+    bspc node -f east || bspc monitor -f east || bspc desktop -f east
+super + shift + h
+	bspc node -s west --follow || bspc node -m west --follow
+super + shift + j
+	bspc node -s south --follow || bspc node -m south --follow
+super + shift + k
+	bspc node -s north --follow || bspc node -m north --follow
+super + shift + l
+	bspc node -s east --follow || bspc node -m east --follow
+
+#? FOCUS {parent, brother,first,second}
+super + alt + {p,b,comma,period}
+	bspc node -f @{parent,brother,first,second}
+
+#? FOCUS the {next,previous} in desktop
+super + {f,b}
+	bspc node -f {next,prev}.local
+
+#? FOCUS the {next,previous} globaly
+super + {_,shift + }Tab
+	bspc node -f {next,prev}
+
+# focus the last node/desktop
+# super + {grave,Tab}
+# 	bspc {node,desktop} -f last
+
+#? FOCUS the {older,newer} node in the focus history
+super + {u,i}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
+#? FOCUS switching to monitor
+super + m
+    bspwm-actions monitor
+
+#
+# focus/swap desktops
+#
+
+# FOCUS or MOVE sending to the given desktop
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+# focus desktop if available on monitor, otherwise get through swap
+# if desktop is active on another monitor, focused and active desktops
+# are swapped, and focus stays on focused monitor.
+# mod + 1-9,0
+#     d='{1-9,10}'; \
+#     bspc desktop -f "$d.local" || bspc desktop -s "$d"
+
+#? FOCUS the {next,previous} desktop in monitor
+super + {n,p}
+	bspc desktop -f {next,prev}.local
+
+#? FOCUS the {next,previous} monitor
+super + {period,comma}
+	bspc monitor -f {next,prev}
+
+#? SWAP desktop with {next,previous} desktop
+super + ctrl + {n,p}
+    bspc desktop -s {next,prev}.local
+
+#? SWAP ralt and ctrl
+super + alt + s
+    swap-ralt-ctrl
+
+#? --------  PRESELECT  --------
+
+#? PRESELECT {west,south,north,east} direction
+super + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+#? PRESELECT the ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+#? PRESELECT cancel for the focused node
+super + ctrl + 0
+	bspc node -p cancel
+
+#? PRESELECT cancel for the focused desktop
+super + ctrl + shift + 0
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#? --------  RESIZE/MOVE  --------
+
+#? MOVE sending node to the {next,previous} desktop
+super + shift + {n,p}
+    bspc node -d {next,prev}.local --follow
+
+#? MOVE node to the {next,previous} monitor
+super + shift + {period,comma}
+	bspc node -m {next,prev} --follow
+
+#? MOVE desktop to the {next,previous} monitor
+super + ctrl + {period,comma}
+	bspc desktop -m {next,prev}
+
+#? MOVE a floating window
+super + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+#? MOVE a floating window mode
+super+shift+s: {ctrl+h,ctrl+j,ctrl+k,ctrl+l,h,j,k,l,shift+h,shift+j,shift+k,shift+l}
+	bspc node -v {-5 0,0 5,0 -5,5 0,-20 0,0 20,0 -20,20 0,-80 0,0 80,0 -80,80 0}
+
+#? RESIZE mode
+super+s: {h,j,k,l,shift+h,shift+j,shift+k,shift+l}
+    bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0,right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+#? MOVE send newest marked to newest preselected
+super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+#? --------  REMAPS  --------
+
+#? toggle emacs remaps
+super+q
+    eval "kill -USR2 $(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}' | tr -s '\n' ' ')"
+
+@Caps_Lock
+    capslock-warn
+
+super +

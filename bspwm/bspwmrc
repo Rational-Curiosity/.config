@@ -1,0 +1,128 @@
+#!/bin/sh
+run_rplc () {
+    PID=$(pgrep -d' ' -x $1) && kill $PID && wait $PID || true
+    "$@"
+}
+run_once () {
+    pgrep -x $1 >/dev/null 2>&1 || nohup setsid $1 >/dev/null 2>&1 0<&- &
+}
+
+run_once nm-applet
+run_once pasystray
+
+PID=$(pgrep -d' ' -x dunst) && kill $PID && wait $PID || true
+nohup setsid dunst -history_length 100 -history_key "mod4+shift+minus" \
+         -lto 10s -nto 15 -cto 20 -show_age_threshold 1m -idle_threshold 10m \
+         -format "%a: %s %n\n%b" >/dev/null 2>&1 0<&- &
+
+# run_rplc autokey-qt &
+
+KEYS_FIFO="$HOME/.config/polybar/keys.fifo"
+[ -p "$KEYS_FIFO"] || mkfifo "$KEYS_FIFO"
+
+PID=$(pgrep -d' ' -x sxhkd) && kill $PID && wait $PID
+nohup setsid sxhkd -s "$KEYS_FIFO" >/dev/null 2>&1 0<&- &
+
+xrandr-monitors && (feh --bg-scale --randomize ~/Pictures/backgrounds/* &);\
+    Ms=$(bspc query -M) && [ $(echo "$Ms"|wc -l) -eq 1 ] && bspc monitor -d 1 2 3 4 5 || (I=0; for M in $(echo "$Ms"|tr '\n' ' '); do bspc monitor $M -d $((I=I+1)) $((I=I+1)) $((I=I+1)); done) &
+    # MONITORS=($(xrandr | sed -n 's/^\([^ ]*\) connected [^+]*+\([0-9]*\).*/\2 \1/p' | sort -n | cut -d' ' -f2));\
+    # if [ "${#MONITORS[@]}" -eq 1 ]; then bspc monitor -d 1 2 3 4 5; else IDX=0; for MONITOR in "${MONITORS[@]}";\
+    # do bspc monitor $MONITOR -d $((IDX=IDX+1)) $((IDX=IDX+1)) $((IDX=IDX+1)); done; fi &
+
+bspc config normal_border_color    "#4c566a"
+bspc config active_border_color    "#1e1e1e"
+bspc config focused_border_color   "#bc81ac"
+bspc config presel_feedback_color  "#5e81ac"
+bspc config urgent_border_color    "#dd2727"
+bspc config border_width           2
+bspc config window_gap             7
+bspc config top_padding            0
+
+bspc config split_ratio            0.52
+bspc config borderless_monocle     true
+bspc config gapless_monocle        true
+bspc config pointer_follows_focus  false
+bspc config focus_follows_pointer  false
+
+bspc rule -a Audacious monitor=primary state=floating sticky=on
+# bspc rule -a Gimp desktop='^8' state=floating follow=on
+# bspc rule -a Chromium desktop='^2'
+# bspc rule -a mplayer2 state=floating
+# bspc rule -a Kupfer.py focus=on
+# bspc rule -a Screenkey manage=off
+
+run_rplc keynav "loadconfig ~/.config/keynav/keynavrc"
+xsetroot -cursor_name tcross
+
+PIDs="$(ps --no-headers -C sh -o pid,args | sed -n '/polybar\/custom-keys.sh/{s| /.*||;p}' | tr -s '\n' ' ')"
+[ -n "$PIDs" ] && eval "kill $PIDs; wait $PIDs"
+PID=$(pgrep -d' ' -x polybar) && kill $PID && wait $PID
+nohup setsid polybar -c "$HOME/.config/polybar/$(uname -n)-config" bspwm >/dev/null 2>&1 0<&- &
+
+PID=$(pgrep -d' ' -x bspc) && kill $PID && wait $PID
+LAST=emacs
+sxhkd_remap () {
+    case $(xprop -notype -id $(echo $ID | cut -d' ' -f4) WM_CLASS | cut -d'"' -f4) in
+    Emacs|Emacs-*|"")
+        if [ emacs != "$LAST" ]
+        then
+            PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
+            if [ -n "$PIDs" ]
+            then
+                eval "kill $PIDs"
+                [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
+                LAST=emacs
+                echo "TITLE:" > "$KEYS_FIFO"
+                eval "wait $PIDs"
+            else
+                [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
+                LAST=emacs
+                echo "TITLE:" > "$KEYS_FIFO"
+            fi
+        fi
+        ;;
+    Alacritty|st-256color|URxvt|XTerm|Terminator)
+        if [ term != "$LAST" ]
+        then
+            if [ emacs != "$LAST" ]
+            then
+                PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
+                if [ -n "$PIDs" ]
+                then
+                    eval "kill $PIDs"
+                    [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
+                    eval "wait $PIDs"
+                else
+                    [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
+                fi
+            fi
+            LAST=term
+            nohup setsid sxhkd -c ~/.config/sxhkd/sxhkdrc-term >/dev/null 2>&1 0<&- &
+            echo "TITLE:TERM" > "$KEYS_FIFO"
+        fi
+        ;;
+    *)
+        if [ remap != "$LAST" ]
+        then
+            if [ emacs != "$LAST" ]
+            then
+                PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
+                if [ -n "$PIDs" ]
+                then
+                    eval "kill $PIDs"
+                    eval "wait $PIDs"
+                fi
+            fi
+            LAST=remap
+            nohup setsid sxhkd -c ~/.config/sxhkd/sxhkdrc-remap >/dev/null 2>&1 0<&- &
+            echo "TITLE:REMAP" > "$KEYS_FIFO"
+        fi
+        ;;
+    esac
+}
+ID=$(bspc query -N -n focused)
+[ -n "$ID" ] && sxhkd_remap
+nohup setsid bspc subscribe node_focus | while read ID
+do
+    sxhkd_remap
+done &
