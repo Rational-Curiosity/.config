@@ -1,2 +1,6 @@
 #+title: .config
 
+* [[https://github.com/davatorium/rofi][Rofi]]
+
+- Colors and transparency
+- Keyboard driven selection
