@@ -4,8 +4,14 @@
 
 - Emacs keybindings everywhere
 - Required wallpapers in =~/Pictures/backgrounds=
-- Required: /xte/, rename all *OOOOO* occurrences with the result of ~uname -n~ this allows per-machine configuration
+- Required: /xte/, rename all *OOOOO* occurrences with the result of ~uname -n~.
+  This allows per-machine configuration
 - Optional: /nm-applet/, /pasystray/, /dunst/, /keynav/
+
+* [[https://github.com/neovim/neovim][neovim]]
+
+- Config for programmers
+- Emacs keybindings
 
 * [[https://github.com/davatorium/rofi][Rofi]]
 
