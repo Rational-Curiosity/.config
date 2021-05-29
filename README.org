@@ -8,7 +8,8 @@
   This allows per-machine configuration
 - Optional: /xdotool/, /pactl/, /nm-applet/, /pasystray/, /dunst/, /keynav/,
    [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/easyfocus][easyfocus]],
-   [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/capslock-warn][capslock-warn]]
+   [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/capslock-warn][capslock-warn]],
+   [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/bspwm-actions][bspwm-actions]]
 - [[https://github.com/jordansissel/keynav][keynav]] config in =keynav/keynavrc=
 
 * [[https://github.com/i3/i3][i3]] window manager
