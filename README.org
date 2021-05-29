@@ -4,3 +4,8 @@
 
 - Colors and transparency
 - Keyboard driven selection
+
+* [[https://github.com/alacritty/alacritty][Alacritty]]
+
+- Custom font
+- Transparency
