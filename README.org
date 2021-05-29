@@ -21,6 +21,7 @@
 * [[https://github.com/autokey/autokey][AutoKey]]
 
 - Emacs keybindings everywhere with /bspwm/ integration (this replaces /sxhkd/)
+- Using this config in other than /bspwm/ remove the bspc bindings
 
 * [[https://github.com/neovim/neovim][neovim]]
 
