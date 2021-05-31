@@ -12,6 +12,8 @@
    [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/capslock-warn][capslock-warn]],
    [[https://github.com/Curiosidad-Racional/Bash-Scripts/blob/master/bspwm-actions][bspwm-actions]]
 - [[https://github.com/jordansissel/keynav][keynav]] config in =keynav/keynavrc=
+- /Firefox/: open =about:config= and set ~ui.key.menuAccessKeyFocuses~
+  to ~false~, then the menu no longer appears every time you press =Alt= key
 
 * [[https://github.com/i3/i3][i3]] window manager
 
@@ -23,6 +25,8 @@
 
 - Emacs keybindings everywhere with /bspwm/ integration (this replaces /sxhkd/)
 - Using this config in other than /bspwm/ remove the bspc bindings
+- /Firefox/: open =about:config= and set ~ui.key.menuAccessKeyFocuses~
+  to ~false~, then the menu no longer appears every time you press =Alt= key
 
 * [[https://github.com/neovim/neovim][neovim]]
 
