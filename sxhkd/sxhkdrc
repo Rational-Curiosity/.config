@@ -34,7 +34,7 @@ super+Print; {c,w,a,i}
 
 #? EXTERNAL screen locker
 super + Pause
-    pgrep -x xscreensaver || xscreensaver -no-splash; xscreensaver-command -lock
+    pgrep -x xscreensaver || (xscreensaver -no-splash &); sleep .5; xscreensaver-command -lock
 
 #? EXTERNAL increase volumen
 super + button4
@@ -48,7 +48,7 @@ super + button5
 
 #? RELOAD sxhkd
 super + @Escape
-    eval "kill -USR1 $(ps --no-headers -C sxhkd -o pid | tr -s '\n' ' ')"
+    kill -USR1 $(ps --no-headers -C sxhkd -o pid | tr -s '\n' ' ')
 
 #? RELOAD polybar
 super + shift + @Escape
@@ -237,7 +237,7 @@ super + y
 
 #? toggle emacs remaps
 super+q
-    eval "kill -USR2 $(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}' | tr -s '\n' ' ')"
+    kill -USR2 $(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}' | tr -s '\n' ' ')
 
 @Caps_Lock
     capslock-warn

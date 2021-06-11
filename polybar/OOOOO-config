@@ -27,6 +27,7 @@ foreground-alt = #0a81f5
 primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
+underline = #0a6cf5
 
 [bar/bspwm]
 ;monitor = ${env:MONITOR:HDMI-1}
@@ -60,7 +61,7 @@ font-2 = unifont:fontformat=truetype:size=8:antialias=false;0
 
 modules-left = xworkspaces sxhkd
 modules-center = xwindow
-modules-right = ulan wlan eth filesystem memory cpu battery temperature date powermenu
+modules-right = ulan wlan eth filesystem mnt memory cpu battery temperature date powermenu
 
 tray-position = right
 tray-padding = 1
@@ -104,13 +105,23 @@ label-indicator-underline = ${colors.secondary}
 
 [module/filesystem]
 type = internal/fs
-interval = 25
+interval = 60
 
 mount-0 = /
 
-label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
-label-unmounted = %mountpoint% not mounted
-label-unmounted-foreground = ${colors.foreground-alt}
+label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %{u#0a6cf5 +u}%percentage_used%%%{u- -u}
+label-unmounted = %mountpoint%
+label-unmounted-foreground = ${colors.alert}
+
+[module/mnt]
+type = internal/fs
+interval = 20
+
+mount-0 = /media/edo/U3
+
+label-mounted = %{A1:unmedia:}%{F#0a81f5}禍%{F-}%{A}: %{u#0a6cf5 +u}%percentage_used%%%{u- -u}
+label-unmounted = %{A1:media:}禍%{A}
+label-unmounted-foreground = ${colors.alert}
 
 [module/xworkspaces]
 type = internal/xworkspaces
@@ -299,7 +310,7 @@ interval = 2
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #4bffdc
-label = %percentage_used%%
+label = %percentage_used%%(%percentage_swap_used%%)
 
 [module/ulan]
 type = internal/network
@@ -385,7 +396,7 @@ time-alt = %H:%M:%S
 ;format-prefix = 
 format-prefix = 
 format-prefix-foreground = ${colors.foreground-alt}
-format-underline = #0a6cf5
+format-underline = ${colors.underline}
 
 label = %date% %time%
 

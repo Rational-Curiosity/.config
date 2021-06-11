@@ -38,20 +38,20 @@ ctrl{_,+shift}+v
 #
 
 ctrl+s
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup S' 'keyup Alt_L' 'key F'; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup S' 'keyup Alt_L' 'key F'; kill -USR2 $Ps
 
 #
 # clipboard
 #
 
 ctrl{_,+shift}+w
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup W' 'keyup Control_L' 'keyup Shift_L' 'keyup Alt_L' 'keydown Control_L' 'key X' 'keyup Control_L' 'keydown Control_L' && echo MODE:>~/.config/polybar/keys.fifo; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup W' 'keyup Control_L' 'keyup Shift_L' 'keyup Alt_L' 'keydown Control_L' 'key X' 'keyup Control_L' 'keydown Control_L' && echo MODE:>~/.config/polybar/keys.fifo; kill -USR2 $Ps
 
 ctrl+y
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup Y' 'keyup Alt_L' 'keyup Control_L' 'keydown Control_L' 'key V' 'keyup Control_L' 'keydown Control_L'; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup Y' 'keyup Alt_L' 'keyup Control_L' 'keydown Control_L' 'key V' 'keyup Control_L' 'keydown Control_L'; kill -USR2 $Ps
 
 alt{_,+shift}+w
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup W' 'keyup Shift_L' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key C' 'keyup Control_L' 'keydown Alt_L' && echo MODE:>~/.config/polybar/keys.fifo; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup W' 'keyup Shift_L' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key C' 'keyup Control_L' 'keydown Alt_L' && echo MODE:>~/.config/polybar/keys.fifo; kill -USR2 $Ps
 
 #
 # region
@@ -93,19 +93,19 @@ ctrl+shift+BackSpace
 #
 
 ctrl+c; ctrl+c
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup C' 'keyup Alt_L' 'key C'; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup C' 'keyup Alt_L' 'key C'; kill -USR2 $Ps
 
 ctrl+c; ctrl+e
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup E' 'keyup Alt_L' 'key E'; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup E' 'keyup Alt_L' 'key E'; kill -USR2 $Ps
 
 ctrl+c; ctrl+d
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup D' 'keyup Alt_L' 'key D'; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup D' 'keyup Alt_L' 'key D'; kill -USR2 $Ps
 
 ctrl+x; ctrl+s
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup S' 'keyup Alt_L' 'key S'; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup S' 'keyup Alt_L' 'key S'; kill -USR2 $Ps
 
 ctrl+x; k
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); eval "kill -USR2 $Ps"; xte 'keyup K' 'keydown Control_L' 'key W' 'keyup Control_L'; eval "kill -USR2 $Ps"
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup K' 'keydown Control_L' 'key W' 'keyup Control_L'; kill -USR2 $Ps
 
 #
 # emacs

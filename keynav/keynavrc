@@ -56,7 +56,7 @@ m move-right,move-down
 #? KEYNAV center cursor and click
 space warp,click 1
 #? KEYNAV center cursor, click and exit
-return warp,click 1,end
+Return warp,click 1,end
 #? KEYNAV move cursor to the center (,)
 semicolon warp
 #? KEYNAV click

@@ -55,7 +55,7 @@ run_rplc keynav "loadconfig ~/.config/keynav/keynavrc"
 xsetroot -cursor_name tcross
 
 PIDs="$(ps --no-headers -C sh -o pid,args | sed -n '/polybar\/custom-keys.sh/{s| /.*||;p}' | tr -s '\n' ' ')"
-[ -n "$PIDs" ] && eval "kill $PIDs; wait $PIDs"
+[ -n "$PIDs" ] && (kill $PIDs; wait $PIDs)
 PID=$(pgrep -d' ' -x polybar) && kill $PID && wait $PID
 nohup setsid polybar -c "$HOME/.config/polybar/$(uname -n)-config" bspwm >/dev/null 2>&1 0<&- &
 
@@ -69,11 +69,11 @@ sxhkd_remap () {
             PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
             if [ -n "$PIDs" ]
             then
-                eval "kill $PIDs"
+                kill $PIDs
                 [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
                 LAST=emacs
                 echo "TITLE:" > "$KEYS_FIFO"
-                eval "wait $PIDs"
+                wait $PIDs
             else
                 [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
                 LAST=emacs
@@ -89,9 +89,9 @@ sxhkd_remap () {
                 PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
                 if [ -n "$PIDs" ]
                 then
-                    eval "kill $PIDs"
+                    kill $PIDs
                     [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
-                    eval "wait $PIDs"
+                    wait $PIDs
                 else
                     [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
                 fi
@@ -109,8 +109,8 @@ sxhkd_remap () {
                 PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
                 if [ -n "$PIDs" ]
                 then
-                    eval "kill $PIDs"
-                    eval "wait $PIDs"
+                    kill $PIDs
+                    wait $PIDs
                 fi
             fi
             LAST=remap
