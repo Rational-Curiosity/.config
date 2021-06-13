@@ -1,7 +1,13 @@
 #!/bin/sh
-run_rplc () {
-    PID=$(pgrep -d' ' -x $1) && kill $PID && wait $PID || true
-    "$@"
+kill_wait_pids () {
+    kill $* 2>/dev/null && (
+        local I=20
+        while kill -0 $* 2>/dev/null && [ $((I=I-1)) -gt 0 ]; do sleep 0.1; done
+        [ $((I=I-1)) -gt 0 ] || kill -9 $*
+    )
+}
+kill_wait () {
+    local PIDS=$(pgrep -d' ' -x $1) && kill_wait_pids $PIDS
 }
 run_once () {
     pgrep -x $1 >/dev/null 2>&1 || nohup setsid $1 >/dev/null 2>&1 0<&- &
@@ -10,18 +16,18 @@ run_once () {
 run_once nm-applet
 run_once pasystray
 
-PID=$(pgrep -d' ' -x dunst) && kill $PID && wait $PID || true
+kill_wait dunst
 nohup setsid dunst -history_length 100 -history_key "mod4+shift+minus" \
          -lto 10s -nto 15 -cto 20 -show_age_threshold 1m -idle_threshold 10m \
          -format "%a: %s %n\n%b" >/dev/null 2>&1 0<&- &
 
-# run_rplc autokey-qt &
 
 KEYS_FIFO="$HOME/.config/polybar/keys.fifo"
 [ -p "$KEYS_FIFO"] || mkfifo "$KEYS_FIFO"
 
-PID=$(pgrep -d' ' -x sxhkd) && kill $PID && wait $PID
-nohup setsid sxhkd -s "$KEYS_FIFO" >/dev/null 2>&1 0<&- &
+ps --no-headers -C watch -o pid,args | sed -n '/watch -x -n0 sxhkd/{s| watch.*||;p}' | tr -s '\n' ' ' | xargs -r kill
+kill_wait sxhkd
+nohup setsid watch -x -n0 sxhkd -s "$KEYS_FIFO" >/dev/null 2>&1 0<&- &
 
 xrandr-monitors && (feh --bg-scale --randomize ~/Pictures/backgrounds/* &);\
     Ms=$(bspc query -M) && [ $(echo "$Ms"|wc -l) -eq 1 ] && bspc monitor -d 1 2 3 4 5 || (I=0; for M in $(echo "$Ms"|tr '\n' ' '); do bspc monitor $M -d $((I=I+1)) $((I=I+1)) $((I=I+1)); done) &
@@ -51,15 +57,15 @@ bspc rule -a Audacious monitor=primary state=floating sticky=on
 # bspc rule -a Kupfer.py focus=on
 # bspc rule -a Screenkey manage=off
 
-run_rplc keynav "loadconfig ~/.config/keynav/keynavrc"
+kill_wait keynav
+keynav "loadconfig ~/.config/keynav/keynavrc"
 xsetroot -cursor_name tcross
 
-PIDs="$(ps --no-headers -C sh -o pid,args | sed -n '/polybar\/custom-keys.sh/{s| /.*||;p}' | tr -s '\n' ' ')"
-[ -n "$PIDs" ] && (kill $PIDs; wait $PIDs)
-PID=$(pgrep -d' ' -x polybar) && kill $PID && wait $PID
+ps --no-headers -C sh -o pid,args | sed -n '/polybar\/custom-keys.sh/{s| /.*||;p}' | tr -s '\n' ' ' | xargs -r kill
+kill_wait polybar
 nohup setsid polybar -c "$HOME/.config/polybar/$(uname -n)-config" bspwm >/dev/null 2>&1 0<&- &
 
-PID=$(pgrep -d' ' -x bspc) && kill $PID && wait $PID
+kill_wait bspc
 LAST=emacs
 sxhkd_remap () {
     case $(xprop -notype -id $(echo $ID | cut -d' ' -f4) WM_CLASS | cut -d'"' -f4) in
@@ -69,11 +75,10 @@ sxhkd_remap () {
             PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
             if [ -n "$PIDs" ]
             then
-                kill $PIDs
+                kill_wait_pids $PIDs
                 [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
                 LAST=emacs
                 echo "TITLE:" > "$KEYS_FIFO"
-                wait $PIDs
             else
                 [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
                 LAST=emacs
@@ -89,9 +94,8 @@ sxhkd_remap () {
                 PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
                 if [ -n "$PIDs" ]
                 then
-                    kill $PIDs
+                    kill_wait_pids $PIDs
                     [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
-                    wait $PIDs
                 else
                     [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
                 fi
@@ -109,8 +113,7 @@ sxhkd_remap () {
                 PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
                 if [ -n "$PIDs" ]
                 then
-                    kill $PIDs
-                    wait $PIDs
+                    kill_wait_pids $PIDs
                 fi
             fi
             LAST=remap

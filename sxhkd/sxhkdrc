@@ -201,7 +201,7 @@ super + ctrl + 0
 
 #? PRESELECT cancel for the focused desktop
 super + ctrl + shift + 0
-	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+	bspc query -N -d | xargs -r -I id -n 1 bspc node id -p cancel
 
 #? --------  RESIZE/MOVE  --------
 
