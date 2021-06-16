@@ -73,65 +73,54 @@ nohup setsid polybar bspwm >/dev/null 2>&1 0<&- &
 
 kill_wait bspc
 LAST=emacs
-sxhkd_remap () {
-    case $(xprop -notype -id $(echo $ID | cut -d' ' -f4) WM_CLASS | cut -d'"' -f4) in
-    Emacs|Emacs-*|"")
+__remap () {
+    if [ "$1" != "$LAST" ]
+    then
         if [ emacs != "$LAST" ]
         then
             PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
             if [ -n "$PIDs" ]
             then
                 kill_wait_pids $PIDs
-                [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
-                LAST=emacs
-                echo "TITLE:" > "$KEYS_FIFO"
-            else
-                [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
-                LAST=emacs
-                echo "TITLE:" > "$KEYS_FIFO"
             fi
+            [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
         fi
+        LAST="$1"
+        [ -f "$HOME/.config/sxhkd/sxhkdrc-$1" ] && nohup setsid sxhkd -c "$HOME/.config/sxhkd/sxhkdrc-$1" >/dev/null 2>&1 0<&- &
+        echo "TITLE:$2" > "$KEYS_FIFO"
+    fi
+}
+__process_id () {
+    case $(xprop -notype -id "$1" WM_CLASS | cut -d'"' -f4) in
+    Emacs|Emacs-*|"")
+        __remap emacs
         ;;
     Alacritty|st-256color|URxvt|XTerm|Terminator)
-        if [ term != "$LAST" ]
-        then
-            if [ emacs != "$LAST" ]
-            then
-                PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
-                if [ -n "$PIDs" ]
-                then
-                    kill_wait_pids $PIDs
-                    [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
-                else
-                    [ remap != "$LAST" ] || (xte 'keyup Shift_L' && echo "MODE:" > "$KEYS_FIFO")
-                fi
-            fi
-            LAST=term
-            nohup setsid sxhkd -c ~/.config/sxhkd/sxhkdrc-term >/dev/null 2>&1 0<&- &
-            echo "TITLE:TERM" > "$KEYS_FIFO"
-        fi
+        __remap term TERM
         ;;
     *)
-        if [ remap != "$LAST" ]
-        then
-            if [ emacs != "$LAST" ]
-            then
-                PIDs="$(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/{s/ sxhkd.*$//;p}' | tr -s '\n' ' ')"
-                if [ -n "$PIDs" ]
-                then
-                    kill_wait_pids $PIDs
-                fi
-            fi
-            LAST=remap
-            nohup setsid sxhkd -c ~/.config/sxhkd/sxhkdrc-remap >/dev/null 2>&1 0<&- &
-            echo "TITLE:REMAP" > "$KEYS_FIFO"
-        fi
+        __remap remap REMAP
         ;;
     esac
 }
-ID=$(bspc query -N -n focused)
-[ -n "$ID" ] && sxhkd_remap
-nohup setsid bspc subscribe node_focus | while read ID
+ID="$(bspc query -N -n focused)"
+if [ -n "$ID" ]
+then
+    __process_id "$ID"
+else
+    __remap void VOID
+fi
+nohup setsid bspc subscribe node_focus node_remove desktop_focus | while read LINE
 do
-    sxhkd_remap
+    case "$(echo "$LINE" | cut -d' ' -f1)" in
+    node_focus)
+        __process_id "$(echo "$LINE" | cut -d' ' -f4)"
+        ;;
+    node_remove|desktop_focus)
+        if [ -z "$(bspc query -N -n focused)" ]
+        then
+            __remap void VOID
+        fi
+        ;;
+    esac
 done &
