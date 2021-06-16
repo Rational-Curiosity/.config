@@ -117,7 +117,7 @@ label-unmounted-foreground = ${colors.alert}
 type = internal/fs
 interval = 20
 
-mount-0 = /media/edo/U3
+mount-0 = ${env:POLYBAR_USB_DRIVE:/media/edo/U3}
 
 label-mounted = %{A1:unmedia:}%{F#0a81f5}禍%{F-}%{A}: %{u#0a6cf5 +u}%percentage_used%%%{u- -u}
 label-unmounted = %{A1:media:}禍%{A}
@@ -314,12 +314,13 @@ label = %percentage_used%%(%percentage_swap_used%%)
 
 [module/ulan]
 type = internal/network
-interface = tun0
+interface = usb0
 interval = 3.0
 
+unknown-as-up = true
 format-connected = <ramp-signal> <label-connected>
 format-connected-underline = #9f78e1
-label-connected = %{F#0a81f5}%{F-}  %downspeed%%{F#0a81f5}%{F-}  %upspeed%%{F#0a81f5}%{F-}
+label-connected =  %local_ip% %{F#0a81f5}直 %{F-} %downspeed%%{F#0a81f5} %{F-} %upspeed%%{F#0a81f5} %{F-}
 
 format-disconnected =
 ;format-disconnected = <label-disconnected>
@@ -341,12 +342,12 @@ ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/wlan]
 type = internal/network
-interface = wlp2s0
+interface = ${env:POLYBAR_WLAN:wlp2s0}
 interval = 3.0
 
 format-connected = <ramp-signal> <label-connected>
 format-connected-underline = #9f78e1
-label-connected = %{F#0a81f5}直 %{F-} %downspeed%%{F#0a81f5} %{F-} %upspeed%%{F#0a81f5} %{F-}
+label-connected = %local_ip% %{F#0a81f5}直 %{F-} %downspeed%%{F#0a81f5} %{F-} %upspeed%%{F#0a81f5} %{F-}
 
 format-disconnected =
 ;format-disconnected = <label-disconnected>
@@ -368,14 +369,14 @@ ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/eth]
 type = internal/network
-interface = enp3s0
+interface = ${env:POLYBAR_ETH:enp3s0}
 interval = 3.0
 
 format-connected-underline = #55aa55
 ;format-connected-prefix = " "
 format-connected-prefix =
 format-connected-prefix-foreground = ${colors.foreground-alt}
-label-connected = %{F#0a81f5}%{F-}  %downspeed%%{F#0a81f5}%{F-}  %upspeed%%{F#0a81f5}%{F-}
+label-connected =  %local_ip% %{F#0a81f5}直 %{F-} %downspeed%%{F#0a81f5} %{F-} %upspeed%%{F#0a81f5} %{F-}
 
 format-disconnected =
 ;format-disconnected = <label-disconnected>
@@ -460,7 +461,7 @@ bar-volume-empty-foreground = ${colors.foreground-alt}
 
 [module/battery]
 type = internal/battery
-battery = BAT0
+battery = ${env:POLYBAR_BATTERY:BAT0}
 adapter = ACAD
 full-at = 98
 
@@ -499,6 +500,8 @@ type = internal/temperature
 thermal-zone = 0
 base-temperature = 20
 warn-temperature = 60
+
+hwmon-path = ${env:POLYBAR_TEMPERATURE}
 
 format = <ramp> <label>
 format-underline = #f50a4d

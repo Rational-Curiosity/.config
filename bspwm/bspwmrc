@@ -63,7 +63,13 @@ xsetroot -cursor_name tcross
 
 ps --no-headers -C sh -o pid,args | sed -n '/polybar\/custom-keys.sh/{s| /.*||;p}' | tr -s '\n' ' ' | xargs -r kill
 kill_wait polybar
-nohup setsid polybar -c "$HOME/.config/polybar/$(uname -n)-config" bspwm >/dev/null 2>&1 0<&- &
+export POLYBAR_BATTERY=$(basename "$(ls -d /sys/class/power_supply/BAT*)")
+export POLYBAR_USB_DRIVE=/media/$USER/U3
+export POLYBAR_TEMPERATURE="$(ls -d /sys/devices/platform/coretemp.0/hwmon/hwmon*)/temp1_input"
+IP_DEVICE_LIST="$(ip -o -br link show  | cut -d' ' -f1)"
+export POLYBAR_WLAN="$(echo "$IP_DEVICE_LIST" | grep wlp)"
+export POLYBAR_ETH="$(echo "$IP_DEVICE_LIST" | grep enp)"
+nohup setsid polybar bspwm >/dev/null 2>&1 0<&- &
 
 kill_wait bspc
 LAST=emacs
