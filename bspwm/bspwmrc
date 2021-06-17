@@ -112,9 +112,9 @@ else
 fi
 nohup setsid bspc subscribe node_focus node_remove desktop_focus | while read LINE
 do
-    case "$(echo "$LINE" | cut -d' ' -f1)" in
+    case "${LINE%% *}" in
     node_focus)
-        __process_id "$(echo "$LINE" | cut -d' ' -f4)"
+        __process_id "${LINE##* }"
         ;;
     node_remove|desktop_focus)
         if [ -z "$(bspc query -N -n focused)" ]
