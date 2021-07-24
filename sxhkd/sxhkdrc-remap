@@ -33,6 +33,12 @@ alt{_,+shift}+v
 ctrl{_,+shift}+v
     xte 'keyup V' 'keyup Alt_L' 'keyup Control_L' 'key Next' 'keydown Control_L'
 
+alt{_,+shift}+less
+    xte 'keyup less' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key Home' 'keyup Control_L' 'keydown Alt_L'
+
+# alt{_,+shift}+greater
+#     xte 'keyup greater' 'keyup Shift_R' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key End' 'keyup Control_L' 'keydown Alt_L'
+
 #
 # search & replace
 #
@@ -45,23 +51,23 @@ ctrl+s
 #
 
 ctrl{_,+shift}+w
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup W' 'keyup Control_L' 'keyup Shift_L' 'keyup Alt_L' 'keydown Control_L' 'key X' 'keyup Control_L' 'keydown Control_L' && echo MODE:>~/.config/polybar/keys.fifo; kill -USR2 $Ps
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup W' 'keyup Control_L' 'keyup Shift_L' 'keyup Alt_L' 'keydown Control_L' 'key X' 'keyup Control_L' 'keydown Control_L' && echo MODE:-SHIFT>~/.config/polybar/keys.fifo; kill -USR2 $Ps
 
 ctrl+y
     Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup Y' 'keyup Alt_L' 'keyup Control_L' 'keydown Control_L' 'key V' 'keyup Control_L' 'keydown Control_L'; kill -USR2 $Ps
 
 alt{_,+shift}+w
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup W' 'keyup Shift_L' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key C' 'keyup Control_L' 'keydown Alt_L' && echo MODE:>~/.config/polybar/keys.fifo; kill -USR2 $Ps
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup W' 'keyup Shift_L' 'keyup Control_L' 'keyup Alt_L' 'keydown Control_L' 'key C' 'keyup Control_L' 'keydown Alt_L' && echo MODE:-SHIFT>~/.config/polybar/keys.fifo; kill -USR2 $Ps
 
 #
 # region
 #
 
 ctrl+space
-    xte 'keyup Space' 'keydown Shift_L' && echo MODE:SHIFT>~/.config/polybar/keys.fifo
+    xte 'keyup Space' 'keydown Shift_L' && echo MODE:+SHIFT>~/.config/polybar/keys.fifo
 
 ctrl+shift+space
-    xte 'keyup Space' 'keyup Shift_L' && echo MODE:>~/.config/polybar/keys.fifo
+    xte 'keyup Space' 'keyup Shift_L' && echo MODE:-SHIFT>~/.config/polybar/keys.fifo
 
 #
 # edition
@@ -101,11 +107,20 @@ ctrl+c; ctrl+e
 ctrl+c; ctrl+d
     Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup D' 'keyup Alt_L' 'key D'; kill -USR2 $Ps
 
+ctrl+c; t
+    xte 'keyup T' 'keyup Alt_L' 'keyup Control_L' 'key F6' 'key F6'
+
 ctrl+x; ctrl+s
     Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup S' 'keyup Alt_L' 'key S'; kill -USR2 $Ps
 
 ctrl+x; k
     Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup K' 'keydown Control_L' 'key W' 'keyup Control_L'; kill -USR2 $Ps
+
+ctrl+x; 4
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup 4' 'keydown Control_L' 'key T' 'keyup Control_L'; kill -USR2 $Ps
+
+ctrl+x; 5
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup 5' 'keydown Control_L' 'key N' 'keyup Control_L'; kill -USR2 $Ps
 
 #
 # emacs

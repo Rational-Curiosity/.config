@@ -1,6 +1,8 @@
+# Command max length is 512 characters
+
 #? this help
 super + question
-    sed -rn '/^#\? /\{N;s|^#\? (.*)\n#?|<span foreground="#f193f9">\1</span>  |;p\}' ~/.config/sxhkd/sxhkdrc ~/.config/keynav/keynavrc|rofi -dmenu -i -disable-history -markup-rows -theme-str '#element \{children:[element-text];\}' -fullscreen -kb-page-prev alt+p -kb-page-next alt+n
+    P=~/.config;A=$P/sxhkd/sxhkdrc;B=$P/keynav/keynavrc; sed -rn '/^#\? /\{N;s|^#\? (.*)\n#?|<span foreground="#f193f9">\1</span>  |;p\}' "$A" "$B"|rofi -m -1 -dmenu -i -disable-history -markup-rows -theme-str 'element\{children:[element-text];\}listview\{columns:1;\}window\{fullscreen:true;\}' -kb-page-prev alt+p -kb-page-next alt+n|sed 's|^.*</span>||'|xargs -rI \{\} sed -n '/\{\}/,/^$/\{/\{\}/n;p\}' "$A" "$B"|sed -rn '/[^\]\\\{/q;{s/\\\\([\{\}])/\1/g;p}'|$SHELL
 
 #? --------  EXTERNAL APPLICATIONS  --------
 
@@ -14,19 +16,20 @@ super + shift + @Return
 
 #? EXTERNAL start audio player and play
 super + alt + @space
-      audacious --play-pause
+    audacious --play-pause
 
 #? EXTERNAL switch to meet
 super + @space
-	xdotool search --onlyvisible --class Google-chrome windowactivate --sync %1 keyup Super_L Super_R Alt_L Alt_R Control_L Control_R Shift_L Shift_R key --delay 30 Escape Control_L+1
+	bspc desktop ^$(($(xdotool search --class Google-chrome get_desktop_for_window %@|tail -1)+1)) -f; xdotool search --onlyvisible --class Google-chrome windowactivate --sync %1 keyup Super_L Super_R Alt_L Alt_R Control_L Control_R Shift_L Shift_R key --delay 30 Escape Control_L+1
 
 #? EXTERNAL program launcher
 super + {_,shift + } d
-	rofi -m -1 -show {run,drun} -columns 5 -kb-accept-entry Control+m,Return,KP_Enter -kb-accept-custom Control+j,Control+Return -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n >/dev/null 2>&1
+	rofi -m -1 -show {run,drun} -kb-accept-entry Control+m,Return,KP_Enter -kb-accept-custom Control+j,Control+Return -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n 2>&1 >/dev/null
 
 #? EXTERNAL next random background
 super + shift + b
-    feh --bg-scale --randomize ~/Pictures/backgrounds/*
+    [ -d ~/Pictures ] && PIC=~/Pictures/wallpapers || PIC=~/Imágenes/wallpapers; \
+    feh --bg-scale --randomize $PIC/*
 
 #? EXTERNAL sceenshot {to clipboard,window,area,interactive}
 super+Print; {c,w,a,i}
@@ -38,11 +41,11 @@ super + Pause
 
 #? EXTERNAL increase volumen
 super + button4
-    pactl set-sink-volume @DEFAULT_SINK@ +10%
+    pactl set-sink-volume @DEFAULT_SINK@ +5%
 
 #? EXTERNAL increase volumen
 super + button5
-    pactl set-sink-volume @DEFAULT_SINK@ -10%
+    pactl set-sink-volume @DEFAULT_SINK@ -5%
 
 #? --------  RELOAD  --------
 
@@ -62,10 +65,6 @@ super + ctrl + shift + @Escape
 super + {alt,ctrl} + Escape
     bspc {quit,wm -r}
 
-#? RELOAD monitors and reset bspwn desktop names
-super + ctrl + s
-    xrandr-monitors && (feh --bg-scale --randomize ~/Pictures/backgrounds/* &); Ms=$(bspc query -M) && [ $(echo "$Ms"|wc -l) -eq 1 ] && bspc monitor -d 1 2 3 4 5 || I=0; for M in $(echo "$Ms"|tr '\n' ' '); do bspc monitor $M -d $((I=I+1)) $((I=I+1)) $((I=I+1)); done
-
 #? --------  LAYOUTS AND ATTRIBUTES  --------
 
 #? LAYOUT alternate tiled and monocle layout
@@ -78,11 +77,39 @@ super+a; {c,k,t,q,s,f,m,x,y,z}
 
 #? NODE {close,kill} with rofi selected window
 super + {c,C}
-    W=$(rofi-window) && test -n "$W" && bspc node $W -{c,k}
+    rofi -m -1 -i -show window -window-command 'bspc node \{window\} -{c,k}' -window-format "<span foreground='#f193f9'>\{c\}</span> <span foreground='#20B2AA'>\{w\}</span> \{t\}" -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n 2>&1 >/dev/null
 
 #? MENU bspwm actions script
 super + shift + a
 	bspwm-actions
+
+#
+# screen layouts
+#
+
+#? SCREEN RESOLUTION {max available,2560x1440}
+super+ctrl+x; {1,2}
+    R=$(xrandr | awk '\{if ($2=="connected" && $3=="primary") \{getline; print $1; exit\}\}');xrandr {--fb $R --output eDP-1 --primary --mode $R --panning 0x0,--fb 2560x1440 --output eDP-1 --primary --mode $R --panning 2560x1440}
+
+#? SCREEN RESOLUTION auto-detect
+super+ctrl+x; a
+    xrandr-monitors && (feh --bg-scale --randomize ~/Pictures/backgrounds/* &); Ms=$(bspc query -M) && [ $(echo "$Ms"|wc -l) -eq 1 ] && bspc monitor -d 1 2 3 4 5 || I=0; for M in $(echo "$Ms"|tr '\n' ' '); do bspc monitor $M -d $((I=I+1)) $((I=I+1)) $((I=I+1)); done
+
+#
+# transparency
+#
+
+#? TRANSPARENCY {increase focused,decrease focused,increase unfocused,decrease unfocused}
+super+t: {plus,minus,i,d}
+    F=~/.config/bspwm/transparency;if [ -f "$F" ];then echo $(LC_ALL=C awk '\{{A=$1;B=$2+0.05;if(B>1)B=1,A=$1;B=$2-0.05;if(B<0)B=0,A=$1+0.05;if(A>1)A=1;B=$2,A=$1-0.05;if(A<0)A=0;B=$2}; print A " " B\}' "$F") >"$F";else echo 0.8 0.9 >"$F";fi;read A B <"$F";bspc query -N -n .\!focused|xargs -rI \{\} transset --id \{\} $A;transset --id $(bspc query -N -n focused) $B;notify-send -t 2000 Transparency "Unfocused: $A; Focused: $B"
+
+#? TRANSPARENCY toggle
+super+t: t
+    F=~/.config/bspwm/transparency; if [ -f "$F" ]; then rm "$F"; bspc query -N | xargs -rI \{\} transset --id \{\} 1; else echo 0.8 0.9 >"$F"; bspc query -N -n .\!focused | xargs -rI \{\} transset --id \{\} 0.8; transset --id $(bspc query -N -n focused) 0.9; fi
+
+#? TRANSPARENCY show values
+super+t: space
+    F=~/.config/bspwm/transparency; read A B <"$F";notify-send -t 2000 Transparency "Unfocused: $A; Focused: $B"
 
 #? --------  FOCUS/SWAP NODES  --------
 
@@ -100,7 +127,7 @@ super + shift + g
 
 #? {FOCUS,SWAP} with rofi selected window
 super + {w,W}
-    W=$(rofi-window) && test -n "$W" && bspc node -{f,s} $W
+    rofi -m -1 -i -show window -window-format "<span foreground='#f193f9'>\{c\}</span> <span foreground='#20B2AA'>\{w\}</span> \{t\}" -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n 2>&1 >/dev/null
 
 #? SWAP rotate {anticlockwise,clockwise}
 super + {r,R}
@@ -240,6 +267,4 @@ super+q
     kill -USR2 $(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}' | tr -s '\n' ' ')
 
 @Caps_Lock
-    capslock-warn
-
-super +
+    if xset q|grep --color=never -E "Caps Lock: +on" 2>&1 >/dev/null; then M=+;C=#ff0000; else M=-;C=#bc81ac; fi; echo "MODE:$M%\{B#af4115\}%\{F#81ff15\}CAPS%\{F-\}%\{B-\}">~/.config/polybar/keys.fifo; bspc config focused_border_color $C

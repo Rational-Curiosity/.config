@@ -13,6 +13,16 @@ ctrl+BackSpace
     xte 'keyup BackSpace' 'keyup Control_L' 'keyup Alt_L' 'keydown Alt_L' 'key BackSpace' 'keyup Alt_L' 'keydown Control_L'
 
 #
+# movement
+#
+
+ctrl+v
+    xte 'keyup V' 'keyup Control_L' 'keyup Alt_L' 'keydown Shift_L' 'key Next' 'keyup Shift_L' 'keydown Control_L'
+
+alt+v
+    xte 'keyup V' 'keyup Alt_L' 'keyup Control_L' 'keydown Shift_L' 'key Prior' 'keyup Shift_L' 'keydown Alt_L'
+
+#
 # emacs
 #
 
