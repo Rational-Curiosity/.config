@@ -7,29 +7,32 @@ while read EVENT
 do
     case "$EVENT" in
     'BBegin chain')
-        CHAIN="$LAST_KEY"
+        CHAIN="${F#ff8115}$LAST_KEY%{F-}"
         ;;
     'EEnd chain')
         CHAIN=""
         ;;
     TITLE:*)
         TITLE="$(echo "$EVENT" | cut -c7-)"
+        PRE_HALT=""
         ;;
     MODE:*)
         MODE="$(echo "$EVENT" | cut -c6-)"
         ;;
     Hsuper+q)
-        case "$TITLE" in
-        *-halt)
-            TITLE="$(echo $TITLE | cut -d- -f1)"
-            ;;
-        *)
-            if [ -n "$TITLE" ]
+        if [ -n "$TITLE" ]
+        then
+            if [ -z "$PRE_HALT" ]
             then
-                TITLE="$TITLE-halt"
+                PRE_HALT="$TITLE"
+                TITLE="%{B#af4115}$TITLE%{B-}"
+            else
+                TITLE="$PRE_HALT"
+                PRE_HALT=""
             fi
-            ;;
-        esac
+        else
+            continue
+        fi
         ;;
     H*)
         LAST_KEY="$(echo "$EVENT" | cut -c2-)"
