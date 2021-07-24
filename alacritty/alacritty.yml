@@ -20,5 +20,7 @@ font:
     family: Hack
     # Style can be specified to pick a specific face.
     # style: Italic
+window:
+  dynamic_title: true
 #key_bindings:
 #  - { key: Back,         mods: Control|Shift, chars: "\x1b[3~"}
