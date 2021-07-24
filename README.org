@@ -1,6 +1,6 @@
 #+title: .config
 
-* [[https://github.com/baskerville/bspwm][bspwm]] window manager and [[https://github.com/baskerville/sxhkd][sxhkd]] and [[https://github.com/polybar/polybar][polybar]]
+* [[https://github.com/baskerville/bspwm][bspwm]] window manager, [[https://github.com/baskerville/sxhkd][sxhkd]] and [[https://github.com/polybar/polybar][polybar]]
 
 - Emacs keybindings everywhere with /sxhkd/
 - Required wallpapers in =~/Pictures/backgrounds=
@@ -42,3 +42,8 @@
 
 - Custom font
 - Transparency
+
+* [[https://github.com/qutebrowser/qutebrowser][qutebrowser]]
+
+- Emacs keybindings
+- Hints improved
