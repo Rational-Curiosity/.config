@@ -113,14 +113,20 @@ ctrl+c; t
 ctrl+x; ctrl+s
     Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup S' 'keyup Alt_L' 'key S'; kill -USR2 $Ps
 
+ctrl+x; ctrl+c
+    bspc node -c
+
+ctrl+x; ctrl+f
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup f' 'keyup Alt_L' 'key O'; kill -USR2 $Ps
+
 ctrl+x; k
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup K' 'keydown Control_L' 'key W' 'keyup Control_L'; kill -USR2 $Ps
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup K' 'keyup Alt_L' 'keyup Control_L' 'keydown Control_L' 'key W' 'keyup Control_L'; kill -USR2 $Ps
 
 ctrl+x; 4
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup 4' 'keydown Control_L' 'key T' 'keyup Control_L'; kill -USR2 $Ps
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup 4' 'keyup Alt_L' 'keyup Control_L' 'keydown Control_L' 'key T' 'keyup Control_L'; kill -USR2 $Ps
 
 ctrl+x; 5
-    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup 5' 'keydown Control_L' 'key N' 'keyup Control_L'; kill -USR2 $Ps
+    Ps=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' '); kill -USR2 $Ps; xte 'keyup 5' 'keyup Alt_L' 'keyup Control_L' 'keydown Control_L' 'key N' 'keyup Control_L'; kill -USR2 $Ps
 
 #
 # emacs

@@ -2,21 +2,25 @@
 
 #? this help
 super + question
-    P=~/.config;A=$P/sxhkd/sxhkdrc;B=$P/keynav/keynavrc; sed -rn '/^#\? /\{N;s|^#\? (.*)\n#?|<span foreground="#f193f9">\1</span>  |;p\}' "$A" "$B"|rofi -m -1 -dmenu -i -disable-history -markup-rows -theme-str 'element\{children:[element-text];\}listview\{columns:1;\}window\{fullscreen:true;\}' -kb-page-prev alt+p -kb-page-next alt+n|sed 's|^.*</span>||'|xargs -rI \{\} sed -n '/\{\}/,/^$/\{/\{\}/n;p\}' "$A" "$B"|sed -rn '/[^\]\\\{/q;{s/\\\\([\{\}])/\1/g;p}'|$SHELL
+    P=~/.config;A=$P/sxhkd/sxhkdrc;B=$P/keynav/keynavrc; sed -rn '/^#\? /\{N;s|^#\? (.*)\n#?|<span foreground="#f193f9">\1</span>  |;p\}' "$A" "$B"|rofi -m -1 -dmenu -i -disable-history -markup-rows -theme-str 'element\{children:[element-text];\}listview\{columns:1;\}window\{fullscreen:true;\}' -kb-page-prev alt+p -kb-page-next alt+n|sed 's|^.*</span>  ||'|xargs -rI \{\} sed -n '/\{\}/,/^$/\{/\{\}/n;p\}' "$A" "$B"|sed -rn '/[^\]\\\{/q;{s/\\\\([\{\}])/\1/g;p}'|$SHELL
 
 #? --------  EXTERNAL APPLICATIONS  --------
 
-#? EXTERNAL terminal emulator
-super + @Return
-	alacritty
+#? EXTERNAL keyboard remapper
+super + alt + @space
+    yad --separator=' ' --focus-field=2 --form --field=type:CB --field=sudo:H 'usb!serio' | (if read T P; echo "$P" | sudo -S ~/Prog/c/remap/run.sh $T; then yad --button=Ok --text='Remap ready'; else yad --button=Ok --text='Remap failed!';fi >/dev/null 2>&1)
 
 #? EXTERNAL emacsclient
-super + shift + @Return
-	emacsclient -c -n -a ""
+super + @Return
+	emacsclient -c -n -a ''
 
-#? EXTERNAL start audio player and play
-super + alt + @space
-    audacious --play-pause
+#? EXTERNAL terminal emulator
+super + shift + @Return
+	alacritty
+
+#? EXTERNAL terminal emulator
+super + ctrl + @Return
+	alacritty --class Alacritty,Alacritty-floating
 
 #? EXTERNAL switch to meet
 super + @space
@@ -24,19 +28,18 @@ super + @space
 
 #? EXTERNAL program launcher
 super + {_,shift + } d
-	rofi -m -1 -show {run,drun} -kb-accept-entry Control+m,Return,KP_Enter -kb-accept-custom Control+j,Control+Return -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n 2>&1 >/dev/null
+	K=-kb-select;rofi -m -1 -show {run,drun} -kb-accept-entry Control+m,Return,KP_Enter -kb-accept-custom Control+j,Control+Return $K-1 ctrl+1 $K-2 ctrl+2 $K-3 ctrl+3 $K-4 ctrl+4 $K-5 ctrl+5 $K-6 ctrl+6 $K-7 ctrl+7 $K-8 ctrl+8 $K-9 ctrl+9 $K-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n -kb-secondary-paste ctrl+y >/dev/null 2>&1
 
 #? EXTERNAL next random background
 super + shift + b
-    [ -d ~/Pictures ] && PIC=~/Pictures/wallpapers || PIC=~/Imágenes/wallpapers; \
-    feh --bg-scale --randomize $PIC/*
+    if [ -d ~/Pictures ];then PIC=~/Pictures/wallpapers;else PIC=~/Imágenes/wallpapers;fi;feh --bg-scale --randomize $PIC/*
 
 #? EXTERNAL sceenshot {to clipboard,window,area,interactive}
-super+Print; {c,w,a,i}
+super+@Print; {c,w,a,i}
     gnome-screenshot {-c,-w,-a,-i}
 
 #? EXTERNAL screen locker
-super + Pause
+super + @Pause
     pgrep -x xscreensaver || (xscreensaver -no-splash &); sleep .5; xscreensaver-command -lock
 
 #? EXTERNAL increase volumen
@@ -46,6 +49,10 @@ super + button4
 #? EXTERNAL increase volumen
 super + button5
     pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+#? EXTERNAL rofi calc
+super + e
+    rofi -show calc -modi calc -no-show-match -no-sort
 
 #? --------  RELOAD  --------
 
@@ -77,7 +84,7 @@ super+a; {c,k,t,q,s,f,m,x,y,z}
 
 #? NODE {close,kill} with rofi selected window
 super + {c,C}
-    rofi -m -1 -i -show window -window-command 'bspc node \{window\} -{c,k}' -window-format "<span foreground='#f193f9'>\{c\}</span> <span foreground='#20B2AA'>\{w\}</span> \{t\}" -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n 2>&1 >/dev/null
+    K=-kb-select;rofi -m -1 -i -show window -window-command 'bspc node \{window\} -{c,k}' -window-format "<span foreground='#f193f9'>\{c\}</span> <span foreground='#20B2AA'>\{w\}</span> \{t\}" $K-1 ctrl+1 $K-2 ctrl+2 $K-3 ctrl+3 $K-4 ctrl+4 $K-5 ctrl+5 $K-6 ctrl+6 $K-7 ctrl+7 $K-8 ctrl+8 $K-9 ctrl+9 $K-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n >/dev/null 2>&1
 
 #? MENU bspwm actions script
 super + shift + a
@@ -87,11 +94,11 @@ super + shift + a
 # screen layouts
 #
 
-#? SCREEN RESOLUTION {max available,2560x1440}
-super+ctrl+x; {1,2}
-    R=$(xrandr | awk '\{if ($2=="connected" && $3=="primary") \{getline; print $1; exit\}\}');xrandr {--fb $R --output eDP-1 --primary --mode $R --panning 0x0,--fb 2560x1440 --output eDP-1 --primary --mode $R --panning 2560x1440}
+#? SCREEN RESOLUTION {max available,2048x1152,2560x1440,3200x1800,3840x2160}
+super+ctrl+x; {1,2,3,4,5}
+    R=$(xrandr|awk '\{if($2=="connected"&&$3=="primary")\{getline;print $1;exit\}\}');{T=R;P=0x0,T=2048x1152;P=T,T=2560x1440;P=T,T=3200x1800;P=T,T=3840x2160;P=T};xrandr --fb $T --output eDP-1 --primary --mode $R --panning $P&&notify-send Resolutions "Screen: $T; Monitor: $R"
 
-#? SCREEN RESOLUTION auto-detect
+#? SCREEN RESOLUTION auto-detect multi-monitor, reload workspaces (desktops) and backgrounds
 super+ctrl+x; a
     xrandr-monitors && (feh --bg-scale --randomize ~/Pictures/backgrounds/* &); Ms=$(bspc query -M) && [ $(echo "$Ms"|wc -l) -eq 1 ] && bspc monitor -d 1 2 3 4 5 || I=0; for M in $(echo "$Ms"|tr '\n' ' '); do bspc monitor $M -d $((I=I+1)) $((I=I+1)) $((I=I+1)); done
 
@@ -108,8 +115,12 @@ super+t: t
     F=~/.config/bspwm/transparency; if [ -f "$F" ]; then rm "$F"; bspc query -N | xargs -rI \{\} transset --id \{\} 1; else echo 0.8 0.9 >"$F"; bspc query -N -n .\!focused | xargs -rI \{\} transset --id \{\} 0.8; transset --id $(bspc query -N -n focused) 0.9; fi
 
 #? TRANSPARENCY show values
-super+t: space
+super+t: n
     F=~/.config/bspwm/transparency; read A B <"$F";notify-send -t 2000 Transparency "Unfocused: $A; Focused: $B"
+
+#? TRANSPARENCY set transparency
+super+t: {1,2,3,4,5,6,7,8,9,0}
+    transset --id $(bspc query -N -n focused) {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1}
 
 #? --------  FOCUS/SWAP NODES  --------
 
@@ -127,7 +138,7 @@ super + shift + g
 
 #? {FOCUS,SWAP} with rofi selected window
 super + {w,W}
-    rofi -m -1 -i -show window -window-format "<span foreground='#f193f9'>\{c\}</span> <span foreground='#20B2AA'>\{w\}</span> \{t\}" -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n 2>&1 >/dev/null
+    K=-kb-select;rofi -m -1 -i -show window -window-format "<span foreground='#f193f9'>\{c\}</span> <span foreground='#20B2AA'>\{w\}</span> \{t\}" $K-1 ctrl+1 $K-2 ctrl+2 $K-3 ctrl+3 $K-4 ctrl+4 $K-5 ctrl+5 $K-6 ctrl+6 $K-7 ctrl+7 $K-8 ctrl+8 $K-9 ctrl+9 $K-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n >/dev/null 2>&1 
 
 #? SWAP rotate {anticlockwise,clockwise}
 super + {r,R}
@@ -173,9 +184,11 @@ super + {_,shift + }Tab
 
 #? FOCUS the {older,newer} node in the focus history
 super + {u,i}
-	bspc wm -h off; \
-	bspc node {older,newer} -f; \
-	bspc wm -h on
+	bspc wm -h off;	bspc node {older,newer} -f;	bspc wm -h on
+
+#? FOCUS the {next,previous} globaly
+super + shift + {u,i}
+	bspc node -f {next,prev}.floating
 
 #? FOCUS switching to monitor
 super + m
@@ -186,8 +199,11 @@ super + m
 #
 
 # FOCUS or MOVE sending to the given desktop
-super + {_,shift + }{1-9,0}
-	bspc {desktop -f,node -d} '^{1-9,10}'
+super + {1-9,0}
+	bspc desktop -f '^{1-9,10}'
+
+super + shift + {1-9,0}
+	bspc node -d '^{1-9,10}' --follow
 
 # focus desktop if available on monitor, otherwise get through swap
 # if desktop is active on another monitor, focused and active desktops
@@ -264,7 +280,7 @@ super + y
 
 #? toggle emacs remaps
 super+q
-    kill -USR2 $(ps --no-headers -C sxhkd -o pid,args | sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}' | tr -s '\n' ' ')
+    P=$(ps --no-headers -C sxhkd -o pid,args|sed -n '/sxhkdrc-/\{s/ sxhkd.*$//;p\}'|tr -s '\n' ' ');if [ -n "$P" ]; then kill -USR2 $P;echo "COLOR:#af4115">~/.config/polybar/keys.fifo;fi;
 
 @Caps_Lock
-    if xset q|grep --color=never -E "Caps Lock: +on" 2>&1 >/dev/null; then M=+;C=#ff0000; else M=-;C=#bc81ac; fi; echo "MODE:$M%\{B#af4115\}%\{F#81ff15\}CAPS%\{F-\}%\{B-\}">~/.config/polybar/keys.fifo; bspc config focused_border_color $C
+    if xset q|grep --color=never -E "Caps Lock: +on" >/dev/null 2>&1; then M=+;C=#ff0000; else M=-;C=#bc81ac; fi; echo "MODE:$M%\{B#af4115\}%\{F#81ff15\}CAPS%\{F-\}%\{B-\}">~/.config/polybar/keys.fifo; bspc config focused_border_color $C

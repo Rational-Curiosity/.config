@@ -15,30 +15,80 @@
 
 daemonize  # background keynav
 clear      # clear all previous keybindings
+grid-nav-exit 5x3
 
-super+minus start, grid 5x3
-q cell-select 1x1
-w cell-select 2x1
-e cell-select 3x1
-r cell-select 4x1
-t cell-select 5x1
-a cell-select 1x2
-s cell-select 2x2
-d cell-select 3x2
-f cell-select 4x2
-g cell-select 5x2
-z cell-select 1x3
-x cell-select 2x3
-c cell-select 3x3
-v cell-select 4x3
-b cell-select 5x3
+super+minus start, click-default 1, grid 26x20, grid-nav on
+super+shift+minus start, click-default 0, grid 26x20, grid-nav on
+Tab grid-nav off, grid 5x3
+q cell-select 1x1, warp, click 0, end-if-click-default
+w cell-select 2x1, warp, click 0, end-if-click-default
+e cell-select 3x1, warp, click 0, end-if-click-default
+r cell-select 4x1, warp, click 0, end-if-click-default
+t cell-select 5x1, warp, click 0, end-if-click-default
+a cell-select 1x2, warp, click 0, end-if-click-default
+s cell-select 2x2, warp, click 0, end-if-click-default
+d cell-select 3x2, warp, click 0, end-if-click-default
+f cell-select 4x2, warp, click 0, end-if-click-default
+g cell-select 5x2, warp, click 0, end-if-click-default
+z cell-select 1x3, warp, click 0, end-if-click-default
+x cell-select 2x3, warp, click 0, end-if-click-default
+c cell-select 3x3, warp, click 0, end-if-click-default
+v cell-select 4x3, warp, click 0, end-if-click-default
+b cell-select 5x3, warp, click 0, end-if-click-default
+
+shift+q cell-select 1x1, warp, doubleclick 0, end-if-click-default
+shift+w cell-select 2x1, warp, doubleclick 0, end-if-click-default
+shift+e cell-select 3x1, warp, doubleclick 0, end-if-click-default
+shift+r cell-select 4x1, warp, doubleclick 0, end-if-click-default
+shift+t cell-select 5x1, warp, doubleclick 0, end-if-click-default
+shift+a cell-select 1x2, warp, doubleclick 0, end-if-click-default
+shift+s cell-select 2x2, warp, doubleclick 0, end-if-click-default
+shift+d cell-select 3x2, warp, doubleclick 0, end-if-click-default
+shift+f cell-select 4x2, warp, doubleclick 0, end-if-click-default
+shift+g cell-select 5x2, warp, doubleclick 0, end-if-click-default
+shift+z cell-select 1x3, warp, doubleclick 0, end-if-click-default
+shift+x cell-select 2x3, warp, doubleclick 0, end-if-click-default
+shift+c cell-select 3x3, warp, doubleclick 0, end-if-click-default
+shift+v cell-select 4x3, warp, doubleclick 0, end-if-click-default
+shift+b cell-select 5x3, warp, doubleclick 0, end-if-click-default
+
+ctrl+q cell-select 1x1, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+w cell-select 2x1, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+e cell-select 3x1, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+r cell-select 4x1, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+t cell-select 5x1, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+a cell-select 1x2, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+s cell-select 2x2, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+d cell-select 3x2, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+f cell-select 4x2, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+g cell-select 5x2, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+z cell-select 1x3, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+x cell-select 2x3, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+c cell-select 3x3, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+v cell-select 4x3, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+b cell-select 5x3, warp, drag 1, start, grid 26x20, grid-nav on
+
+shift+ctrl+q cell-select 1x1, warp
+shift+ctrl+w cell-select 2x1, warp
+shift+ctrl+e cell-select 3x1, warp
+shift+ctrl+r cell-select 4x1, warp
+shift+ctrl+t cell-select 5x1, warp
+shift+ctrl+a cell-select 1x2, warp
+shift+ctrl+s cell-select 2x2, warp
+shift+ctrl+d cell-select 3x2, warp
+shift+ctrl+f cell-select 4x2, warp
+shift+ctrl+g cell-select 5x2, warp
+shift+ctrl+z cell-select 1x3, warp
+shift+ctrl+x cell-select 2x3, warp
+shift+ctrl+c cell-select 3x3, warp
+shift+ctrl+v cell-select 4x3, warp
+shift+ctrl+b cell-select 5x3, warp
 
 
-shift+q record ~/.config/keynav/keynav_macros
-shift+at playback
+#alt+q record ~/.config/keynav/keynav_macros
+#shift+at playback
 #ctrl+semicolon start, sh "exec transset-df -i $(xdotool search --class keynav) 0.3"
-shift+e grid-nav toggle
-Tab restart
+alt+n grid 26x20, grid-nav on
 #ctrl+semicolon start
 #ctrl+semicolon start,cut-left .95, cut-up .95, move-right 50, move-down 20
 #alt+semicolon start,move-right
@@ -57,28 +107,51 @@ m move-right,move-down
 space warp,click 1
 #? KEYNAV center cursor, click and exit
 Return warp,click 1,end
+#? KEYNAV move cursor to the screen origin border
+#0 sh "xdotool mousemove 0 0", end
+0 move-cursor 0x0, end
 #? KEYNAV move cursor to the center (,)
 semicolon warp
 #? KEYNAV click
 1 click 1
+#? KEYNAV drag 1-7
+ctrl+1 drag 1
+#? KEYNAV set default click 1-7
+shift+1 click-default 1
 #? KEYNAV middle click
 2 click 2
+ctrl+2 drag 2
+shift+2 click-default 2
 #? KEYNAV secondary click
 3 click 3
+ctrl+3 drag 3
+shift+3 click-default 3
 #? KEYNAV mouse wheel up
 4 click 4
+ctrl+4 drag 4
+shift+4 click-default 4
 #? KEYNAV mouse wheel down
 5 click 5
+ctrl+5 drag 5
+shift+5 click-default 5
+#? KEYNAV mouse wheel left
+6 click 6
+ctrl+6 drag 6
+shift+6 click-default 6
+#? KEYNAV mouse wheel right
+7 click 7
+ctrl+7 drag 7
+shift+7 click-default 7
 #? KEYNAV double click
-6 doubleclick 1
+9 doubleclick 1
 #1 cell-select 1x1,warp,end
 #2 cell-select 1x2,warp,end
 #3 cell-select 2x1,warp,end
 #4 cell-select 2x2,warp,end
 
 # Zoom to the current window
-shift+w windowzoom
-shift+c cursorzoom 100 100
+#shift+w windowzoom
+#shift+c cursorzoom 100 100
 #ctrl+w windowzoom
 
 # Handy for holding ctrl while using keynav:
@@ -93,11 +166,11 @@ ctrl+n cut-right,cut-down
 
 ### Example using the 'sh' command.
 # This xdotool invocation require xdotool >= 2.20100623 for 'command chaining'
-shift+g sh "xdotool search --title -- '- Google Chrome' windowactivate key --window 0 --clearmodifiers ctrl+l",end
+#shift+g sh "xdotool search --title -- '- Google Chrome' windowactivate key --window 0 --clearmodifiers ctrl+l",end
 
 # Paste!
-shift+v sh "xdotool key shift+Insert",end
-ctrl+v sh "xdotool key shift+Insert",end
+#shift+v sh "xdotool key shift+Insert",end
+#ctrl+v sh "xdotool key shift+Insert",end
 
 # Activate chrome, make a new tab, paste in the url bar, then press return.
 # This xdotool invocation require xdotool >= 2.20100623 for 'command chaining'

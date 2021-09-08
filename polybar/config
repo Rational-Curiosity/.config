@@ -85,7 +85,7 @@ enable-ipc = true
 
 [module/xwindow]
 type = internal/xwindow
-label = %title:0:50:…%
+label = %title:0:60:…%
 
 [module/xkeyboard]
 type = internal/xkeyboard
