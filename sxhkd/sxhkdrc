@@ -24,7 +24,7 @@ super + ctrl + @Return
 
 #? EXTERNAL switch to meet
 super + @space
-	bspc desktop ^$(($(xdotool search --class Google-chrome get_desktop_for_window %@|tail -1)+1)) -f; xdotool search --onlyvisible --class Google-chrome windowactivate --sync %1 keyup Super_L Super_R Alt_L Alt_R Control_L Control_R Shift_L Shift_R key --delay 30 Escape Control_L+1
+	bspc desktop ^$(($(xdotool search --class Chromium get_desktop_for_window %@|tail -1)+1)) -f; xdotool search --onlyvisible --class Chromium windowactivate --sync %1 keyup Super_L Super_R Alt_L Alt_R Control_L Control_R Shift_L Shift_R key --delay 30 Escape Control_L+1
 
 #? EXTERNAL program launcher
 super + {_,shift + } d
@@ -38,16 +38,28 @@ super + shift + b
 super+@Print; {c,w,a,i}
     gnome-screenshot {-c,-w,-a,-i}
 
-#? EXTERNAL screen locker
+#? EXTERNAL screen locker and black screen
 super + @Pause
-    pgrep -x xscreensaver || (xscreensaver -no-splash &); sleep .5; xscreensaver-command -lock
+    xset +dpms s on; pgrep -x xscreensaver || (xscreensaver -no-splash &); sleep .5; xscreensaver-command -lock
+
+#? EXTERNAL disable screen locker and black screen
+super + alt + @Pause
+    xset -dpms s off; pkill -x xscreensaver
 
 #? EXTERNAL increase volumen
 super + button4
     pactl set-sink-volume @DEFAULT_SINK@ +5%
 
 #? EXTERNAL increase volumen
+super + Prior
+    pactl set-sink-volume @DEFAULT_SINK@ +5%
+
+#? EXTERNAL increase volumen
 super + button5
+    pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+#? EXTERNAL increase volumen
+super + Next
     pactl set-sink-volume @DEFAULT_SINK@ -5%
 
 #? EXTERNAL rofi calc
@@ -182,13 +194,13 @@ super + {_,shift + }Tab
 # super + {grave,Tab}
 # 	bspc {node,desktop} -f last
 
-#? FOCUS the {older,newer} node in the focus history
+#? FOCUS the {next,previous} floating
 super + {u,i}
-	bspc wm -h off;	bspc node {older,newer} -f;	bspc wm -h on
-
-#? FOCUS the {next,previous} globaly
-super + shift + {u,i}
 	bspc node -f {next,prev}.floating
+
+#? FOCUS the {older,newer} node in the focus history
+super + shift + {u,i}
+	bspc wm -h off;	bspc node {older,newer} -f;	bspc wm -h on
 
 #? FOCUS switching to monitor
 super + m

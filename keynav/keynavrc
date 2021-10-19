@@ -15,26 +15,33 @@
 
 daemonize  # background keynav
 clear      # clear all previous keybindings
+hide-cursor
 grid-nav-exit 5x3
 
-super+minus start, click-default 1, grid 26x20, grid-nav on
-super+shift+minus start, click-default 0, grid 26x20, grid-nav on
-Tab grid-nav off, grid 5x3
-q cell-select 1x1, warp, click 0, end-if-click-default
-w cell-select 2x1, warp, click 0, end-if-click-default
-e cell-select 3x1, warp, click 0, end-if-click-default
-r cell-select 4x1, warp, click 0, end-if-click-default
-t cell-select 5x1, warp, click 0, end-if-click-default
-a cell-select 1x2, warp, click 0, end-if-click-default
-s cell-select 2x2, warp, click 0, end-if-click-default
-d cell-select 3x2, warp, click 0, end-if-click-default
-f cell-select 4x2, warp, click 0, end-if-click-default
-g cell-select 5x2, warp, click 0, end-if-click-default
-z cell-select 1x3, warp, click 0, end-if-click-default
-x cell-select 2x3, warp, click 0, end-if-click-default
-c cell-select 3x3, warp, click 0, end-if-click-default
-v cell-select 4x3, warp, click 0, end-if-click-default
-b cell-select 5x3, warp, click 0, end-if-click-default
+
+# super+minus start, click-default 1, grid 26x20, grid-nav on
+# super+shift+minus start, click-default 1, grid 5x3, grid-nav off
+super+minus start, set-default-event click 1, grid 26x20, grid-nav on
+super+shift+minus start, set-default-event click 2, grid 26x20, grid-nav on
+super+alt+minus start, set-default-event click 3, grid 26x20, grid-nav on
+super+ctrl+minus start, set-default-event drag 1, grid 26x20, grid-nav on
+super+ctrl+alt+minus start, set-default-event doubleclick 1, grid 26x20, grid-nav on
+
+q cell-select 1x1, warp, default-event, end-if-not-default-event drag
+w cell-select 2x1, warp, default-event, end-if-not-default-event drag
+e cell-select 3x1, warp, default-event, end-if-not-default-event drag
+r cell-select 4x1, warp, default-event, end-if-not-default-event drag
+t cell-select 5x1, warp, default-event, end-if-not-default-event drag
+a cell-select 1x2, warp, default-event, end-if-not-default-event drag
+s cell-select 2x2, warp, default-event, end-if-not-default-event drag
+d cell-select 3x2, default-event, end-if-not-default-event drag
+f cell-select 4x2, warp, default-event, end-if-not-default-event drag
+g cell-select 5x2, warp, default-event, end-if-not-default-event drag
+z cell-select 1x3, warp, default-event, end-if-not-default-event drag
+x cell-select 2x3, warp, default-event, end-if-not-default-event drag
+c cell-select 3x3, warp, default-event, end-if-not-default-event drag
+v cell-select 4x3, warp, default-event, end-if-not-default-event drag
+b cell-select 5x3, warp, default-event, end-if-not-default-event drag
 
 shift+q cell-select 1x1, warp, doubleclick 0, end-if-click-default
 shift+w cell-select 2x1, warp, doubleclick 0, end-if-click-default
@@ -43,7 +50,7 @@ shift+r cell-select 4x1, warp, doubleclick 0, end-if-click-default
 shift+t cell-select 5x1, warp, doubleclick 0, end-if-click-default
 shift+a cell-select 1x2, warp, doubleclick 0, end-if-click-default
 shift+s cell-select 2x2, warp, doubleclick 0, end-if-click-default
-shift+d cell-select 3x2, warp, doubleclick 0, end-if-click-default
+shift+d cell-select 3x2, doubleclick 0, end-if-click-default
 shift+f cell-select 4x2, warp, doubleclick 0, end-if-click-default
 shift+g cell-select 5x2, warp, doubleclick 0, end-if-click-default
 shift+z cell-select 1x3, warp, doubleclick 0, end-if-click-default
@@ -59,7 +66,7 @@ ctrl+r cell-select 4x1, warp, drag 1, start, grid 26x20, grid-nav on
 ctrl+t cell-select 5x1, warp, drag 1, start, grid 26x20, grid-nav on
 ctrl+a cell-select 1x2, warp, drag 1, start, grid 26x20, grid-nav on
 ctrl+s cell-select 2x2, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+d cell-select 3x2, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+d cell-select 3x2, drag 1, start, grid 26x20, grid-nav on
 ctrl+f cell-select 4x2, warp, drag 1, start, grid 26x20, grid-nav on
 ctrl+g cell-select 5x2, warp, drag 1, start, grid 26x20, grid-nav on
 ctrl+z cell-select 1x3, warp, drag 1, start, grid 26x20, grid-nav on
@@ -75,7 +82,7 @@ shift+ctrl+r cell-select 4x1, warp
 shift+ctrl+t cell-select 5x1, warp
 shift+ctrl+a cell-select 1x2, warp
 shift+ctrl+s cell-select 2x2, warp
-shift+ctrl+d cell-select 3x2, warp
+shift+ctrl+d cell-select 3x2
 shift+ctrl+f cell-select 4x2, warp
 shift+ctrl+g cell-select 5x2, warp
 shift+ctrl+z cell-select 1x3, warp
@@ -94,6 +101,8 @@ alt+n grid 26x20, grid-nav on
 #alt+semicolon start,move-right
 #? KEYNAV exit
 Escape end
+Tab toggle-cursor
+BackSpace toggle-cursor,end
 ctrl+bracketleft end
 h move-left
 j move-down
@@ -116,32 +125,39 @@ semicolon warp
 1 click 1
 #? KEYNAV drag 1-7
 ctrl+1 drag 1
-#? KEYNAV set default click 1-7
-shift+1 click-default 1
+
+#? KEYNAV set default event click 1-3
+shift+0 set-default-event warp
+shift+1 set-default-event click 1
+shift+2 set-default-event click 2
+shift+3 set-default-event click 3
+#? KEYNAV set default event doubleclick 1-3
+shift+4 set-default-event doubleclick 1
+shift+5 set-default-event doubleclick 2
+shift+6 set-default-event doubleclick 3
+#? KEYNAV set default event drag 1-3
+shift+7 set-default-event drag 1
+shift+8 set-default-event drag 2
+shift+9 set-default-event drag 3
+
 #? KEYNAV middle click
 2 click 2
 ctrl+2 drag 2
-shift+2 click-default 2
 #? KEYNAV secondary click
 3 click 3
 ctrl+3 drag 3
-shift+3 click-default 3
 #? KEYNAV mouse wheel up
 4 click 4
 ctrl+4 drag 4
-shift+4 click-default 4
 #? KEYNAV mouse wheel down
 5 click 5
 ctrl+5 drag 5
-shift+5 click-default 5
 #? KEYNAV mouse wheel left
 6 click 6
 ctrl+6 drag 6
-shift+6 click-default 6
 #? KEYNAV mouse wheel right
 7 click 7
 ctrl+7 drag 7
-shift+7 click-default 7
 #? KEYNAV double click
 9 doubleclick 1
 #1 cell-select 1x1,warp,end

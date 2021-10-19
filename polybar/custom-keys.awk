@@ -16,8 +16,12 @@ BEGIN{
             CHAIN=CHAIN_COLOR "{Close,Kill,Tiled,Qpseudo,Sfloat,Fullscreen,Mark,Xlock,strickY,Zprivate}" "%{F-}%{B-}"
         } else if (LAST_KEY == "super+ctrl+x") {
             CHAIN=CHAIN_COLOR "{Auto,1max,2 2048x1152,3 2560x1440,4 3200x1800,5 3840x2160}" "%{F-}%{B-}"
+        } else if (LAST_KEY == "super+s") {
+            CHAIN=CHAIN_COLOR "{h,j,k,l,H,J,K,L}" "%{F-}%{B-}"
+        } else if (LAST_KEY == "super+shift+s") {
+            CHAIN=CHAIN_COLOR "{h,j,k,l,H,J,K,L,C-h,C-j,C-k,C-l}" "%{F-}%{B-}"
         } else if (LAST_KEY == "super+t") {
-            CHAIN=CHAIN_COLOR "{Toggle,Notify,+focused,-focused,Inc unfocus,Dec unfocus}" "%{F-}%{B-}"
+            CHAIN=CHAIN_COLOR "{Toggle,Notify,+focused,-focused,Inc unfocus,Dec unfocus,0-9}" "%{F-}%{B-}"
         } else if (LAST_KEY == "ctrl+c") {
             CHAIN=CHAIN_COLOR "{ctrl+c,ctrl+e,ctrl+d,Tabs}" "%{F-}%{B-}"
         } else if (LAST_KEY == "ctrl+x") {

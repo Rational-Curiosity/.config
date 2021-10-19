@@ -17,3 +17,6 @@
 [data-qutebrowser-domain="chat.gigas.com"] .fixed-title.announcement {
     display: none;
 }
+[data-qutebrowser-domain="redmine.gigas.local"] #sidebar {
+    display: none;
+}
