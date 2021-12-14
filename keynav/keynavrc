@@ -15,17 +15,17 @@
 
 daemonize  # background keynav
 clear      # clear all previous keybindings
-hide-cursor
+# hide-cursor
 grid-nav-exit 5x3
 
 
-# super+minus start, click-default 1, grid 26x20, grid-nav on
+# super+minus start, click-default 1, grid 26x24, grid-nav on
 # super+shift+minus start, click-default 1, grid 5x3, grid-nav off
-super+minus start, set-default-event click 1, grid 26x20, grid-nav on
-super+shift+minus start, set-default-event click 2, grid 26x20, grid-nav on
-super+alt+minus start, set-default-event click 3, grid 26x20, grid-nav on
-super+ctrl+minus start, set-default-event drag 1, grid 26x20, grid-nav on
-super+ctrl+alt+minus start, set-default-event doubleclick 1, grid 26x20, grid-nav on
+super+minus start, set-default-event click 1, grid 26x24, grid-nav on
+super+shift+minus start, set-default-event click 2, grid 26x24, grid-nav on
+super+alt+minus start, set-default-event click 3, grid 26x24, grid-nav on
+super+ctrl+minus start, set-default-event drag 1, grid 26x24, grid-nav on
+super+ctrl+alt+minus start, set-default-event doubleclick 1, grid 26x24, grid-nav on
 
 q cell-select 1x1, warp, default-event, end-if-not-default-event drag
 w cell-select 2x1, warp, default-event, end-if-not-default-event drag
@@ -34,7 +34,7 @@ r cell-select 4x1, warp, default-event, end-if-not-default-event drag
 t cell-select 5x1, warp, default-event, end-if-not-default-event drag
 a cell-select 1x2, warp, default-event, end-if-not-default-event drag
 s cell-select 2x2, warp, default-event, end-if-not-default-event drag
-d cell-select 3x2, default-event, end-if-not-default-event drag
+d cell-select 3x2, warp, default-event, end-if-not-default-event drag
 f cell-select 4x2, warp, default-event, end-if-not-default-event drag
 g cell-select 5x2, warp, default-event, end-if-not-default-event drag
 z cell-select 1x3, warp, default-event, end-if-not-default-event drag
@@ -50,7 +50,7 @@ shift+r cell-select 4x1, warp, doubleclick 0, end-if-click-default
 shift+t cell-select 5x1, warp, doubleclick 0, end-if-click-default
 shift+a cell-select 1x2, warp, doubleclick 0, end-if-click-default
 shift+s cell-select 2x2, warp, doubleclick 0, end-if-click-default
-shift+d cell-select 3x2, doubleclick 0, end-if-click-default
+shift+d cell-select 3x2, warp, doubleclick 0, end-if-click-default
 shift+f cell-select 4x2, warp, doubleclick 0, end-if-click-default
 shift+g cell-select 5x2, warp, doubleclick 0, end-if-click-default
 shift+z cell-select 1x3, warp, doubleclick 0, end-if-click-default
@@ -59,21 +59,21 @@ shift+c cell-select 3x3, warp, doubleclick 0, end-if-click-default
 shift+v cell-select 4x3, warp, doubleclick 0, end-if-click-default
 shift+b cell-select 5x3, warp, doubleclick 0, end-if-click-default
 
-ctrl+q cell-select 1x1, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+w cell-select 2x1, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+e cell-select 3x1, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+r cell-select 4x1, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+t cell-select 5x1, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+a cell-select 1x2, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+s cell-select 2x2, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+d cell-select 3x2, drag 1, start, grid 26x20, grid-nav on
-ctrl+f cell-select 4x2, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+g cell-select 5x2, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+z cell-select 1x3, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+x cell-select 2x3, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+c cell-select 3x3, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+v cell-select 4x3, warp, drag 1, start, grid 26x20, grid-nav on
-ctrl+b cell-select 5x3, warp, drag 1, start, grid 26x20, grid-nav on
+ctrl+q cell-select 1x1, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+w cell-select 2x1, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+e cell-select 3x1, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+r cell-select 4x1, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+t cell-select 5x1, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+a cell-select 1x2, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+s cell-select 2x2, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+d cell-select 3x2, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+f cell-select 4x2, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+g cell-select 5x2, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+z cell-select 1x3, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+x cell-select 2x3, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+c cell-select 3x3, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+v cell-select 4x3, warp, drag 1, start, grid 26x24, grid-nav on
+ctrl+b cell-select 5x3, warp, drag 1, start, grid 26x24, grid-nav on
 
 shift+ctrl+q cell-select 1x1, warp
 shift+ctrl+w cell-select 2x1, warp
@@ -82,7 +82,7 @@ shift+ctrl+r cell-select 4x1, warp
 shift+ctrl+t cell-select 5x1, warp
 shift+ctrl+a cell-select 1x2, warp
 shift+ctrl+s cell-select 2x2, warp
-shift+ctrl+d cell-select 3x2
+shift+ctrl+d cell-select 3x2, warp
 shift+ctrl+f cell-select 4x2, warp
 shift+ctrl+g cell-select 5x2, warp
 shift+ctrl+z cell-select 1x3, warp
@@ -95,7 +95,7 @@ shift+ctrl+b cell-select 5x3, warp
 #alt+q record ~/.config/keynav/keynav_macros
 #shift+at playback
 #ctrl+semicolon start, sh "exec transset-df -i $(xdotool search --class keynav) 0.3"
-alt+n grid 26x20, grid-nav on
+alt+n grid 26x24, grid-nav on
 #ctrl+semicolon start
 #ctrl+semicolon start,cut-left .95, cut-up .95, move-right 50, move-down 20
 #alt+semicolon start,move-right
@@ -104,14 +104,14 @@ Escape end
 Tab toggle-cursor
 BackSpace toggle-cursor,end
 ctrl+bracketleft end
-h move-left
-j move-down
-k move-up
-l move-right
-y move-left,move-up
-u move-right,move-up
-n move-left,move-down
-m move-right,move-down
+h move-left,warp
+j move-down,warp
+k move-up,warp
+l move-right,warp
+y move-left,move-up,warp
+u move-right,move-up,warp
+n move-left,move-down,warp
+m move-right,move-down,warp
 #? KEYNAV center cursor and click
 space warp,click 1
 #? KEYNAV center cursor, click and exit
