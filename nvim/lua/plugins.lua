@@ -8,6 +8,7 @@ use 'mbbill/undotree'
 
 use {
   'https://gitlab.com/yorickpeterse/nvim-window.git',
+  event = 'VimEnter',
   config = function()
     require('nvim-window').setup {
       chars = {
@@ -26,6 +27,7 @@ map('n', '<space>o', ":lua require('nvim-window').pick()<CR>",
 
 use {
   "folke/which-key.nvim",
+  event = 'VimEnter',
   config = function()
     require("which-key").setup {
       hidden = {
@@ -43,23 +45,119 @@ use {
 use {
   'phaazon/hop.nvim',
   branch = 'v1', -- optional but strongly recommended
-  cmd = 'HopWord',
+  cmd = { 'HopWord', 'HopChar1' },
   config = function()
     -- you can configure Hop the way you like here; see :h hop-config
     require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
-    vim.api.nvim_command('highlight HopNextKey2 guifg=#1b9fbf')
+    -- vim.api.nvim_command('highlight HopNextKey2 guifg=#1b9fbf')
   end
 }
 map('n', '<space>w', '<cmd>HopWord<cr>', {noremap = true})
+map('n', '<space>c', '<cmd>HopChar1<cr>', {noremap = true})
 
-use { 'nanotee/zoxide.vim' }
+use {
+  'nanotee/zoxide.vim',
+  event = 'VimEnter',
+}
 
 use {
   'TimUntersberger/neogit',
   requires = 'nvim-lua/plenary.nvim',
   cmd = 'Neogit',
 }
-map('n', '<space>v', '<cmd>Neogit<cr>', {noremap = true})
+map('n', '<space>V', '<cmd>Neogit<cr>', {noremap = true})
+
+use {
+  'lewis6991/gitsigns.nvim',
+  requires = {
+    'nvim-lua/plenary.nvim'
+  },
+  cmd = 'Gitsigns',
+  config = function()
+    require('gitsigns').setup {
+      signs = {
+        add          = {hl = 'GitSignsAdd'   , text = '│', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+        change       = {hl = 'GitSignsChange', text = '│', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+        delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+        topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+        changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+      },
+      signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+      numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
+      linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
+      word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+      keymaps = {
+        -- Default keymap options
+        noremap = true,
+
+        -- ['n ]c'] = { expr = true, "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'"},
+        -- ['n [c'] = { expr = true, "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'"},
+
+        -- ['n <leader>hs'] = '<cmd>Gitsigns stage_hunk<CR>',
+        -- ['v <leader>hs'] = ':Gitsigns stage_hunk<CR>',
+        -- ['n <leader>hu'] = '<cmd>Gitsigns undo_stage_hunk<CR>',
+        -- ['n <leader>hr'] = '<cmd>Gitsigns reset_hunk<CR>',
+        -- ['v <leader>hr'] = '<cmd>Gitsigns reset_hunk<CR>',
+        -- ['n <leader>hR'] = '<cmd>Gitsigns reset_buffer<CR>',
+        -- ['n <leader>hp'] = '<cmd>Gitsigns preview_hunk<CR>',
+        -- ['n <leader>hb'] = '<cmd>Gitsigns toggle_current_line_blame<CR>',
+        ['n <leader>hB'] = '<cmd>lua require"gitsigns".blame_line{full=true}<CR>',
+        -- ['n <leader>hS'] = '<cmd>Gitsigns stage_buffer<CR>',
+        -- ['n <leader>hU'] = '<cmd>Gitsigns reset_buffer_index<CR>',
+
+        -- -- Text objects
+        -- ['o ih'] = ':<C-U>Gitsigns select_hunk<CR>',
+        -- ['x ih'] = ':<C-U>Gitsigns select_hunk<CR>'
+      },
+      watch_gitdir = {
+        interval = 1000,
+        follow_files = true
+      },
+      attach_to_untracked = true,
+      current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+      current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+        delay = 1000,
+        ignore_whitespace = false,
+      },
+      current_line_blame_formatter_opts = {
+        relative_time = false
+      },
+      sign_priority = 6,
+      update_debounce = 100,
+      status_formatter = nil, -- Use default
+      max_file_length = 40000,
+      preview_config = {
+        -- Options passed to nvim_open_win
+        border = 'single',
+        style = 'minimal',
+        relative = 'cursor',
+        row = 0,
+        col = 1
+      },
+      yadm = {
+        enable = false
+      },
+    }
+  end
+}
+map('n', ']h', "&diff ? ']h' : '<cmd>Gitsigns next_hunk<CR>'", {noremap = true, expr = true})
+map('n', '[h', "&diff ? '[h' : '<cmd>Gitsigns prev_hunk<CR>'", {noremap = true, expr = true})
+
+map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>', {noremap = true})
+map('v', '<leader>hs', ':Gitsigns stage_hunk<CR>', {noremap = true})
+map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', {noremap = true})
+map('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>', {noremap = true})
+map('v', '<leader>hr', ':Gitsigns reset_hunk<CR>', {noremap = true})
+map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', {noremap = true})
+map('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', {noremap = true})
+map('n', '<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<CR>', {noremap = true})
+map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', {noremap = true})
+map('n', '<leader>hU', '<cmd>Gitsigns reset_buffer_index<CR>', {noremap = true})
+
+map('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>', {noremap = true})
+map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>', {noremap = true})
 
 use {
   'nvim-telescope/telescope.nvim',
@@ -71,12 +169,20 @@ use {
       defaults = {
         mappings = {
           i = {
-            ["<C-o>"] = action_layout.toggle_preview
+            ["<C-e>"] = action_layout.toggle_preview,
+            ["<C-o>"] = action_layout.cycle_layout_prev,
+            ["<C-i>"] = action_layout.cycle_layout_next,
           },
           n = {
-            ["<C-o>"] = action_layout.toggle_preview
+            ["<C-e>"] = action_layout.toggle_preview,
+            ["<C-o>"] = action_layout.cycle_layout_prev,
+            ["<C-i>"] = action_layout.cycle_layout_next,
           },
         },
+        path_display = {
+          truncate = 1,
+        },
+        cycle_layout_list = {"horizontal", "vertical"},
         layout_config = {
           horizontal = {
             height = 0.9,
@@ -123,40 +229,90 @@ use {
     }
   end
 }
-map('n', '<space>f', '<cmd>Telescope find_files<cr>', {noremap = true})
-map('n', '<space>l', '<cmd>Telescope live_grep<cr>', {noremap = true})
-map('n', '<space>b', '<cmd>Telescope buffers<cr>', {noremap = true})
-map('n', '<space>h', '<cmd>Telescope help_tags<cr>', {noremap = true})
+map('n', '<space>ff', '<cmd>Telescope find_files<cr>', {noremap = true})
+map('n', '<space>fg', '<cmd>Telescope live_grep<cr>', {noremap = true})
+map('n', '<space>fb', '<cmd>Telescope buffers<cr>', {noremap = true})
+map('n', '<space>fh', '<cmd>Telescope help_tags<cr>', {noremap = true})
+map('n', '<space>fo', '<cmd>Telescope oldfiles<cr>', {noremap = true})
 
-use {'machakann/vim-sandwich'}
+use {
+  'machakann/vim-sandwich',
+  event = "BufRead",
+}
 
 use {
   'nvim-treesitter/nvim-treesitter',
+  event = "BufRead",
   requires = { 'p00f/nvim-ts-rainbow' },
-  opt = true,
   config = function()
+    local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+    parser_config.org = {
+      install_info = {
+        url = 'https://github.com/milisims/tree-sitter-org',
+        revision = 'f110024d539e676f25b72b7c80b0fd43c34264ef',
+        files = {'src/parser.c', 'src/scanner.cc'},
+      },
+      filetype = 'org',
+    }
+
     require'nvim-treesitter.configs'.setup {
       ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
       sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
       -- ignore_install = { "javascript" }, -- List of parsers to ignore installing
       highlight = {
         enable = true,              -- false will disable the whole extension
+        disable = {'org'}, -- Remove this to use TS highlighter for some of the highlights (Experimental)
+        additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
         -- disable = { "c", "rust" },  -- list of language that will be disabled
         -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
         -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
         -- Using this option may slow down your editor, and you may see some duplicate highlights.
         -- Instead of true it can also be a list of languages
-        additional_vim_regex_highlighting = false,
+        -- additional_vim_regex_highlighting = false,
       },
       rainbow = {
         enable = true,
         -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
         extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
         max_file_lines = 20000, -- Do not enable for files with more than n lines, int
-        -- colors = {}, -- table of hex strings
+        colors = {
+          "#88fbff",
+          "#f4ff88",
+          "#ff88d6",
+          "#8cff88",
+          "#c088ff",
+          "#ffd488",
+          "#b388ff"
+        }, -- table of hex strings
         -- termcolors = {} -- table of colour name strings
       }
     }
+
+    -- vim.treesitter.set_query("python", "folds", [[
+    --   (function_definition (block) @fold)
+    --   (class_definition (block) @fold)
+    -- ]])
+    -- vim.treesitter.set_query("c", "folds", [[
+    --   (function_definition)
+    --   (struct_specifier)
+    -- ]])
+    -- vim.treesitter.set_query("cpp", "folds", [[
+    --   (function_definition)
+    --   (struct_specifier)
+    --   (class_specifier)
+    -- ]])
+    -- vim.treesitter.set_query("javascript", "folds", [[
+    --   (function)
+    --   (function_declaration)
+    --   (class_declaration)
+    --   (method_definition)
+    -- ]])
+    -- vim.treesitter.set_query("typescript", "folds", [[
+    --   (function)
+    --   (function_declaration)
+    --   (class_declaration)
+    --   (method_definition)
+    -- ]])
   end
 }
 use {
@@ -192,19 +348,19 @@ use {
           enable = true,
           set_jumps = true, -- whether to set jumps in the jumplist
           goto_next_start = {
-            ["]m"] = "@function.outer",
-            ["]]"] = "@class.outer",
-          },
-          goto_next_end = {
             ["]M"] = "@function.outer",
             ["]["] = "@class.outer",
           },
+          goto_next_end = {
+            ["]m"] = "@function.outer",
+            ["]]"] = "@class.outer",
+          },
           goto_previous_start = {
-            ["[m"] = "@function.outer",
+            ["[M"] = "@function.outer",
             ["[["] = "@class.outer",
           },
           goto_previous_end = {
-            ["[M"] = "@function.outer",
+            ["[m"] = "@function.outer",
             ["[]"] = "@class.outer",
           },
         },
@@ -224,33 +380,13 @@ use {
 }
 use {
   'nvim-orgmode/orgmode',
-  ft = {'org'},
+  -- ft = {'org'},
   after = "nvim-treesitter",
   config = function()
-    local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-    parser_config.org = {
-      install_info = {
-        url = 'https://github.com/milisims/tree-sitter-org',
-        revision = 'f110024d539e676f25b72b7c80b0fd43c34264ef',
-        files = {'src/parser.c', 'src/scanner.cc'},
-      },
-      filetype = 'org',
-    }
-
-    require'nvim-treesitter.configs'.setup {
-      -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
-      highlight = {
-        enable = true,
-        disable = {'org'}, -- Remove this to use TS highlighter for some of the highlights (Experimental)
-        additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
-      },
-      ensure_installed = {'org'}, -- Or run :TSUpdate org
-    }
-
-    require('orgmode').setup({
+    require('orgmode').setup {
       org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
       org_default_notes_file = '~/Dropbox/org/refile.org',
-    })
+    }
   end
 }
 -- use 'shaeinst/roshnivim-cs'
@@ -278,7 +414,8 @@ use {
             symbols = {error = '', warn = '', info = '', hint = '♲'}}
         },
         lualine_c = {
-          {'filename', path=1, shorting_target=0}
+          {'filename', path=1, shorting_target=0,
+            symbols = {modified='✎', readonly='⛒'}}
         },
         lualine_x = {
           {'encoding', fmt=function(s)
@@ -303,10 +440,12 @@ use {
 
 use {
   'windwp/nvim-autopairs',
+  event = "BufRead",
   config = function()
     require('nvim-autopairs').setup({
       disable_filetype = { "TelescopePrompt" , "vim" },
       disable_in_macro = true,
+      enable_moveright = false,
       check_ts = true,
       map_bs = false,
     })
@@ -314,9 +453,109 @@ use {
 }
 
 use {
+  'hrsh7th/nvim-cmp',
+  requires = {
+    {
+      'hrsh7th/cmp-nvim-lsp',
+      after = 'nvim-cmp',
+    },
+    {
+      'hrsh7th/cmp-buffer',
+      after = 'nvim-cmp',
+    },
+    {
+      'hrsh7th/cmp-path',
+      after = 'nvim-cmp',
+    },
+    {
+      'hrsh7th/cmp-cmdline',
+      after = 'nvim-cmp',
+    },
+    {
+      'hrsh7th/cmp-vsnip',
+      after = 'nvim-cmp',
+    },
+    { 'hrsh7th/vim-vsnip' },
+    { 'rafamadriz/friendly-snippets' },
+  },
+  event = "BufRead",
+  config = function()
+    -- Setup nvim-cmp.
+    local cmp = require'cmp'
+
+    cmp.setup({
+      completion = {
+          autocomplete = false,
+      },
+      snippet = {
+        -- REQUIRED - you must specify a snippet engine
+        expand = function(args)
+          vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+          -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+          -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+          -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
+        end,
+      },
+      mapping = {
+        ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+        ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+        ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+        ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+        ['<C-u>'] = cmp.config.disable,
+        ['<C-d>'] = cmp.config.disable,
+        ['<C-a>'] = cmp.mapping({
+          i = cmp.mapping.abort(),
+          c = cmp.mapping.close(),
+        }),
+        ['<C-e>'] = cmp.mapping(cmp.mapping.close(), { 'i', 'c' }),
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      },
+      sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+        { name = 'treesitter' },
+        { name = 'vsnip' }, -- For vsnip users.
+        -- { name = 'luasnip' }, -- For luasnip users.
+        -- { name = 'ultisnips' }, -- For ultisnips users.
+        -- { name = 'snippy' }, -- For snippy users.
+        { name = 'orgmode' },
+        { name = 'path' },
+      }, {
+        { name = 'buffer' },
+      })
+    })
+
+    -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+    cmp.setup.cmdline('/', {
+      sources = {
+        { name = 'buffer' }
+      }
+    })
+    cmp.setup.cmdline('?', {
+      sources = {
+        { name = 'buffer' }
+      }
+    })
+
+    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+    cmp.setup.cmdline(':', {
+      sources = cmp.config.sources({
+        { name = 'path' }
+      }, {
+        { name = 'cmdline' }
+      })
+    })
+    -- nvim-autopairs
+    -- If you want insert `(` after select function or method item
+    --local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+    --cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
+  end
+}
+
+use {
   'neovim/nvim-lspconfig',
+  --require = 'hrsh7th/cmp-nvim-lsp',
   --ft = {'rs', 'py', 'php', 'lua', 'c', 'cpp', 'h', 'hpp'},
-  after = "nvim-treesitter",
+  after = 'nvim-cmp',
   config = function()
     -- vim.diagnostic.config({
     --   virtual_text = true,
@@ -346,24 +585,24 @@ use {
       local opts = { noremap=true, silent=true }
 
       -- See `:help vim.lsp.*` for documentation on any of the below functions
-      buf_set_keymap('n', '<space>gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-      buf_set_keymap('n', '<space>gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+      buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+      buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
       buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-      buf_set_keymap('n', '<space>gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+      buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
       buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
       buf_set_keymap('n', '<space>Wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
       buf_set_keymap('n', '<space>Wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
       buf_set_keymap('n', '<space>Wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
       buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
       buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-      buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-      buf_set_keymap('n', '<space>gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-      buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-      buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-      buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-      buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+      buf_set_keymap('n', '<space>Ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+      buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+      buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
+      buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+      buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+      buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
       buf_set_keymap('n', '<space>F', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-      buf_set_keymap('v', '<space>F', '<cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
+      buf_set_keymap('v', '<space>F', ':lua vim.lsp.buf.range_formatting()<CR>', opts)
     end
 
     local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -387,80 +626,8 @@ use {
 }
 
 use {
-  'hrsh7th/nvim-cmp',
-  requires = {
-    { 'hrsh7th/cmp-nvim-lsp' },
-    { 'hrsh7th/cmp-buffer' },
-    { 'hrsh7th/cmp-path' },
-    { 'hrsh7th/cmp-cmdline' },
-    { 'hrsh7th/cmp-vsnip' },
-    { 'hrsh7th/vim-vsnip' },
-  },
-  config = function()
-    -- Setup nvim-cmp.
-    local cmp = require'cmp'
-
-    cmp.setup({
-      snippet = {
-        -- REQUIRED - you must specify a snippet engine
-        expand = function(args)
-          vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-          -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-          -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-          -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
-        end,
-      },
-      mapping = {
-        ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-        ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-        ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-        ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-        ['<C-u>'] = cmp.config.disable,
-        ['<C-d>'] = cmp.config.disable,
-        ['<C-a>'] = cmp.mapping({
-          i = cmp.mapping.abort(),
-          c = cmp.mapping.close(),
-        }),
-        ['<C-e>'] = cmp.mapping(cmp.mapping.close(), { 'i', 'c' }),
-        ['<CR>'] = cmp.mapping.confirm({ select = true }),
-      },
-      sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
-        { name = 'vsnip' }, -- For vsnip users.
-        -- { name = 'luasnip' }, -- For luasnip users.
-        -- { name = 'ultisnips' }, -- For ultisnips users.
-        -- { name = 'snippy' }, -- For snippy users.
-        { name = 'orgmode' },
-        { name = 'path' },
-      }, {
-        { name = 'buffer' },
-      })
-    })
-
-    -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-    cmp.setup.cmdline('/', {
-      sources = {
-        { name = 'buffer' }
-      }
-    })
-
-    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-    cmp.setup.cmdline(':', {
-      sources = cmp.config.sources({
-        { name = 'path' }
-      }, {
-        { name = 'cmdline' }
-      })
-    })
-    -- nvim-autopairs
-    -- If you want insert `(` after select function or method item
-    --local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-    --cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
-  end
-}
-
-use {
   'chipsenkbeil/distant.nvim',
+  event = 'VimEnter',
   config = function()
     require('distant').setup {
       -- Applies Chip's personal settings to every machine you connect to
