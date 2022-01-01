@@ -21,6 +21,33 @@ font:
     style: Bold Italic
 
 colors:
+  primary:
+    background: '0x1a1b26'
+    foreground: '0xc0caf5'
+  normal:
+    black:   '0x15161E'
+    red:     '0xf7768e'
+    green:   '0x9ece6a'
+    yellow:  '0xe0af68'
+    blue:    '0x7aa2f7'
+    magenta: '0xbb9af7'
+    cyan:    '0x7dcfff'
+    white:   '0xa9b1d6'
+  bright:
+    black:   '0x414868'
+    red:     '0xf7768e'
+    green:   '0x9ece6a'
+    yellow:  '0xe0af68'
+    blue:    '0x7aa2f7'
+    magenta: '0xbb9af7'
+    cyan:    '0x7dcfff'
+    white:   '0xc0caf5'
+  selection:
+    background: '0x2d4f67'
+    foreground: '0xc8c093'
+  indexed_colors:
+    - { index: 16, color: '0xff9e64' }
+    - { index: 17, color: '0xdb4b4b' }
   hints:
     start:
       foreground: '#FFFFFF'
@@ -34,7 +61,7 @@ window:
 hints:
   alphabet: "jfkdlsahgurieowpqmvcxznb"
   enabled:
-    - regex: "('[^']+'|[^ \t\n\r]+)"
+    - regex: "(sudo|git|ls|cd|mkdir|cat|n?vim?|ssh|c?make|cargo|rust|python|pip|pytest|php|node|npm|grep|rg) [^\r\n]*"
       action: Copy
       post_processing: false
       mouse:
@@ -50,6 +77,39 @@ hints:
         enabled: true
       binding:
         key: U
+        mods: Control|Shift
+    - regex: "[[:word:]-]+"
+      action: Copy
+      post_processing: false
+      mouse:
+        enabled: true
+      binding:
+        key: W
+        mods: Control|Shift
+    - regex: "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'"
+    # - regex: "\"(?:[^\"\\\\]|\\\\.)*\""
+      action: Copy
+      post_processing: false
+      mouse:
+        enabled: true
+      binding:
+        key: Q
+        mods: Control|Shift
+    - regex: "[^[:space:]]+"
+      action: Copy
+      post_processing: false
+      mouse:
+        enabled: true
+      binding:
+        key: N
+        mods: Control|Shift
+    - regex: ".*"
+      action: Copy
+      post_processing: false
+      mouse:
+        enabled: true
+      binding:
+        key: L
         mods: Control|Shift
 key_bindings:
 # alacritty --print-events | grep "WindowEvent.*KeyboardInput"
