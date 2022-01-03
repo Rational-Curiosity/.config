@@ -259,7 +259,7 @@ use {
     }
 
     require'nvim-treesitter.configs'.setup {
-      ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+      ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
       sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
       -- ignore_install = { "javascript" }, -- List of parsers to ignore installing
       highlight = {
@@ -383,7 +383,8 @@ use {
 }
 use {
   'nvim-orgmode/orgmode',
-  -- ft = {'org'},
+  opt = true,
+  ft = {'org'},
   after = "nvim-treesitter",
   config = function()
     require('orgmode').setup {
