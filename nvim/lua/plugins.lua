@@ -3,8 +3,10 @@ return require('packer').startup{function()
 -- Packer can manage itself
 use 'wbthomason/packer.nvim'
 use 'lewis6991/impatient.nvim'
-local map = vim.api.nvim_set_keymap
-use 'mbbill/undotree'
+use {
+  'mbbill/undotree',
+  event = 'BufRead',
+}
 
 use {
   'https://gitlab.com/yorickpeterse/nvim-window.git',
@@ -22,6 +24,7 @@ use {
     }
   end
 }
+local map = vim.api.nvim_set_keymap
 map('n', '<space>o', ":lua require('nvim-window').pick()<CR>",
   {silent = true})
 
@@ -62,16 +65,14 @@ use {
 
 use {
   'TimUntersberger/neogit',
-  requires = 'nvim-lua/plenary.nvim',
+  requires = { {'nvim-lua/plenary.nvim', opt = true} },
   cmd = 'Neogit',
 }
 map('n', '<space>V', '<cmd>Neogit<cr>', {noremap = true})
 
 use {
   'lewis6991/gitsigns.nvim',
-  requires = {
-    'nvim-lua/plenary.nvim'
-  },
+  requires = { {'nvim-lua/plenary.nvim', opt = true} },
   cmd = 'Gitsigns',
   config = function()
     require('gitsigns').setup {
@@ -161,7 +162,7 @@ map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>', {noremap = true})
 
 use {
   'nvim-telescope/telescope.nvim',
-  requires = { {'nvim-lua/plenary.nvim'} },
+  requires = { {'nvim-lua/plenary.nvim', opt = true} },
   cmd = 'Telescope',
   config = function()
     local action_layout = require "telescope.actions.layout"
@@ -243,7 +244,9 @@ use {
 use {
   'nvim-treesitter/nvim-treesitter',
   event = "BufRead",
-  requires = { 'p00f/nvim-ts-rainbow' },
+  requires = {
+    'p00f/nvim-ts-rainbow', opt = true,
+  },
   config = function()
     local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
     parser_config.org = {
@@ -392,6 +395,10 @@ use {
 -- use 'shaeinst/roshnivim-cs'
 use {
   'folke/tokyonight.nvim',
+  event = "BufRead",
+  config = function()
+    vim.api.nvim_command('colorscheme tokyonight')
+  end
 }
 use {
   'nvim-lualine/lualine.nvim',
@@ -478,7 +485,7 @@ use {
     { 'hrsh7th/vim-vsnip' },
     { 'rafamadriz/friendly-snippets' },
   },
-  event = "BufRead",
+  event = "InsertEnter",
   config = function()
     -- Setup nvim-cmp.
     local cmp = require'cmp'
@@ -553,9 +560,11 @@ use {
 
 use {
   'neovim/nvim-lspconfig',
-  --require = 'hrsh7th/cmp-nvim-lsp',
-  --ft = {'rs', 'py', 'php', 'lua', 'c', 'cpp', 'h', 'hpp'},
-  after = 'nvim-cmp',
+  requires = {
+    'hrsh7th/cmp-nvim-lsp',
+  },
+  opt = true,
+  ft = {'rust', 'python', 'php', 'c', 'cpp', 'h', 'hpp'},
   config = function()
     -- vim.diagnostic.config({
     --   virtual_text = true,

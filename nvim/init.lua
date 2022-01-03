@@ -1,16 +1,5 @@
-vim.cmd([[
-  syntax off
-  filetype off
-  filetype plugin indent off
-]])
-vim.opt.shadafile = "NONE"
+local opt = vim.opt
 local g = vim.g
-g.loaded_gzip = false
-g.loaded_netrwPlugin = false
-g.loaded_tarPlugin = false
-g.loaded_zipPlugin = false
-g.loaded_2html_plugin = false
-g.loaded_remote_plugins = false
 
 g.sandwich_no_default_key_mappings = 1
 
@@ -19,7 +8,6 @@ g.tokyonight_style = "night"
 g.tokyonight_transparent = true
 -- g.tokyonight_colors = { fg_gutter = "#ffba00" }
 
-local opt = vim.opt
 opt.encoding = 'utf-8'
 opt.fileencoding = 'utf-8'
 opt.tabstop = 4
@@ -52,12 +40,11 @@ local status, result = pcall(require, 'impatient')
 if not status then
   print('loading `impatient`: '..result)
 end
---result.enable_profile()
+result.enable_profile()
 
 require('plugins')
 require('packer_compiled')
 
-vim.opt.shadafile = ""
 vim.cmd([[
   augroup init_colorscheme
     autocmd!
@@ -68,7 +55,6 @@ vim.cmd([[
   "     \ | hi Pmenu      ctermbg=DarkGrey guibg=DarkGrey
   "     \ | hi MatchParen cterm=bold gui=bold ctermfg=magenta guifg=magenta ctermbg=black guibg=black
   augroup END
-  colorscheme tokyonight
   highlight HopNextKey2 guifg=#1b9fbf
 
   augroup init_numbertoggle
@@ -132,13 +118,6 @@ vim.cmd([[
   smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
   imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
   smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-
-  rshada!
-  doautocmd BufRead
-  syntax on
-  filetype on
-  filetype plugin indent on
-  " PackerLoad nvim-treesitter
 ]])
 
 local map = vim.api.nvim_set_keymap
