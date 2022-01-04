@@ -5,8 +5,10 @@ use 'wbthomason/packer.nvim'
 use 'lewis6991/impatient.nvim'
 use {
   'mbbill/undotree',
-  event = 'BufRead',
+  event = 'BufEnter',
 }
+
+use {'nathom/filetype.nvim'}
 
 use {
   'https://gitlab.com/yorickpeterse/nvim-window.git',
@@ -65,14 +67,14 @@ use {
 
 use {
   'TimUntersberger/neogit',
-  requires = { {'nvim-lua/plenary.nvim', opt = true} },
+  requires = { {'nvim-lua/plenary.nvim'} },
   cmd = 'Neogit',
 }
 map('n', '<space>V', '<cmd>Neogit<cr>', {noremap = true})
 
 use {
   'lewis6991/gitsigns.nvim',
-  requires = { {'nvim-lua/plenary.nvim', opt = true} },
+  requires = { {'nvim-lua/plenary.nvim'} },
   cmd = 'Gitsigns',
   config = function()
     require('gitsigns').setup {
@@ -162,7 +164,7 @@ map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>', {noremap = true})
 
 use {
   'nvim-telescope/telescope.nvim',
-  requires = { {'nvim-lua/plenary.nvim', opt = true} },
+  requires = { {'nvim-lua/plenary.nvim'} },
   cmd = 'Telescope',
   config = function()
     local action_layout = require "telescope.actions.layout"
@@ -238,12 +240,12 @@ map('n', '<space>fo', '<cmd>Telescope oldfiles<cr>', {noremap = true})
 
 use {
   'machakann/vim-sandwich',
-  event = "BufRead",
+  event = "BufEnter",
 }
 
 use {
   'nvim-treesitter/nvim-treesitter',
-  event = "BufRead",
+  event = "BufEnter",
   requires = {
     'p00f/nvim-ts-rainbow', opt = true,
   },
@@ -396,7 +398,7 @@ use {
 -- use 'shaeinst/roshnivim-cs'
 use {
   'folke/tokyonight.nvim',
-  event = "BufRead",
+  event = "BufEnter",
   config = function()
     vim.api.nvim_command('colorscheme tokyonight')
   end
@@ -448,7 +450,7 @@ use {
 
 use {
   'windwp/nvim-autopairs',
-  event = "BufRead",
+  event = "BufEnter",
   config = function()
     require('nvim-autopairs').setup({
       disable_filetype = { "TelescopePrompt" , "vim" },

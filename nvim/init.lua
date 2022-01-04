@@ -1,6 +1,7 @@
 local opt = vim.opt
 local g = vim.g
 
+g.did_load_filetypes = 1
 g.sandwich_no_default_key_mappings = 1
 
 g.mapleader = ' '
@@ -25,6 +26,7 @@ opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldenable = false
 opt.background = "dark"
 opt.signcolumn = "no"
+opt.fixendofline = false
 
 -- Programs
 opt.grepprg = 'rg --vimgrep --smart-case --follow'
@@ -40,7 +42,7 @@ local status, result = pcall(require, 'impatient')
 if not status then
   print('loading `impatient`: '..result)
 end
-result.enable_profile()
+--result.enable_profile()
 
 require('plugins')
 require('packer_compiled')
