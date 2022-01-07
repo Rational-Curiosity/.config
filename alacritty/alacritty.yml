@@ -61,7 +61,23 @@ window:
 hints:
   alphabet: "jfkdlsahgurieowpqmvcxznb"
   enabled:
-    - regex: "(sudo|git|ls|cd|mkdir|cat|n?vim?|ssh|c?make|cargo|rust|python|pip|pytest|php|node|npm|grep|rg) [^\r\n]*"
+    - regex: "[^[:space:]<>:\"'\\|(){}\\[\\]?']+"
+      action: Copy
+      post_processing: false
+      mouse:
+        enabled: true
+      binding:
+        key: P
+        mods: Control|Shift
+    - regex: "[^[:space:]]+([Ee][Rr][Rr]|[Ee][Xx][Cc][Ee][Pp][Tt]|[Ff][Aa][Ii][Ll])[^\r\n]*"
+      action: Copy
+      post_processing: false
+      mouse:
+        enabled: true
+      binding:
+        key: E
+        mods: Control|Shift
+    - regex: "(sudo|git|ls|cd|mkdir|cat|n?vim?|ssh|c?make|cargo|rust|python|pip|pytest|php|node|npm|grep|rg|echo|g?awk|sed|basename) [^\r\n]*"
       action: Copy
       post_processing: false
       mouse:
