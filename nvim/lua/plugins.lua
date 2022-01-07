@@ -8,7 +8,7 @@ use {
   event = 'BufEnter',
 }
 
-use {'nathom/filetype.nvim'}
+-- use {'nathom/filetype.nvim'}
 
 use {
   'https://gitlab.com/yorickpeterse/nvim-window.git',
@@ -49,12 +49,12 @@ use {
 
 use {
   'phaazon/hop.nvim',
-  branch = 'v1', -- optional but strongly recommended
+  -- branch = 'v1', -- optional but strongly recommended
   cmd = { 'HopWord', 'HopChar1' },
   config = function()
     -- you can configure Hop the way you like here; see :h hop-config
     require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
-    -- vim.api.nvim_command('highlight HopNextKey2 guifg=#1b9fbf')
+    vim.api.nvim_command('highlight HopNextKey2 guifg=#1b9fbf')
   end
 }
 map('n', '<space>w', '<cmd>HopWord<cr>', {noremap = true})
@@ -233,10 +233,25 @@ use {
   end
 }
 map('n', '<space>ff', '<cmd>Telescope find_files<cr>', {noremap = true})
-map('n', '<space>fg', '<cmd>Telescope live_grep<cr>', {noremap = true})
+map('n', '<space>fr', '<cmd>Telescope live_grep<cr>', {noremap = true})
+map('n', '<space>f.', '<cmd>Telescope grep_string<cr>', {noremap = true})
 map('n', '<space>fb', '<cmd>Telescope buffers<cr>', {noremap = true})
 map('n', '<space>fh', '<cmd>Telescope help_tags<cr>', {noremap = true})
 map('n', '<space>fo', '<cmd>Telescope oldfiles<cr>', {noremap = true})
+map('n', '<space>fd', '<cmd>Telescope diagnostics<cr>', {noremap = true})
+map('n', '<space>fs', '<cmd>Telescope treesitter<cr>', {noremap = true})
+map('n', '<space>fgC', '<cmd>Telescope git_commits<cr>', {noremap = true})
+map('n', '<space>fgc', '<cmd>Telescope git_bcommits<cr>', {noremap = true})
+map('n', '<space>fgb', '<cmd>Telescope git_branches<cr>', {noremap = true})
+map('n', '<space>fgs', '<cmd>Telescope git_status<cr>', {noremap = true})
+map('n', '<space>fgf', '<cmd>Telescope git_files<cr>', {noremap = true})
+map('n', '<space>fgS', '<cmd>Telescope git_stash<cr>', {noremap = true})
+map('n', '<space>flA', '<cmd>Telescope lsp_range_code_actions<cr>', {noremap = true})
+map('n', '<space>fls', '<cmd>Telescope lsp_workspace_symbols<cr>', {noremap = true})
+map('n', '<space>fli', '<cmd>Telescope lsp_implementations<cr>', {noremap = true})
+map('n', '<space>fla', '<cmd>Telescope lsp_code_actions<cr>', {noremap = true})
+map('n', '<space>fld', '<cmd>Telescope lsp_definitions<cr>', {noremap = true})
+map('n', '<space>flr', '<cmd>Telescope lsp_references<cr>', {noremap = true})
 
 use {
   'machakann/vim-sandwich',
@@ -245,9 +260,8 @@ use {
 
 use {
   'nvim-treesitter/nvim-treesitter',
-  event = "BufEnter",
   requires = {
-    'p00f/nvim-ts-rainbow', opt = true,
+    'p00f/nvim-ts-rainbow',
   },
   config = function()
     local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
@@ -318,6 +332,7 @@ use {
     --   (class_declaration)
     --   (method_definition)
     -- ]])
+    vim.api.nvim_command('syntax on')
   end
 }
 use {
@@ -395,17 +410,18 @@ use {
     }
   end
 }
+
 -- use 'shaeinst/roshnivim-cs'
 use {
   'folke/tokyonight.nvim',
   event = "BufEnter",
   config = function()
-    vim.api.nvim_command('colorscheme tokyonight')
+    vim.api.nvim_command('colorscheme tokyonight | highlight LineNr guifg=#5081c0 | highlight CursorLineNR guifg=#ffba00')
   end
 }
 use {
   'nvim-lualine/lualine.nvim',
-  requires = {'kyazdani42/nvim-web-devicons', opt = true},
+  requires = {'kyazdani42/nvim-web-devicons'},
   after = 'tokyonight.nvim',
   config = function()
     require("lualine").setup {
@@ -425,7 +441,7 @@ use {
         },
         lualine_c = {
           {'filename', path=1, shorting_target=0,
-            symbols = {modified='✎', readonly='⛒'}}
+            symbols = {modified=' ✎', readonly=' ⛒'}}
         },
         lualine_x = {
           {'encoding', fmt=function(s)
@@ -488,7 +504,7 @@ use {
     { 'hrsh7th/vim-vsnip' },
     { 'rafamadriz/friendly-snippets' },
   },
-  event = "InsertEnter",
+  event = "VimEnter",
   config = function()
     -- Setup nvim-cmp.
     local cmp = require'cmp'
@@ -639,7 +655,20 @@ use {
 
 use {
   'chipsenkbeil/distant.nvim',
-  event = 'VimEnter',
+  cmd = {
+    "DistantConnect",
+    "DistantCopy",
+    "DistantInstall",
+    "DistantLaunch",
+    "DistantMetadata",
+    "DistantMkdir",
+    "DistantOpen",
+    "DistantRemove",
+    "DistantRename",
+    "DistantRun",
+    "DistantSessionInfo",
+    "DistantSystemInfo"
+  },
   config = function()
     require('distant').setup {
       -- Applies Chip's personal settings to every machine you connect to

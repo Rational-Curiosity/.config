@@ -1,7 +1,8 @@
+vim.api.nvim_command('syntax off')
 local opt = vim.opt
 local g = vim.g
 
-g.did_load_filetypes = 1
+-- g.did_load_filetypes = 1  -- use {'nathom/filetype.nvim'}
 g.sandwich_no_default_key_mappings = 1
 
 g.mapleader = ' '
@@ -27,17 +28,23 @@ opt.foldenable = false
 opt.background = "dark"
 opt.signcolumn = "no"
 opt.fixendofline = false
+opt.iskeyword:remove("_")
 
 -- Programs
 opt.grepprg = 'rg --vimgrep --smart-case --follow'
 opt.clipboard:prepend('unnamedplus')
 opt.ignorecase = true
 opt.smartcase = true
+g.python3_host_prog = '/usr/local/bin/python3'
 
 -- UNDO
 opt.undodir = vim.fn.stdpath('config') .. '/undo'
 opt.undofile = true
 
+local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+  vim.fn.execute('!git clone --depth 1 https://github.com/wbthomason/packer.nvim ' .. install_path)
+end
 local status, result = pcall(require, 'impatient')
 if not status then
   print('loading `impatient`: '..result)
@@ -48,17 +55,6 @@ require('plugins')
 require('packer_compiled')
 
 vim.cmd([[
-  augroup init_colorscheme
-    autocmd!
-    autocmd ColorScheme *
-      \ highlight LineNr guifg=#5081c0 | highlight CursorLineNR guifg=#ffba00
-  "     \   hi Normal     ctermbg=NONE guibg=NONE
-  "     \ | hi LineNr     ctermfg=grey guifg=grey
-  "     \ | hi Pmenu      ctermbg=DarkGrey guibg=DarkGrey
-  "     \ | hi MatchParen cterm=bold gui=bold ctermfg=magenta guifg=magenta ctermbg=black guibg=black
-  augroup END
-  highlight HopNextKey2 guifg=#1b9fbf
-
   augroup init_numbertoggle
     autocmd!
     autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
