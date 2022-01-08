@@ -1,4 +1,4 @@
-return require('packer').startup{function()
+return require'packer'.startup {function()
 
 -- Packer can manage itself
 use 'wbthomason/packer.nvim'
@@ -14,7 +14,7 @@ use {
   'https://gitlab.com/yorickpeterse/nvim-window.git',
   event = 'VimEnter',
   config = function()
-    require('nvim-window').setup {
+    require'nvim-window'.setup {
       chars = {
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
         'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
@@ -26,15 +26,16 @@ use {
     }
   end
 }
+local noremap = { noremap=true }
 local map = vim.api.nvim_set_keymap
-map('n', '<space>o', ":lua require('nvim-window').pick()<CR>",
-  {silent = true})
+map('n', '<space>o', ":lua require'nvim-window'.pick()<CR>",
+  { silent = true })
 
 use {
   "folke/which-key.nvim",
   event = 'VimEnter',
   config = function()
-    require("which-key").setup {
+    require"which-key".setup {
       hidden = {
         "<silent>", "<cmd>", "<Cmd>", "<CR>", "<cr>", "call", "lua",
         "require", "nvim%-", "treesitter%.textobjects%.", "'lsp_interop'%.",
@@ -57,27 +58,37 @@ use {
     vim.api.nvim_command('highlight HopNextKey2 guifg=#1b9fbf')
   end
 }
-map('n', '<space>w', '<cmd>HopWord<cr>', {noremap = true})
-map('n', '<space>c', '<cmd>HopChar1<cr>', {noremap = true})
+map('n', '<space>w', '<cmd>HopWord<cr>', noremap)
+map('n', '<space>c', '<cmd>HopChar1<cr>', noremap)
 
 use {
   'nanotee/zoxide.vim',
-  event = 'VimEnter',
+  cmd = {'Z', 'Zi'},
 }
 
 use {
   'TimUntersberger/neogit',
-  requires = { {'nvim-lua/plenary.nvim'} },
+  requires = {
+    {
+      'nvim-lua/plenary.nvim',
+      after = 'neogit',
+    },
+  },
   cmd = 'Neogit',
 }
-map('n', '<space>V', '<cmd>Neogit<cr>', {noremap = true})
+map('n', '<space>V', '<cmd>Neogit<cr>', noremap)
 
 use {
   'lewis6991/gitsigns.nvim',
-  requires = { {'nvim-lua/plenary.nvim'} },
+  requires = {
+    {
+      'nvim-lua/plenary.nvim',
+      after = 'gitsigns.nvim',
+    },
+  },
   cmd = 'Gitsigns',
   config = function()
-    require('gitsigns').setup {
+    require'gitsigns'.setup {
       signs = {
         add          = {hl = 'GitSignsAdd'   , text = '│', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
         change       = {hl = 'GitSignsChange', text = '│', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
@@ -85,7 +96,7 @@ use {
         topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
         changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
       },
-      signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+      signcolumn = false, -- Toggle with `:Gitsigns toggle_signs`
       numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
       linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
       word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
@@ -145,30 +156,35 @@ use {
     }
   end
 }
-map('n', ']h', "&diff ? ']h' : '<cmd>Gitsigns next_hunk<CR>'", {noremap = true, expr = true})
-map('n', '[h', "&diff ? '[h' : '<cmd>Gitsigns prev_hunk<CR>'", {noremap = true, expr = true})
+map('n', ']h', "&diff ? ']h' : '<cmd>Gitsigns next_hunk<CR>'", { noremap=true, expr=true })
+map('n', '[h', "&diff ? '[h' : '<cmd>Gitsigns prev_hunk<CR>'", { noremap=true, expr=true })
 
-map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>', {noremap = true})
-map('v', '<leader>hs', ':Gitsigns stage_hunk<CR>', {noremap = true})
-map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', {noremap = true})
-map('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>', {noremap = true})
-map('v', '<leader>hr', ':Gitsigns reset_hunk<CR>', {noremap = true})
-map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', {noremap = true})
-map('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', {noremap = true})
-map('n', '<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<CR>', {noremap = true})
-map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', {noremap = true})
-map('n', '<leader>hU', '<cmd>Gitsigns reset_buffer_index<CR>', {noremap = true})
+map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>', noremap)
+map('v', '<leader>hs', ':Gitsigns stage_hunk<CR>', noremap)
+map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', noremap)
+map('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>', noremap)
+map('v', '<leader>hr', ':Gitsigns reset_hunk<CR>', noremap)
+map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', noremap)
+map('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', noremap)
+map('n', '<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<CR>', noremap)
+map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', noremap)
+map('n', '<leader>hU', '<cmd>Gitsigns reset_buffer_index<CR>', noremap)
 
-map('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>', {noremap = true})
-map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>', {noremap = true})
+map('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>', noremap)
+map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>', noremap)
 
 use {
   'nvim-telescope/telescope.nvim',
-  requires = { {'nvim-lua/plenary.nvim'} },
+  requires = {
+    {
+      'nvim-lua/plenary.nvim',
+      after = 'telescope.nvim',
+    },
+  },
   cmd = 'Telescope',
   config = function()
     local action_layout = require "telescope.actions.layout"
-    require('telescope').setup({
+    require'telescope'.setup {
       defaults = {
         mappings = {
           i = {
@@ -195,10 +211,10 @@ use {
           }
         },
       },
-    })
+    }
 
-    local previewers = require('telescope.previewers')
---    local Job = require('plenary.job')
+    local previewers = require'telescope.previewers'
+--    local Job = require'plenary.job'
     local new_maker = function(filepath, bufnr, opts)
       filepath = vim.fn.expand(filepath)
       vim.loop.fs_stat(filepath, function(_, stat)
@@ -225,33 +241,33 @@ use {
       end)
     end
 
-    require('telescope').setup {
+    require'telescope'.setup {
       defaults = {
         buffer_previewer_maker = new_maker,
       }
     }
   end
 }
-map('n', '<space>ff', '<cmd>Telescope find_files<cr>', {noremap = true})
-map('n', '<space>fr', '<cmd>Telescope live_grep<cr>', {noremap = true})
-map('n', '<space>f.', '<cmd>Telescope grep_string<cr>', {noremap = true})
-map('n', '<space>fb', '<cmd>Telescope buffers<cr>', {noremap = true})
-map('n', '<space>fh', '<cmd>Telescope help_tags<cr>', {noremap = true})
-map('n', '<space>fo', '<cmd>Telescope oldfiles<cr>', {noremap = true})
-map('n', '<space>fd', '<cmd>Telescope diagnostics<cr>', {noremap = true})
-map('n', '<space>fs', '<cmd>Telescope treesitter<cr>', {noremap = true})
-map('n', '<space>fgC', '<cmd>Telescope git_commits<cr>', {noremap = true})
-map('n', '<space>fgc', '<cmd>Telescope git_bcommits<cr>', {noremap = true})
-map('n', '<space>fgb', '<cmd>Telescope git_branches<cr>', {noremap = true})
-map('n', '<space>fgs', '<cmd>Telescope git_status<cr>', {noremap = true})
-map('n', '<space>fgf', '<cmd>Telescope git_files<cr>', {noremap = true})
-map('n', '<space>fgS', '<cmd>Telescope git_stash<cr>', {noremap = true})
-map('n', '<space>flA', '<cmd>Telescope lsp_range_code_actions<cr>', {noremap = true})
-map('n', '<space>fls', '<cmd>Telescope lsp_workspace_symbols<cr>', {noremap = true})
-map('n', '<space>fli', '<cmd>Telescope lsp_implementations<cr>', {noremap = true})
-map('n', '<space>fla', '<cmd>Telescope lsp_code_actions<cr>', {noremap = true})
-map('n', '<space>fld', '<cmd>Telescope lsp_definitions<cr>', {noremap = true})
-map('n', '<space>flr', '<cmd>Telescope lsp_references<cr>', {noremap = true})
+map('n', '<space>ff', '<cmd>Telescope find_files<cr>', noremap)
+map('n', '<space>fr', '<cmd>Telescope live_grep<cr>', noremap)
+map('n', '<space>f.', '<cmd>Telescope grep_string<cr>', noremap)
+map('n', '<space>fb', '<cmd>Telescope buffers<cr>', noremap)
+map('n', '<space>fh', '<cmd>Telescope help_tags<cr>', noremap)
+map('n', '<space>fo', '<cmd>Telescope oldfiles<cr>', noremap)
+map('n', '<space>fd', '<cmd>Telescope diagnostics<cr>', noremap)
+map('n', '<space>fs', '<cmd>Telescope treesitter<cr>', noremap)
+map('n', '<space>fgC', '<cmd>Telescope git_commits<cr>', noremap)
+map('n', '<space>fgc', '<cmd>Telescope git_bcommits<cr>', noremap)
+map('n', '<space>fgb', '<cmd>Telescope git_branches<cr>', noremap)
+map('n', '<space>fgs', '<cmd>Telescope git_status<cr>', noremap)
+map('n', '<space>fgf', '<cmd>Telescope git_files<cr>', noremap)
+map('n', '<space>fgS', '<cmd>Telescope git_stash<cr>', noremap)
+map('n', '<space>flA', '<cmd>Telescope lsp_range_code_actions<cr>', noremap)
+map('n', '<space>fls', '<cmd>Telescope lsp_workspace_symbols<cr>', noremap)
+map('n', '<space>fli', '<cmd>Telescope lsp_implementations<cr>', noremap)
+map('n', '<space>fla', '<cmd>Telescope lsp_code_actions<cr>', noremap)
+map('n', '<space>fld', '<cmd>Telescope lsp_definitions<cr>', noremap)
+map('n', '<space>flr', '<cmd>Telescope lsp_references<cr>', noremap)
 
 use {
   'machakann/vim-sandwich',
@@ -458,7 +474,7 @@ use {
   ft = {'org'},
   after = "nvim-treesitter",
   config = function()
-    require('orgmode').setup {
+    require'orgmode'.setup {
       org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
       org_default_notes_file = '~/Dropbox/org/refile.org',
     }
@@ -468,17 +484,22 @@ use {
 -- use 'shaeinst/roshnivim-cs'
 use {
   'folke/tokyonight.nvim',
-  event = "BufEnter",
+  opt = true,
   config = function()
     vim.api.nvim_command('colorscheme tokyonight | highlight LineNr guifg=#5081c0 | highlight CursorLineNR guifg=#ffba00')
   end
 }
 use {
   'nvim-lualine/lualine.nvim',
-  requires = {'kyazdani42/nvim-web-devicons'},
+  requires = {
+    {
+      'kyazdani42/nvim-web-devicons',
+      after = 'lualine.nvim',
+    },
+  },
   after = 'tokyonight.nvim',
   config = function()
-    require("lualine").setup {
+    require"lualine".setup {
       options = {
         theme = 'tokyonight', -- powerline
         component_separators = {left='', right=''}
@@ -520,25 +541,21 @@ use {
 
 use {
   'windwp/nvim-autopairs',
-  event = "BufEnter",
+  event = "InsertEnter",
   config = function()
-    require('nvim-autopairs').setup({
+    require'nvim-autopairs'.setup {
       disable_filetype = { "TelescopePrompt" , "vim" },
       disable_in_macro = true,
       enable_moveright = false,
       check_ts = true,
       map_bs = false,
-    })
+    }
   end
 }
 
 use {
   'hrsh7th/nvim-cmp',
   requires = {
-    {
-      'hrsh7th/cmp-nvim-lsp',
-      after = 'nvim-cmp',
-    },
     {
       'hrsh7th/cmp-buffer',
       after = 'nvim-cmp',
@@ -555,15 +572,21 @@ use {
       'hrsh7th/cmp-vsnip',
       after = 'nvim-cmp',
     },
-    { 'hrsh7th/vim-vsnip' },
-    { 'rafamadriz/friendly-snippets' },
+    {
+      'hrsh7th/vim-vsnip',
+      after = 'nvim-cmp',
+    },
+    {
+      'rafamadriz/friendly-snippets',
+      after = 'nvim-cmp',
+    },
   },
   event = "VimEnter",
   config = function()
     -- Setup nvim-cmp.
     local cmp = require'cmp'
 
-    cmp.setup({
+    cmp.setup {
       completion = {
           autocomplete = false,
       },
@@ -571,7 +594,7 @@ use {
         -- REQUIRED - you must specify a snippet engine
         expand = function(args)
           vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-          -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+          -- require'luasnip'.lsp_expand(args.body) -- For `luasnip` users.
           -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
           -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
         end,
@@ -602,7 +625,7 @@ use {
       }, {
         { name = 'buffer' },
       })
-    })
+    }
 
     -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
     cmp.setup.cmdline('/', {
@@ -626,15 +649,19 @@ use {
     })
     -- nvim-autopairs
     -- If you want insert `(` after select function or method item
-    --local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+    --local cmp_autopairs = require'nvim-autopairs.completion.cmp'
     --cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
   end
 }
 
 use {
   'neovim/nvim-lspconfig',
+  after = 'nvim-cmp',
   requires = {
-    'hrsh7th/cmp-nvim-lsp',
+    {
+      'hrsh7th/cmp-nvim-lsp',
+      after = 'nvim-cmp',
+    },
   },
   opt = true,
   ft = {'rust', 'python', 'php', 'c', 'cpp', 'h', 'hpp'},
@@ -652,7 +679,7 @@ use {
     --   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
     -- end
 
-    local nvim_lsp = require('lspconfig')
+    local nvim_lsp = require'lspconfig'
 
     -- Use an on_attach function to only map the following keys
     -- after the language server attaches to the current buffer
@@ -687,7 +714,7 @@ use {
       buf_set_keymap('v', '<space>F', ':lua vim.lsp.buf.range_formatting()<CR>', opts)
     end
 
-    local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
     -- Use a loop to conveniently call 'setup' on multiple servers and
     -- map buffer local keybindings when the language server attaches
@@ -724,13 +751,13 @@ use {
     "DistantSystemInfo"
   },
   config = function()
-    require('distant').setup {
+    require'distant'.setup {
       -- Applies Chip's personal settings to every machine you connect to
       --
       -- 1. Ensures that distant servers terminate with no connections
       -- 2. Provides navigation bindings for remote directories
       -- 3. Provides keybinding to jump into a remote file's parent directory
-      ['*'] = require('distant.settings').chip_default()
+      ['*'] = require'distant.settings'.chip_default()
     }
   end
 }

@@ -160,5 +160,6 @@ map('i', '<C-k>', '<C-o>D', map_opts)
 -- <C-u> already exists
 
 vim.defer_fn(function()
-  vim.api.nvim_command('PackerLoad nvim-treesitter')
+  require('packer').loader('tokyonight.nvim')
+  require('packer').loader('nvim-treesitter')
 end, 0)
