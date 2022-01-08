@@ -260,6 +260,7 @@ use {
 
 use {
   'nvim-treesitter/nvim-treesitter',
+  opt = true,
   requires = {
     'p00f/nvim-ts-rainbow',
   },
@@ -275,7 +276,60 @@ use {
     }
 
     require'nvim-treesitter.configs'.setup {
-      ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+      ensure_installed = {
+        "bash",
+        "bibtex",
+        "c",
+        "c_sharp",
+        "clojure",
+        "cmake",
+        "comment",
+        "commonlisp",
+        "cpp",
+        "css",
+        "dart",
+        "dockerfile",
+        "dot",
+        "elixir",
+        "elm",
+        "erlang",
+        "go",
+        "godot_resource",
+        "gomod",
+        "gowork",
+        "graphql",
+        "haskell",
+        "html",
+        "java",
+        "javascript",
+        "jsdoc",
+        "json",
+        "json5",
+        "jsonc",
+        "kotlin",
+        "latex",
+        "lua",
+        "make",
+        "markdown",
+        "org",
+        "perl",
+        "php",
+        "python",
+        "ql",
+        "query",
+        "regex",
+        "rst",
+        "rust",
+        "scala",
+        "scss",
+        "toml",
+        "tsx",
+        "typescript",
+        "vim",
+        "yaml",
+        "yang",
+        "zig",
+      }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
       sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
       -- ignore_install = { "javascript" }, -- List of parsers to ignore installing
       highlight = {

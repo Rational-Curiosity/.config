@@ -28,7 +28,8 @@ opt.foldenable = false
 opt.background = "dark"
 opt.signcolumn = "no"
 opt.fixendofline = false
-opt.iskeyword:remove("_")
+opt.iskeyword:prepend("-")
+-- opt.iskeyword:remove("_")
 
 -- Programs
 opt.grepprg = 'rg --vimgrep --smart-case --follow'
@@ -44,15 +45,19 @@ opt.undofile = true
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.fn.execute('!git clone --depth 1 https://github.com/wbthomason/packer.nvim ' .. install_path)
-end
-local status, result = pcall(require, 'impatient')
-if not status then
-  print('loading `impatient`: '..result)
-end
---result.enable_profile()
+  vim.api.nvim_command 'packadd packer.nvim'
+  require('plugins')
+  require('packer').install()
+else
+  local status, result = pcall(require, 'impatient')
+  if not status then
+    print('loading `impatient`: '..result)
+  end
+  --result.enable_profile()
 
-require('plugins')
-require('packer_compiled')
+  require('plugins')
+  require('packer_compiled')
+end
 
 vim.cmd([[
   augroup init_numbertoggle
@@ -153,3 +158,7 @@ map('i', '<A-v>', '<PageUp>', map_opts)
 map('i', '<C-v>', '<PageDown>', map_opts)
 map('i', '<C-k>', '<C-o>D', map_opts)
 -- <C-u> already exists
+
+vim.defer_fn(function()
+  vim.api.nvim_command('PackerLoad nvim-treesitter')
+end, 0)
