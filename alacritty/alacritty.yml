@@ -61,7 +61,7 @@ window:
 hints:
   alphabet: "jfkdlsahgurieowpqmvcxznb"
   enabled:
-    - regex: "[^[:space:]<>:\"'\\|(){}\\[\\]?']+"
+    - regex: "([^[:space:]<>:\"'\\|(){}\\[\\]?'/.]*[/.]+[^[:space:]<>:\"'\\|(){}\\[\\]?'/.]+)+"
       action: Copy
       post_processing: false
       mouse:
@@ -69,7 +69,7 @@ hints:
       binding:
         key: P
         mods: Control|Shift
-    - regex: "[^[:space:]]+([Ee][Rr][Rr]|[Ee][Xx][Cc][Ee][Pp][Tt]|[Ff][Aa][Ii][Ll])[^\r\n]*"
+    - regex: "[^[:space:]]+([Ee][Rr][Rr]|[Ee][Xx][Cc][Ee][Pp][Tt]|[Ff][Aa][Ii][Ll]).*"
       action: Copy
       post_processing: false
       mouse:
@@ -77,7 +77,8 @@ hints:
       binding:
         key: E
         mods: Control|Shift
-    - regex: "(sudo|git|ls|cd|mkdir|cat|n?vim?|ssh|c?make|cargo|rust|python|pip|pytest|php|node|npm|grep|rg|echo|g?awk|sed|basename) [^\r\n]*"
+    - regex: "(sudo|git|ls|cd|mkdir|cat|n?vim?|ssh|c?make|cargo|rust|python|pip|pytest\
+              |php|node|npm|grep|rg|echo|g?awk|sed|basename|dirname) .*"
       action: Copy
       post_processing: false
       mouse:
@@ -86,13 +87,21 @@ hints:
         key: C
         mods: Control|Shift
     - regex: "(magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)\
-              [^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
-      command: chromium
+              [^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`\u21b2]+"
+      command: rofi-open
       post_processing: true
       mouse:
         enabled: true
       binding:
         key: U
+        mods: Control|Shift
+    - regex: "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+"
+      action: Copy
+      post_processing: false
+      mouse:
+        enabled: true
+      binding:
+        key: I
         mods: Control|Shift
     - regex: "[[:word:]-]+"
       action: Copy
@@ -102,7 +111,15 @@ hints:
       binding:
         key: W
         mods: Control|Shift
-    - regex: "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'"
+    - regex: "[0-9]+(\\.[0-9]+)?"
+      action: Copy
+      post_processing: false
+      mouse:
+        enabled: true
+      binding:
+        key: N
+        mods: Control|Shift
+    - regex: "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'|`([^`\\\\]*(\\\\.[^`\\\\]*)*)`"
     # - regex: "\"(?:[^\"\\\\]|\\\\.)*\""
       action: Copy
       post_processing: false
@@ -117,9 +134,9 @@ hints:
       mouse:
         enabled: true
       binding:
-        key: N
+        key: S
         mods: Control|Shift
-    - regex: ".*"
+    - regex: "[^[:space:]].*"
       action: Copy
       post_processing: false
       mouse:
