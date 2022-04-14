@@ -11,7 +11,6 @@ opt.clipboard = ""
 api.nvim_command('syntax off')
 
 -- g.did_load_filetypes = 1  -- use {'nathom/filetype.nvim'}
-g.sandwich_no_default_key_mappings = 1
 
 g.mapleader = ' '
 g.tokyonight_style = "night"
@@ -94,32 +93,6 @@ vim.cmd([[
     autocmd TermOpen * setlocal scrollback=100000 nospell
   augroup end
 
-  " SANDWICH
-  " add
-  silent! map <unique> <C-s>a <Plug>(sandwich-add)
-
-  " delete
-  silent! nmap <unique> <C-s>d <Plug>(sandwich-delete)
-  silent! xmap <unique> <C-s>d <Plug>(sandwich-delete)
-  silent! nmap <unique> <C-s>db <Plug>(sandwich-delete-auto)
-
-  " replace
-  silent! nmap <unique> <C-s>r <Plug>(sandwich-replace)
-  silent! xmap <unique> <C-s>r <Plug>(sandwich-replace)
-  silent! nmap <unique> <C-s>rb <Plug>(sandwich-replace-auto)
-
-  " " auto
-  " silent! omap <unique> ib <Plug>(textobj-sandwich-auto-i)
-  " silent! xmap <unique> ib <Plug>(textobj-sandwich-auto-i)
-  " silent! omap <unique> ab <Plug>(textobj-sandwich-auto-a)
-  " silent! xmap <unique> ab <Plug>(textobj-sandwich-auto-a)
-
-  " " query
-  " silent! omap <unique> is <Plug>(textobj-sandwich-query-i)
-  " silent! xmap <unique> is <Plug>(textobj-sandwich-query-i)
-  " silent! omap <unique> as <Plug>(textobj-sandwich-query-a)
-  " silent! xmap <unique> as <Plug>(textobj-sandwich-query-a)
-
   " VSNIP
   " Expand
   imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
@@ -181,16 +154,29 @@ api.nvim_create_autocmd({"BufLeave", "FocusLost", "InsertEnter"}, {
     end
   end
 })
-local yank_registers = {'"', "r", "s", "t", "u", "v", "w", "x", "y", "z"}
+local yank_registers = {"r", "s", "t", "u", "v", "w", "x", "y", "z"}
+local update_yank_ring = function(register)
+  for i = #yank_registers, 2, -1 do
+    local prev = yank_registers[i - 1]
+    fn.setreg(yank_registers[i], fn.getreg(prev, 1), fn.getregtype(prev))
+  end
+  fn.setreg(yank_registers[1], fn.getreg(register, 1), fn.getregtype(register))
+end
 api.nvim_create_autocmd({"TextYankPost"}, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
-    for i = #yank_registers, 2, -1 do
-      local prev = yank_registers[i - 1]
-      fn.setreg(yank_registers[i], fn.getreg(prev, 1), fn.getregtype(prev))
-    end
+    update_yank_ring('"')
     vim.highlight.on_yank { higroup = 'Visual', timeout = 300 }
+  end
+})
+api.nvim_create_autocmd({"FocusGained"}, {
+  group = "initAutoGroup",
+  pattern = {"*"},
+  callback = function()
+    if fn.getreg('+', 1) ~= fn.getreg(yank_registers[1], 1) then
+      update_yank_ring('+')
+    end
   end
 })
 
@@ -322,9 +308,10 @@ vim.defer_fn(function()
   packer.loader('undotree')
   packer.loader('which-key.nvim')
   packer.loader('nvim-cmp')
-  packer.loader('vim-sandwich')
   packer.loader('pretty-fold.nvim')
   packer.loader('gitsigns.nvim')
+  packer.loader('vim-repeat')
+  packer.loader('vim-surround')
   -- local api = vim.api
   -- for _, win in pairs(api.nvim_list_wins()) do
   --   if api.nvim_buf_get_option(api.nvim_win_get_buf(win), 'buftype') == "" then

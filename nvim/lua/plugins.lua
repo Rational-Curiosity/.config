@@ -42,7 +42,6 @@ use {
     }
     which_key.register({
       C = { name = 'Quickfix' },
-      d = { name = 'Obj goto def' },
       f = { name = 'Telescope', g = 'Git', l = 'Lsp' },
       G = { name = 'Neogit' },
       h = { name = 'Gitsigns', t = 'Toggle' },
@@ -62,6 +61,25 @@ use {
     which_key.register({
       x = 'Fold except region',
     }, { mode = 'x', prefix = 'z' })
+    which_key.register({
+      ['<c-d>'] = 'Complete defined identifiers',
+      ['<c-e>'] = 'Scroll up',
+      ['<c-f>'] = 'Complete file names',
+      ['<c-i>'] = 'Complete identifiers',
+      ['<c-k>'] = 'Complete identifiers from dictionary',
+      ['<c-l>'] = 'Complete whole lines',
+      ['<c-n>'] = 'Next completion',
+      ['<c-o>'] = 'Omni completion',
+      ['<c-p>'] = 'Previous completion',
+      ['<c-s>'] = 'Spelling suggestions',
+      ['<c-t>'] = 'Complete identifiers from thesaurus',
+      ['<c-y>'] = 'Scroll down',
+      ['<c-u>'] = "Complete with 'completefunc'",
+      ['<c-v>'] = 'Complete like in : command line',
+      ['<c-z>'] = 'Stop completion, keeping the text as-is',
+      ['<c-]>'] = 'Complete tags',
+      s = 'spelling suggestions',
+    }, { mode = 'i', prefix = '<c-x>' })
   end
 }
 
@@ -355,7 +373,12 @@ map('n', '<leader>fld', '<cmd>Telescope lsp_definitions<cr><esc>', noremap)
 map('n', '<leader>flr', '<cmd>Telescope lsp_references<cr><esc>', noremap)
 
 use {
-  'machakann/vim-sandwich',
+  'tpope/vim-repeat',
+  opt = true,
+}
+
+use {
+  'tpope/vim-surround',
   opt = true,
 }
 
@@ -764,10 +787,10 @@ use {
           enable = true,
           border = 'none',
           peek_definition_code = {
-            ["<leader>df"] = "@function.outer",
-            ["<leader>dF"] = "@class.outer",
-            ["<leader>dt"] = "@function.inner",
-            ["<leader>dT"] = "@class.inner",
+            ["<leader>sf"] = "@function.outer",
+            ["<leader>sF"] = "@class.outer",
+            ["<leader>st"] = "@function.inner",
+            ["<leader>sT"] = "@class.inner",
           },
         },
       },
@@ -1357,6 +1380,44 @@ use {
          update_in_insert = false,
        }
      )
+  end
+}
+use {
+  'mfussenegger/nvim-dap',
+  after = 'nvim-lspconfig',
+  config = function()
+    local dap = require'dap'
+    dap.adapters.python = {
+      type = 'executable',
+      command = 'python3',
+      args = { '-m', 'debugpy.adapter' },
+    }
+    dap.configurations.python = {
+      {
+        type = 'python';
+        request = 'launch';
+        name = "Launch file";
+        program = "${file}";
+        pythonPath = function()
+          return 'python3'
+        end;
+      },
+    }
+
+    local opts = { noremap=true, silent=true }
+    vim.api.nvim_set_keymap('n', '<leader>db', '<cmd>lua require"dap".toggle_breakpoint()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<leader>dc', '<cmd>lua require"dap".continue()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<leader>dn', '<cmd>lua require"dap".step_over()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<leader>dp', '<cmd>lua require"dap".step_back()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<leader>do', '<cmd>lua require"dap".step_out()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<leader>di', '<cmd>lua require"dap".step_into()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<leader>dr', '<cmd>lua require"dap".repl.toggle()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<leader>dl', '<cmd>lua require"dap".list_breakpoints()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<leader>dC', '<cmd>lua require"dap".clear_breakpoints()<CR>', opts)
+
+    require'which-key'.register({
+      d = { name = 'Dap' },
+    }, { mode = 'n', prefix = '<leader>' })
   end
 }
 
