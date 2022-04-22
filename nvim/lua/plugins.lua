@@ -1301,10 +1301,11 @@ use {
     -- Mappings.
     -- See `:help vim.diagnostic.*` for documentation on any of the below functions
     local opts = { noremap=true, silent=true }
-    vim.api.nvim_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-    vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>Ce', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+    local map = vim.api.nvim_set_keymap
+    map('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+    map('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+    map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+    map('n', '<leader>Ce', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
 
     -- Use an on_attach function to only map the following keys
     -- after the language server attaches to the current buffer
@@ -1314,19 +1315,20 @@ use {
 
       -- Mappings.
       -- See `:help vim.lsp.*` for documentation on any of the below functions
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ld', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lK', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>li', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lk', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lA', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lR', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lL', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ln', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-      vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+      local map = vim.api.nvim_buf_set_keymap
+      map(bufnr, 'n', '<leader>lD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+      map(bufnr, 'n', '<leader>ld', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+      map(bufnr, 'n', '<leader>lK', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+      map(bufnr, 'n', '<leader>li', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+      map(bufnr, 'n', '<leader>lk', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+      map(bufnr, 'n', '<leader>lA', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+      map(bufnr, 'n', '<leader>lR', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+      map(bufnr, 'n', '<leader>lL', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+      map(bufnr, 'n', '<leader>lt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+      map(bufnr, 'n', '<leader>ln', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+      map(bufnr, 'n', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+      map(bufnr, 'n', '<leader>lr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+      map(bufnr, 'n', '<leader>lf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
       require'which-key'.register({
         l = { name = 'Lsp' },
@@ -1337,7 +1339,7 @@ use {
 
     -- Use a loop to conveniently call 'setup' on multiple servers and
     -- map buffer local keybindings when the language server attaches
-    local servers = { 'pyright', 'tsserver', 'intelephense', 'html', 'jsonls' }
+    local servers = { 'pyright', 'tsserver', 'intelephense', 'html', 'jsonls', 'ccls' }
     for _, lsp in ipairs(servers) do
       lspconfig[lsp].setup {
         on_attach = on_attach,
@@ -1384,40 +1386,64 @@ use {
 }
 use {
   'mfussenegger/nvim-dap',
-  after = 'nvim-lspconfig',
+  opt = true,
+  ft = { 'python', 'php', 'json', 'js', 'ts', 'jsx', 'tsx', 'rust', 'c', 'cpp', 'h', 'hpp' },
   config = function()
-    local dap = require'dap'
-    dap.adapters.python = {
-      type = 'executable',
-      command = 'python3',
-      args = { '-m', 'debugpy.adapter' },
-    }
-    dap.configurations.python = {
-      {
-        type = 'python';
-        request = 'launch';
-        name = "Launch file";
-        program = "${file}";
-        pythonPath = function()
-          return 'python3'
-        end;
-      },
-    }
+    -- local dap = require'dap'
+    -- dap.adapters.python = {
+    --   type = 'executable',
+    --   command = 'python3',
+    --   args = { '-m', 'debugpy.adapter' },
+    -- }
+    -- dap.configurations.python = {
+    --   {
+    --     type = 'python';
+    --     request = 'launch';
+    --     name = "Launch file";
+    --     program = "${file}";
+    --     pythonPath = function()
+    --       return 'python3'
+    --     end;
+    --   },
+    -- }
 
     local opts = { noremap=true, silent=true }
-    vim.api.nvim_set_keymap('n', '<leader>db', '<cmd>lua require"dap".toggle_breakpoint()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>dc', '<cmd>lua require"dap".continue()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>dn', '<cmd>lua require"dap".step_over()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>dp', '<cmd>lua require"dap".step_back()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>do', '<cmd>lua require"dap".step_out()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>di', '<cmd>lua require"dap".step_into()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>dr', '<cmd>lua require"dap".repl.toggle()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>dl', '<cmd>lua require"dap".list_breakpoints()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '<leader>dC', '<cmd>lua require"dap".clear_breakpoints()<CR>', opts)
+    local map = vim.api.nvim_set_keymap
+    map('n', '<leader>db', '<cmd>lua require"dap".toggle_breakpoint()<CR>', opts)
+    map('n', '<leader>dc', '<cmd>lua require"dap".continue()<CR>', opts)
+    map('n', '<leader>dn', '<cmd>lua require"dap".step_over()<CR>', opts)
+    map('n', '<leader>dp', '<cmd>lua require"dap".step_back()<CR>', opts)
+    map('n', '<leader>do', '<cmd>lua require"dap".step_out()<CR>', opts)
+    map('n', '<leader>di', '<cmd>lua require"dap".step_into()<CR>', opts)
+    map('n', '<leader>dr', '<cmd>lua require"dap".repl.toggle()<CR>', opts)
+    map('n', '<leader>dl', '<cmd>lua require"dap".list_breakpoints()<CR>', opts)
+    map('n', '<leader>dd', '<cmd>lua require"dap".clear_breakpoints()<CR>', opts)
 
     require'which-key'.register({
       d = { name = 'Dap' },
     }, { mode = 'n', prefix = '<leader>' })
+  end
+}
+use {
+  'mfussenegger/nvim-dap-python',
+  opt = true,
+  after = 'nvim-dap',
+  ft = { 'python' },
+  config = function()
+    local dap_python = require'dap-python'
+    if vim.fn.executable('python') == 1 then
+      dap_python.setup('python')
+    else
+      dap_python.setup('python3')
+    end
+    if vim.fn.executable('pytest') == 1 then
+      dap_python.test_runner = 'pytest'
+    end
+    local opts = { noremap=true, silent=true }
+    local map = vim.api.nvim_set_keymap
+    map('n', '<leader>dF', '<cmd>lua require"dap-python".test_method()<CR>', opts)
+    map('n', '<leader>dC', '<cmd>lua require"dap-python".test_class()<CR>', opts)
+    map('n', '<leader>dS', '<ESC>:lua require"dap-python".debug_selection()<CR>', opts)
   end
 }
 
