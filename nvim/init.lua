@@ -48,7 +48,8 @@ opt.grepprg = 'rg --vimgrep --smart-case --follow'
 opt.clipboard:prepend('unnamedplus')
 opt.ignorecase = true
 opt.smartcase = true
-g.python3_host_prog = '/usr/local/bin/python3'
+g.python3_host_prog = vim.fn.executable('/usr/local/bin/python3') == 1 and
+  '/usr/local/bin/python3' or '/usr/bin/python3'
 g.netrw_scp_cmd = 'yad --separator= --form --field=Password:H|sshpass scp -q'
 
 -- CSV
@@ -166,8 +167,13 @@ api.nvim_create_autocmd({"TextYankPost"}, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
-    update_yank_ring('"')
-    vim.highlight.on_yank { higroup = 'Visual', timeout = 300 }
+    local yanked = fn.getreg('"', 1)
+    if yanked:len() > 1 and yanked ~= fn.getreg('1', 1) then
+      if yanked ~= fn.getreg(yank_registers[1], 1) then
+        update_yank_ring('"')
+      end
+      vim.highlight.on_yank { higroup = 'Visual', timeout = 300 }
+    end
   end
 })
 api.nvim_create_autocmd({"FocusGained"}, {
