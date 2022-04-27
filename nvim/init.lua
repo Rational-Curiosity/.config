@@ -159,9 +159,19 @@ api.nvim_create_autocmd({"BufLeave", "FocusLost", "InsertEnter"}, {
 })
 local yank_registers = {"r", "s", "t", "u", "v", "w", "x", "y", "z"}
 local update_yank_ring = function(register)
-  for i = #yank_registers, 2, -1 do
-    local prev = yank_registers[i - 1]
-    fn.setreg(yank_registers[i], fn.getreg(prev, 1), fn.getregtype(prev))
+  if fn.getreg(register, 1) == fn.getreg(yank_registers[1], 1) then
+    return
+  end
+  local index = #yank_registers
+  for i = 1, index - 1 do
+    if fn.getreg(yank_registers[i], 1) == fn.getreg(yank_registers[i + 1], 1) then
+      index = i
+      break
+    end
+  end
+  for i = index, 2, -1 do
+    fn.setreg(yank_registers[i], fn.getreg(yank_registers[i - 1], 1),
+              fn.getregtype(yank_registers[i - 1]))
   end
   fn.setreg(yank_registers[1], fn.getreg(register, 1), fn.getregtype(register))
 end
@@ -171,9 +181,7 @@ api.nvim_create_autocmd({"TextYankPost"}, {
   callback = function()
     local yanked = fn.getreg('"', 1)
     if yanked:len() > 1 and yanked ~= fn.getreg('1', 1) then
-      if yanked ~= fn.getreg(yank_registers[1], 1) then
-        update_yank_ring('"')
-      end
+      update_yank_ring('"')
       vim.highlight.on_yank { higroup = 'Visual', timeout = 300 }
     end
   end
@@ -182,9 +190,7 @@ api.nvim_create_autocmd({"FocusGained"}, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
-    if fn.getreg('+', 1) ~= fn.getreg(yank_registers[1], 1) then
-      update_yank_ring('+')
-    end
+    update_yank_ring('+')
   end
 })
 
@@ -304,8 +310,8 @@ map('i', '<C-a>', '<Home>', noremap_silent)
 map('i', '<C-e>', '<End>', noremap_silent)
 map('i', '<C-d>', '<Del>', noremap_silent)
 map('i', '<A-d>', '<C-o>dw', noremap_silent)
-map('i', '<A-v>', '<PageUp>', noremap_silent)
-map('i', '<C-v>', '<PageDown>', noremap_silent)
+-- map('i', '<A-v>', '<PageUp>', noremap_silent)
+-- map('i', '<C-v>', '<PageDown>', noremap_silent)
 map('i', '<C-k>', '<C-o>D', noremap_silent)
 -- <C-u> already exists
 
