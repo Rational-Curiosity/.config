@@ -133,7 +133,7 @@ api.nvim_create_autocmd({"BufRead"}, {
         wo.number = true
       end
     elseif bo.buftype == "help" then
-      map('n', 'q', '<cmd>bdelete<cr>', noremap)
+      vim.api.nvim_buf_set_keymap(0, 'n', 'q', '<cmd>bdelete<cr>', noremap)
     end
   end
 })
