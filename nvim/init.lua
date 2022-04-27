@@ -128,7 +128,7 @@ api.nvim_create_autocmd({"BufRead"}, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
-    if bo.buftype == "" then
+    if bo.buftype == "" or bo.buftype == "acwrite" then
       if wo.number ~= true then
         wo.number = true
       end
@@ -141,7 +141,8 @@ api.nvim_create_autocmd({"BufEnter", "FocusGained", "InsertLeave"}, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
-    if bo.buftype == "" and wo.relativenumber ~= true then
+    if (bo.buftype == "" or bo.buftype == "acwrite"
+        ) and wo.relativenumber ~= true then
       wo.relativenumber = true
     end
   end
@@ -150,7 +151,8 @@ api.nvim_create_autocmd({"BufLeave", "FocusLost", "InsertEnter"}, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
-    if bo.buftype == "" and wo.relativenumber ~= false then
+    if (bo.buftype == "" or bo.buftype == "acwrite"
+        ) and wo.relativenumber ~= false then
       wo.relativenumber = false
     end
   end
