@@ -1149,7 +1149,11 @@ use {
         lualine_y = {
           {'encoding', padding = 0,
           fmt=function(s)
-            return s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
+            if vim.bo.eol then
+              return "↲" .. s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
+            else
+              return s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
+            end
           end},
           {'fileformat', padding = 0},
         },
