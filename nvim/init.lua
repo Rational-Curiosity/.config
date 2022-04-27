@@ -24,7 +24,7 @@ opt.shiftwidth = 4
 opt.softtabstop = 2
 opt.expandtab = true
 opt.list = true
-opt.listchars = {tab='↦˙', eol='↲', nbsp='␣', trail='•', extends='⟩', precedes='⟨'}
+opt.listchars = {tab='⇤ ⇥', eol='↲', nbsp='␣', trail='•', extends='⟩', precedes='⟨'}
 opt.cursorline = true
 -- opt.number = true
 -- opt.relativenumber = true
