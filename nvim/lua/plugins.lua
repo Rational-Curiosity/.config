@@ -418,6 +418,27 @@ use {
 }
 
 use {
+  'https://gitlab.com/yorickpeterse/nvim-window.git',
+  cmd = 'WindowPick',
+  config = function()
+    vim.cmd([[
+      command! WindowPick lua require'nvim-window'.pick()
+    ]])
+    require'nvim-window'.setup {
+      chars = {
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+        'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+        's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+      },
+      normal_hl = 'Cursor',
+      hint_hl = 'Bold',
+      border = 'none',
+    }
+  end
+}
+map('n', '<a-o>', "<cmd>WindowPick<cr>", noremap)
+
+use {
   'dhruvasagar/vim-table-mode',
   cmd = { 'TableModeToggle', 'TableModeRealign', 'Tableize', 'TableAddFormula', 'TableEvalFormulaLine' },
 }
