@@ -114,6 +114,7 @@ vim.cmd([[
   cabbrev bdn bn<bar>bd#
   cabbrev bdp bp<bar>bd#
   cabbrev Mess Messages
+  cabbrev lp lua print
 
   " Commands
   command! Map bel 7new|file [Map]|put =execute(\"map\")|setlocal nomod noma buftype=nofile|nnoremap <buffer> q :bd<cr>|0goto
@@ -200,8 +201,13 @@ function _G.getcwdhead()
 end
 
 function _G.set_curr_win(index)
-  -- local api = vim.api
-  local win = api.nvim_list_wins()[index]
+  local wins = api.nvim_tabpage_list_wins(0)
+  for k, win in ipairs(wins) do
+    if api.nvim_buf_get_name(api.nvim_win_get_buf(win)) == "" then
+      table.remove(wins, k)
+    end
+  end
+  local win = wins[index]
   if win then
     api.nvim_set_current_win(win)
   end
