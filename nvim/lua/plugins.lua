@@ -265,7 +265,7 @@ use {
         },
       },
       defaults = {
-        initial_mode = "insert",
+        initial_mode = "normal",
         mappings = {
           i = {
             ["<C-e>"] = action_layout.toggle_preview,
@@ -344,33 +344,52 @@ use {
 --     }
   end
 }
-map('n', '<leader>f-', '<cmd>Telescope resume<cr>', noremap)
-map('n', '<leader>ff', '<cmd>Telescope find_files<cr>', noremap)
-map('n', '<leader>fR', '<cmd>Telescope live_grep ft=true<cr>', noremap)
-map('n', '<leader>fr', '<cmd>Telescope live_grep<cr>', noremap)
-map('x', '<leader>f:', '"0y:Telescope grep_string ft=true search=<c-r>0<cr><esc>', noremap)
-map('x', '<leader>f.', '"0y:Telescope grep_string search=<c-r>0<cr><esc>', noremap)
-map('n', '<leader>f:', '<cmd>Telescope grep_string ft=true<cr><esc>', noremap)
-map('n', '<leader>f.', '<cmd>Telescope grep_string<cr><esc>', noremap)
-map('n', '<leader>f;', ':Telescope grep_string ft=true search=', noremap)
-map('n', '<leader>f,', ':Telescope grep_string search=', noremap)
-map('n', '<leader>fb', '<cmd>Telescope buffers<cr><esc>', noremap)
-map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', noremap)
-map('n', '<leader>fo', '<cmd>Telescope oldfiles<cr>', noremap)
-map('n', '<leader>fd', '<cmd>Telescope diagnostics<cr><esc>', noremap)
-map('n', '<leader>fs', '<cmd>Telescope treesitter<cr><esc>', noremap)
-map('n', '<leader>fgC', '<cmd>Telescope git_commits<cr><esc>', noremap)
-map('n', '<leader>fgc', '<cmd>Telescope git_bcommits<cr><esc>', noremap)
-map('n', '<leader>fgb', '<cmd>Telescope git_branches<cr><esc>', noremap)
-map('n', '<leader>fgs', '<cmd>Telescope git_status<cr><esc>', noremap)
-map('n', '<leader>fgf', '<cmd>Telescope git_files<cr><esc>', noremap)
-map('n', '<leader>fgS', '<cmd>Telescope git_stash<cr><esc>', noremap)
-map('n', '<leader>flA', '<cmd>Telescope lsp_range_code_actions<cr><esc>', noremap)
-map('n', '<leader>fls', '<cmd>Telescope lsp_workspace_symbols<cr><esc>', noremap)
-map('n', '<leader>fli', '<cmd>Telescope lsp_implementations<cr><esc>', noremap)
-map('n', '<leader>fla', '<cmd>Telescope lsp_code_actions<cr><esc>', noremap)
-map('n', '<leader>fld', '<cmd>Telescope lsp_definitions<cr><esc>', noremap)
-map('n', '<leader>flr', '<cmd>Telescope lsp_references<cr><esc>', noremap)
+map('n', '<leader>f,', ':Telescope grep_string  initial_mode=insert search=', noremap)
+map('n', '<leader>f-', '<cmd>Telescope resume initial_mode=insert<cr>', noremap)
+map('n', '<leader>f.', '<cmd>Telescope grep_string<cr>', noremap)  -- mode n
+map('n', '<leader>f:', '<cmd>Telescope grep_string ft=true<cr>', noremap)  -- mode n
+map('n', '<leader>f;', ':Telescope grep_string ft=true  initial_mode=insert search=', noremap)
+map('n', '<leader>fR', '<cmd>Telescope live_grep ft=true initial_mode=insert<cr>', noremap)
+map('n', '<leader>fb', '<cmd>Telescope buffers<cr>', noremap)  -- mode n
+map('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>', noremap)  -- mode n
+map('n', '<leader>ff', '<cmd>Telescope find_files initial_mode=insert<cr>', noremap)
+map('n', '<leader>fgC', '<cmd>Telescope git_commits<cr>', noremap)  -- mode n
+map('n', '<leader>fgS', '<cmd>Telescope git_stash<cr>', noremap)  -- mode n
+map('n', '<leader>fgb', '<cmd>Telescope git_branches<cr>', noremap)  -- mode n
+map('n', '<leader>fgc', '<cmd>Telescope git_bcommits<cr>', noremap)  -- mode n
+map('n', '<leader>fgf', '<cmd>Telescope git_files<cr>', noremap)  -- mode n
+map('n', '<leader>fgs', '<cmd>Telescope git_status<cr>', noremap)  -- mode n
+map('n', '<leader>fh', '<cmd>Telescope help_tags initial_mode=insert<cr>', noremap)
+map('n', '<leader>flA', '<cmd>Telescope lsp_range_code_actions<cr>', noremap)  -- mode n
+map('n', '<leader>fla', '<cmd>Telescope lsp_code_actions<cr>', noremap)  -- mode n
+map('n', '<leader>fld', '<cmd>Telescope lsp_definitions<cr>', noremap)  -- mode n
+map('n', '<leader>fli', '<cmd>Telescope lsp_implementations<cr>', noremap)  -- mode n
+map('n', '<leader>flr', '<cmd>Telescope lsp_references<cr>', noremap)  -- mode n
+map('n', '<leader>fls', '<cmd>Telescope lsp_workspace_symbols<cr>', noremap)  -- mode n
+map('n', '<leader>fo', '<cmd>Telescope oldfiles initial_mode=insert<cr>', noremap)
+map('n', '<leader>fr', '<cmd>Telescope live_grep initial_mode=insert<cr>', noremap)
+map('n', '<leader>fs', '<cmd>Telescope treesitter<cr>', noremap)  -- mode n
+map('x', '<leader>f.', '"0y:Telescope grep_string search=<c-r>0<cr>', noremap)  -- mode n
+map('x', '<leader>f:', '"0y:Telescope grep_string ft=true search=<c-r>0<cr>', noremap)  -- mode n
+
+use {
+  'hoschi/yode-nvim',
+  cmd = { 'YodeCreateSeditorFloating', 'YodeCreateSeditorReplace', 'YodeCloneCurrentIntoFloat' },
+  requires = {
+    { 'nvim-lua/plenary.nvim', opt = true },
+  },
+  config = function()
+    require'yode-nvim'.setup {}
+  end
+}
+map('x', '<C-W>yc', ':YodeCreateSeditorFloating<CR>', noremap)
+map('x', '<C-W>yr', ':YodeCreateSeditorReplace<CR>', noremap)
+map('n', '<C-W>yd', ':YodeBufferDelete<CR>', noremap)
+map('i', '<C-W>yd', '<ESC>:YodeBufferDelete<CR>', noremap)
+map('n', '<C-W>yj', ':YodeLayoutShiftWinDown<CR>', noremap)
+map('n', '<C-W>yk', ':YodeLayoutShiftWinUp<CR>', noremap)
+map('n', '<C-W>yb', ':YodeLayoutShiftWinBottom<CR>', noremap)
+map('n', '<C-W>yt', ':YodeLayoutShiftWinTop<CR>', noremap)
 
 use {
   'tpope/vim-repeat',
