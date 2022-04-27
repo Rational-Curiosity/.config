@@ -80,6 +80,12 @@ use {
       ['<c-]>'] = 'Complete tags',
       s = 'spelling suggestions',
     }, { mode = 'i', prefix = '<c-x>' })
+    which_key.register({
+      y = { name = 'Yode' },
+    }, { mode = 'n', prefix = '<c-w>' })
+    which_key.register({
+      y = { name = 'Yode' },
+    }, { mode = 'x', prefix = '<c-w>' })
   end
 }
 
@@ -424,10 +430,7 @@ map('n', '<leader>tfe', '<cmd>TableEvalFormulaLine<cr>', noremap)
 use {
   'lewis6991/gitsigns.nvim',
   requires = {
-    {
-      'nvim-lua/plenary.nvim',
-      opt = true,
-    },
+    { 'nvim-lua/plenary.nvim', opt = true },
   },
   opt = true,
   config = function()
@@ -821,9 +824,31 @@ use {
   end
 }
 use {
+  'ziontee113/syntax-tree-surfer',
+  opt = true,
+  after = 'nvim-treesitter',
+}
+-- Normal Mode Swapping
+map("n", "vd", '<cmd>lua require("syntax-tree-surfer").move("n", false)<cr>', {noremap = true, silent = true})
+map("n", "vu", '<cmd>lua require("syntax-tree-surfer").move("n", true)<cr>', {noremap = true, silent = true})
+-- .select() will show you what you will be swapping with .move(), you'll get used to .select() and .move() behavior quite soon!
+map("n", "vx", '<cmd>lua require("syntax-tree-surfer").select()<cr>', {noremap = true, silent = true})
+-- .select_current_node() will select the current node at your cursor
+map("n", "vn", '<cmd>lua require("syntax-tree-surfer").select_current_node()<cr>', {noremap = true, silent = true})
+
+-- NAVIGATION: Only change the keymap to your liking. I would not recommend changing anything about the .surf() parameters!
+map("x", "J", '<cmd>lua require("syntax-tree-surfer").surf("next", "visual")<cr>', {noremap = true, silent = true})
+map("x", "K", '<cmd>lua require("syntax-tree-surfer").surf("prev", "visual")<cr>', {noremap = true, silent = true})
+map("x", "H", '<cmd>lua require("syntax-tree-surfer").surf("parent", "visual")<cr>', {noremap = true, silent = true})
+map("x", "L", '<cmd>lua require("syntax-tree-surfer").surf("child", "visual")<cr>', {noremap = true, silent = true})
+
+-- SWAPPING WITH VISUAL SELECTION: Only change the keymap to your liking. Don't change the .surf() parameters!
+map("x", "<A-j>", '<cmd>lua require("syntax-tree-surfer").surf("next", "visual", true)<cr>', {noremap = true, silent = true})
+map("x", "<A-k>", '<cmd>lua require("syntax-tree-surfer").surf("prev", "visual", true)<cr>', {noremap = true, silent = true})
+use {
   'mfussenegger/nvim-treehopper',
   opt = true,
-  after = "nvim-treesitter",
+  after = 'nvim-treesitter',
 }
 map('o', 'm', ':<C-U>lua require("tsht").nodes()<CR>', {silent = true})
 map('v', 'm', ':lua require("tsht").nodes()<CR>', {noremap = true, silent = true})
