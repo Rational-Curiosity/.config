@@ -1,0 +1,112 @@
+[theme]
+theme = "dracula"
+[theme.overrides]
+separator = "<span font='11'></span>"
+
+[icons]
+icons = "material-nf"
+
+[[block]]
+block = "focused_window"
+driver = "sway_ipc"
+[block.format]
+full = " $title.str(0,50) |"
+short = " $title.str(0,20) |"
+
+[[block]]
+block = "external_ip"
+format = "$ip"
+[block.theme_overrides]
+idle_bg = "#19FF70"
+idle_fg = "#101010"
+
+[[block]]
+block = "net"
+# format = "$icon ^icon_net_down $speed_down.eng(3,B,K) ^icon_net_up $speed_up.eng(3,B,K) {$signal_strength $ssid |}$ip"
+format = "$icon ^icon_net_down $graph_down.str(0,5) ^icon_net_up $graph_up.str(0,5) {$signal_strength $ssid |}$ip"
+interval = 5
+[[block.click]]
+button = "left"
+cmd = "dunstify -a i3status-rs \"Whats my ip?\" \"Public ip: $(dig +short myip.opendns.com @resolver1.opendns.com)\""
+[block.theme_overrides]
+idle_bg = "#2AF598"
+idle_fg = "#101010"
+
+[[block]]
+block = "memory"
+format = "$icon$mem_used.eng(1,B,M)/$mem_total.eng(1,B,M)"
+interval = 5
+warning_mem = 80
+critical_mem = 95
+[block.theme_overrides]
+idle_bg = "#22E4AC"
+idle_fg = "#101010"
+
+[[block]]
+block = "memory"
+format = "$icon_swap$swap_used.eng(1,B,M)/$swap_total.eng(1,B,M)"
+interval = 5
+warning_swap = 80
+critical_swap = 95
+[block.theme_overrides]
+idle_bg = "#1BD7BB"
+idle_fg = "#101010"
+
+[[block]]
+block = "cpu"
+interval = 1
+format = "$icon$utilization.eng(2)"
+[block.theme_overrides]
+idle_bg = "#14C9CB"
+idle_fg = "#101010"
+
+[[block]]
+block = "disk_space"
+path = "/"
+info_type = "available"
+format = "$icon$used.eng(2)/$total.eng(2)"
+interval = 20
+warning = 20.0
+alert = 10.0
+[block.theme_overrides]
+idle_bg = "#0FB2D8"
+idle_fg = "#101010"
+
+[[block]]
+block = "docker"
+format = "$icon$running.eng(1)/$total.eng(1)"
+interval = 10
+[block.theme_overrides]
+idle_bg = "#089BE5"
+idle_fg = "#101010"
+
+[[block]]
+block = "temperature"
+interval = 10
+format = "$icon{$min≤$average≤$max|}"
+[block.theme_overrides]
+idle_bg = "#0384F1"
+idle_fg = "#101010"
+
+[[block]]
+block = "sound"
+format = "$icon{$volume.eng(2)|}"
+[[block.click]]
+button = "left"
+cmd = "pavucontrol"
+
+[[block]]
+block = "time"
+interval = 5
+[block.format]
+full = "$icon{%m/%d %a %R}"
+short = "$icon{%R}"
+[block.theme_overrides]
+idle_bg = "#123456"
+idle_fg = "#abcdef"
+
+[[block]]
+block = "battery"
+interval = 10
+driver = "upower"
+format = "$icon $percentage $time"

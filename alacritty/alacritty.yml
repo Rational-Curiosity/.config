@@ -1,5 +1,5 @@
-# shell:
-#  program: nvim
+shell:
+ program: fish
 #  args:
 #    - '+execute "normal! :term\<enter>i"'
 # Font configuration (changes require restart)
@@ -55,13 +55,18 @@ colors:
     end:
       foreground: '#FFFFFF'
       background: '#2642DF'
+scrolling:
+  history: 50000
+  multiplier: 3
 window:
   dynamic_title: true
   opacity: 0.8
 hints:
   alphabet: "jfkdlsahgurieowpqmvcxznb"
   enabled:
-    - regex: "([^[:space:]<>:\"'\\|(){}\\[\\]?'/.]*[/.]+[^[:space:]<>:\"'\\|(){}\\[\\]?'/.]+)+"
+    # - regex: "([^[:space:]<>:\"'\\|│(){}\\[\\]?'/.]*[/.]+[^[:space:]<>:\"'\\|│(){}\\[\\]?'/.]+)+"
+    - regex: "[A-Za-z0-9\u00C0-\u024F\u1E00-\u1EFF~@#,%_·$-]*\
+              ([/.]+[A-Za-z0-9\u00C0-\u024F\u1E00-\u1EFF~@#,%_·$-]*)+"
       action: Copy
       post_processing: false
       mouse:
@@ -77,8 +82,10 @@ hints:
       binding:
         key: E
         mods: Control|Shift
-    - regex: "(sudo|git|ls|cd|mkdir|cat|n?vim?|ssh|c?make|cargo|rust|python|pip|pytest\
-              |php|node|npm|grep|rg|echo|g?awk|sed|basename|dirname) .*"
+    - regex: "(sudo|b?[as]sh|docker-compose|docker|git|ls|cd|mkdir|cat|n?vim?|c?make|cargo|rust\
+              |python|pip|pytest|mvn|apt\
+              |php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl|sed|basename|dirname\
+              )( +[^[:space:]│]+)+"
       action: Copy
       post_processing: false
       mouse:
@@ -95,7 +102,7 @@ hints:
       binding:
         key: U
         mods: Control|Shift
-    - regex: "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+"
+    - regex: "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+\\.[0-9]+)?(:[0-9]+)?"
       action: Copy
       post_processing: false
       mouse:
@@ -111,7 +118,7 @@ hints:
       binding:
         key: W
         mods: Control|Shift
-    - regex: "[0-9]+(\\.[0-9]+)?"
+    - regex: "[0-9]*\\.?[0-9]+"
       action: Copy
       post_processing: false
       mouse:
@@ -146,13 +153,13 @@ hints:
         mods: Control|Shift
 key_bindings:
 # alacritty --print-events | grep "WindowEvent.*KeyboardInput"
-  - { key: Back,       mods: Control, chars: "\x1b\x7f" }
-  - { key: Insert,     mods: Shift,   action: Paste }
-  - { key: Y,          mods: Control, action: Paste }
-#  - { key: V,          mods: Alt,     action: ScrollPageUp }
-#  - { key: V,          mods: Control, action: ScrollPageDown }
-  - { key: A,          mods: Command, action: CreateNewWindow }
-# Vi Mode
+  - { key: Back,   mods: Control, chars: "\x1b\x7f" }
+  - { key: Insert, mods: Shift,   action: Paste }
+  - { key: Y,      mods: Control, action: Paste }
+  - { key: V,      mods: Shift|Alt,     action: ScrollPageUp }
+  - { key: V,      mods: Shift|Control, action: ScrollPageDown }
+  - { key: A,      mods: Command, action: CreateNewWindow }
+ # Vi Mode
   - { key: Space,  mods: Shift|Control, mode: ~Search,    action: ToggleViMode            }
   - { key: Space,  mods: Shift|Control, mode: Vi|~Search, action: ScrollToBottom          }
   - { key: Escape,                      mode: Vi|~Search, action: ClearSelection          }

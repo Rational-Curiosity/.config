@@ -118,7 +118,7 @@ space warp,click 1
 Return warp,click 1,end
 #? KEYNAV move cursor to the screen origin border
 #0 sh "xdotool mousemove 0 0", end
-0 move-cursor 0x0, end
+0 move-cursor 10000x10000, end
 #? KEYNAV move cursor to the center (,)
 semicolon warp
 #? KEYNAV click
