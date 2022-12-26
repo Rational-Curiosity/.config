@@ -1,10 +1,5 @@
 local plugins = {}
 
-local status, result = pcall(require, 'impatient')
-if not status then
-  print('loading `impatient`: '..result)
-end
-
 local ensure_packer = function()
   local fn = vim.fn
   local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -108,8 +103,7 @@ use {
     'anuvyklack/keymap-layer.nvim',
     opt = true,
   },
-  opt = true,
-  after = 'which-key.nvim',
+  after = 'gitsigns.nvim',
   config = function()
     require'packer'.loader('keymap-layer.nvim')
     local Hydra = require('hydra')
@@ -913,9 +907,9 @@ use {
 }
 use {
   'nvim-treesitter/nvim-treesitter-textobjects',
-  opt = true,
   after = "nvim-treesitter",
   config = function()
+    require'packer'.loader('which-key.nvim')
     require'nvim-treesitter.configs'.setup {
       textobjects = {
         select = {
@@ -1018,6 +1012,7 @@ use {
   opt = true,
   after = 'nvim-treesitter',
   config = function()
+    require'packer'.loader('which-key.nvim')
     local stf = require("syntax-tree-surfer")
     local mapset = vim.keymap.set
 
@@ -1582,6 +1577,7 @@ use {
   },
   opt = true,
   config = function()
+    require'packer'.loader('plenary.nvim')
     -- Setup nvim-cmp.
     local cmp = require'cmp'
 
@@ -1674,12 +1670,11 @@ local ft_prog = {
 }
 use {
   'neovim/nvim-lspconfig',
-  after = 'nvim-cmp',
+  ft = ft_prog,
   requires = {
     { 'hrsh7th/cmp-nvim-lsp', opt = true },
     { 'lvimuser/lsp-inlayhints.nvim', opt = true },
   },
-  opt = true,
   ft = ft_prog,
   config = function()
     require'packer'.loader('cmp-nvim-lsp')
@@ -1761,7 +1756,9 @@ use {
       }, { mode = 'n', prefix = '<leader>', buffer = bufnr })
     end
 
-    local capabilities = require'cmp_nvim_lsp'.default_capabilities(vim.lsp.protocol.make_client_capabilities())
+    local capabilities = require'cmp_nvim_lsp'.default_capabilities(
+      vim.lsp.protocol.make_client_capabilities()
+    )
 
     -- Use a loop to conveniently call 'setup' on multiple servers and
     -- map buffer local keybindings when the language server attaches
@@ -1915,11 +1912,12 @@ use {
     require('ufo').setFoldVirtTextHandler(bufnr, handler)
   end
 }
+
 use {
   'mfussenegger/nvim-dap',
-  opt = true,
   ft = ft_prog,
   config = function()
+    require'packer'.loader('which-key.nvim')
     -- local dap = require'dap'
     -- dap.adapters.python = {
     --   type = 'executable',
@@ -1957,10 +1955,9 @@ use {
 }
 use {
   'mfussenegger/nvim-dap-python',
-  opt = true,
-  after = 'nvim-dap',
   ft = { 'python' },
   config = function()
+    require'packer'.loader('nvim-dap')
     local dap_python = require'dap-python'
     if vim.fn.executable('python') == 1 then
       dap_python.setup('python')

@@ -506,4 +506,9 @@ vim.defer_fn(function()
   --   end
   -- end
   opt.spell = true
+
+  local status, result = pcall(require, 'impatient')
+  if not status then
+    print('loading `impatient`: '..result)
+  end
 end, 0)
