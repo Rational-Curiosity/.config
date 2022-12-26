@@ -1369,6 +1369,7 @@ use {
     --     return ''
     --   end
     -- end
+    local abbrev_path_memoizes = 0
     local abbrev_path_memoize = {}
     local function abbrev_path(s, space, len)
       local m_key = s .. "," .. space .. "," .. len
@@ -1376,6 +1377,7 @@ use {
       if m_value ~= nil then
         return m_value
       end
+      s = s:gsub("^"..home_path, "~")
       local dir, base = string.match(s, "(.*/)([^/]*)")
       if dir == nil then
         return s
@@ -1392,9 +1394,15 @@ use {
         dir_len = dir:len()
       end
       local result = dir .. base
+      if abbrev_path_memoizes > 512 then
+        abbrev_path_memoize[next(abbrev_path_memoize)] = nil
+      else
+        abbrev_path_memoizes = abbrev_path_memoizes + 1
+      end
       abbrev_path_memoize[m_key] = result
       return result
     end
+    local abbrev_name_memoizes = 0
     local abbrev_name_memoize = {}
     local function abbrev_name(s, space)
       local m_key = s .. "," .. space
@@ -1411,10 +1419,15 @@ use {
         if subs == 0 then break end
         s_len = s:len()
       end
+      if abbrev_name_memoizes > 512 then
+        abbrev_name_memoize[next(abbrev_name_memoize)] = nil
+      else
+        abbrev_name_memoizes = abbrev_name_memoizes + 1
+      end
       abbrev_name_memoize[m_key] = s
       return s
     end
-    local fix_space = 18
+    local fix_space = 24
     require"lualine".setup {
       options = {
         theme = 'tokyonight', -- powerline
@@ -1449,8 +1462,8 @@ use {
             -- Current file type: `vim.bo.filetype`
             -- Current file name: `vim.api.nvim_buf_get_name(0)`
             if vim.bo.buftype == "" then
-              local space = (vim.fn.winwidth(0) - fix_space) * 0.2 -- %
-              local s = vim.fn.getcwd():gsub("^"..home_path, "~")
+              local space = (vim.fn.winwidth(0) - fix_space) * 0.3 -- %
+              local s = vim.fn.getcwd()
               return abbrev_path(s, space, 1).."/"
             else
               return ""
@@ -1460,7 +1473,7 @@ use {
             symbols = {modified='✎', readonly='⛒'},
             fmt=function(s)
               if vim.bo.buftype == "" then
-                local space = (vim.fn.winwidth(0) - fix_space) * 0.5 -- %
+                local space = (vim.fn.winwidth(0) - fix_space) * 0.6 -- %
                 return abbrev_path(s, space, 2)
               elseif vim.bo.buftype == "terminal" then
                 local space = (vim.fn.winwidth(0) - fix_space - 26) * 0.6 -- %
