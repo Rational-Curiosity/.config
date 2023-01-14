@@ -83,7 +83,7 @@ hints:
         key: E
         mods: Control|Shift
     - regex: "(sudo|b?[as]sh|docker-compose|docker|git|ls|cd|mkdir|cat|n?vim?|c?make|cargo|rust\
-              |python|pip|pytest|mvn|apt\
+              |python[23]?|pip|pytest|mvn|apt\
               |php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl|sed|basename|dirname\
               )( +[^[:space:]│]+)+"
       action: Copy
