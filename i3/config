@@ -134,6 +134,12 @@ bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
+# swap two windows
+bindsym $mod+Mod1+h mark tmp_mv_src; focus left; swap container with mark tmp_mv_src; unmark tmp_mv_src
+bindsym $mod+Mod1+j mark tmp_mv_src; focus down; swap container with mark tmp_mv_src; unmark tmp_mv_src
+bindsym $mod+Mod1+k mark tmp_mv_src; focus up; swap container with mark tmp_mv_src; unmark tmp_mv_src
+bindsym $mod+Mod1+l mark tmp_mv_src; focus right; swap container with mark tmp_mv_src; unmark tmp_mv_src
+
 # move focused window
 set $edit_mode "S+ mv,C+ ws2scr,A+ size5,S+A+ size1"
 mode $edit_mode {
