@@ -74,7 +74,7 @@ hints:
       binding:
         key: P
         mods: Control|Shift
-    - regex: "[^[:space:]]+([Ee][Rr][Rr]|[Ee][Xx][Cc][Ee][Pp][Tt]|[Ff][Aa][Ii][Ll]).*"
+    - regex: "[^[:space:]│]+([Ee][Rr][Rr]|[Ee][Xx][Cc][Ee][Pp][Tt]|[Ff][Aa][Ii][Ll]).*"
       action: Copy
       post_processing: false
       mouse:
@@ -135,7 +135,7 @@ hints:
       binding:
         key: Q
         mods: Control|Shift
-    - regex: "[^[:space:]]+"
+    - regex: "[^[:space:]│]+"
       action: Copy
       post_processing: false
       mouse:
@@ -143,7 +143,7 @@ hints:
       binding:
         key: S
         mods: Control|Shift
-    - regex: "[^[:space:]].*"
+    - regex: "[^[:space:]│][^│]*"
       action: Copy
       post_processing: false
       mouse:
