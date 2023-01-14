@@ -156,9 +156,12 @@ key_bindings:
   - { key: Back,   mods: Control, chars: "\x1b\x7f" }
   - { key: Insert, mods: Shift,   action: Paste }
   - { key: Y,      mods: Control, action: Paste }
-  - { key: V,      mods: Shift|Alt,     action: ScrollPageUp }
-  - { key: V,      mods: Shift|Control, action: ScrollPageDown }
+  - { key: U,      mods: Shift|Control, action: ScrollPageUp }
+  - { key: D,      mods: Shift|Control, action: ScrollPageDown }
   - { key: A,      mods: Command, action: CreateNewWindow }
+  - { key: Key0,   mods: Control, action: ResetFontSize    }
+  - { key: Plus,   mods: Control, action: IncreaseFontSize }
+  - { key: Minus,  mods: Control, action: DecreaseFontSize }
  # Vi Mode
   - { key: Space,  mods: Shift|Control, mode: ~Search,    action: ToggleViMode            }
   - { key: Space,  mods: Shift|Control, mode: Vi|~Search, action: ScrollToBottom          }
