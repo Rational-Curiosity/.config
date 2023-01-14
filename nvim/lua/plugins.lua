@@ -248,6 +248,7 @@ return {
       },
       { 'debugloop/telescope-undo.nvim' },
       { 'johmsalas/text-case.nvim' },
+      { 'lpoto/telescope-tasks.nvim' },
     },
     keys = {
       { '<leader>f,', ':Telescope grep_string  initial_mode=insert search=' },
@@ -255,6 +256,7 @@ return {
       { '<leader>f.', '<cmd>Telescope grep_string<cr>' },
       { '<leader>f:', '<cmd>Telescope grep_string ft=true<cr>' },
       { '<leader>f;', ':Telescope grep_string ft=true  initial_mode=insert search=' },
+      { '<leader>fa', '<cmd>Telescope tasks initial_mode=insert<cr>' },
       { '<leader>fb', '<cmd>Telescope buffers initial_mode=insert<cr>' },
       { '<leader>fc', '<cmd>Telescope textcase normal_mode initial_mode=insert<cr>' },
       { '<leader>fc', '<cmd>Telescope textcase visual_mode initial_mode=insert<cr>', mode = 'v' },
@@ -328,11 +330,15 @@ return {
                 ["<S-cr>"] = require("telescope-undo.actions").yank_deletions,
                 ["<cr>"] = require("telescope-undo.actions").restore,
               },
+            },
+          },
+          tasks = {
+            -- theme = "dropdown",
+            output_window = "float",
           },
         },
-      },
-      defaults = {
-        initial_mode = "normal",
+        defaults = {
+          initial_mode = "normal",
           mappings = {
             i = {
               ["<C-e>"] = action_layout.toggle_preview,
@@ -377,6 +383,33 @@ return {
       telescope.load_extension('fzf')
       telescope.load_extension('undo')
       telescope.load_extension('textcase')
+      telescope.load_extension('tasks')
+      local tasks = require'telescope'.extensions.tasks
+      tasks.generators.add {
+        generator = function(buf)
+          return {
+            {
+              'Docker Compose gigas CORE up',
+              cmd = 'docker-compose --ansi never up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider',
+            },
+            {
+              'Docker Compose gigas CORE stop',
+              cmd = 'docker-compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider',
+            },
+            {
+              'Docker Compose gigas KVM up',
+              cmd = 'docker-compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm'
+            },
+            {
+              'Docker Compose gigas KVM stop',
+              cmd = 'docker-compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
+            },
+          }
+        end,
+        opts = {
+          name = 'Docker Compose',
+        }
+      }
 
   --     local previewers = require'telescope.previewers'
   -- --    local Job = require'plenary.job'
@@ -535,31 +568,22 @@ return {
     },
     event = 'VeryLazy',
     config = function()
-      vim.api.nvim_exec([[
-        highlight GitSignsAddLnInline     guibg=#004d00
-        highlight GitSignsChangeLnInline  guibg=#3d004d
-        highlight GitSignsDeleteLnInline  guibg=#391313
-        highlight GitSignsAddInline       guibg=#004d00
-        highlight GitSignsChangeInline    guibg=#3d004d
-        highlight GitSignsDeleteInline    guibg=#391313
-        highlight GitSignsAdd             guibg=#004d00
-        highlight GitSignsChange          guibg=#3d004d
-        highlight GitSignsDelete          guibg=#391313
-        highlight GitSignsAddNr           guifg=#80ff80
-        highlight GitSignsChangeNr        guifg=#e580ff
-        highlight GitSignsDeleteNr        guifg=#df9f9f
-        highlight GitSignsAddLn           guibg=#004d00
-        highlight GitSignsChangeLn        guibg=#3d004d
-        highlight GitSignsDeleteLn        guibg=#391313
-      ]], false)
+      vim.api.nvim_set_hl(0, 'GitSignsAddLnInline',    { bg = '#004d00' })
+      vim.api.nvim_set_hl(0, 'GitSignsChangeLnInline', { bg = '#3d004d' })
+      vim.api.nvim_set_hl(0, 'GitSignsDeleteLnInline', { bg = '#391313' })
+      vim.api.nvim_set_hl(0, 'GitSignsAddInline',      { bg = '#004d00' })
+      vim.api.nvim_set_hl(0, 'GitSignsChangeInline',   { bg = '#3d004d' })
+      vim.api.nvim_set_hl(0, 'GitSignsDeleteInline',   { bg = '#391313' })
+      vim.api.nvim_set_hl(0, 'GitSignsAdd',            { bg = '#004d00' })
+      vim.api.nvim_set_hl(0, 'GitSignsChange',         { bg = '#3d004d' })
+      vim.api.nvim_set_hl(0, 'GitSignsDelete',         { bg = '#391313' })
+      vim.api.nvim_set_hl(0, 'GitSignsAddNr',          { fg = '#80ff80' })
+      vim.api.nvim_set_hl(0, 'GitSignsChangeNr',       { fg = '#e580ff' })
+      vim.api.nvim_set_hl(0, 'GitSignsDeleteNr',       { fg = '#df9f9f' })
+      vim.api.nvim_set_hl(0, 'GitSignsAddLn',          { bg = '#004d00' })
+      vim.api.nvim_set_hl(0, 'GitSignsChangeLn',       { bg = '#3d004d' })
+      vim.api.nvim_set_hl(0, 'GitSignsDeleteLn',       { bg = '#391313' })
       require'gitsigns'.setup {
-        signs = {
-          add          = {hl = 'GitSignsAdd'   , text = '│', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
-          change       = {hl = 'GitSignsChange', text = '│', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-          delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-          topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-          changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-        },
         signcolumn = false, -- Toggle with `:Gitsigns toggle_signs`
         numhl      = true, -- Toggle with `:Gitsigns toggle_numhl`
         linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
@@ -720,13 +744,12 @@ return {
         highlight = {
           enable = true,              -- false will disable the whole extension
           -- disable = {'org'}, -- Remove this to use TS highlighter for some of the highlights (Experimental)
-          -- additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
+          additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
           -- disable = { "c", "rust" },  -- list of language that will be disabled
           -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
           -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
           -- Using this option may slow down your editor, and you may see some duplicate highlights.
           -- Instead of true it can also be a list of languages
-          -- additional_vim_regex_highlighting = false,
         },
         refactor = {
           highlight_definitions = {
@@ -839,8 +862,8 @@ return {
 
             keymaps = {
               -- You can use the capture groups defined in textobjects.scm
-              ["aa"] = "@parameter.outer",
-              ["ia"] = "@parameter.inner",
+              ["a,"] = "@parameter.outer",
+              ["i,"] = "@parameter.inner",
               ["af"] = "@function.outer",
               ["if"] = "@function.inner",
               ["ac"] = "@class.outer",
@@ -856,7 +879,7 @@ return {
           swap = {
             enable = true,
             swap_next = {
-              ["<leader>]a"] = "@parameter.inner",
+              ["<leader>],"] = "@parameter.inner",
               ["<leader>]f"] = "@function.outer",
               ["<leader>]c"] = "@class.outer",
               ["<leader>]l"] = "@loop.outer",
@@ -864,7 +887,7 @@ return {
               ["<leader>]i"] = "@conditional.outer",
             },
             swap_previous = {
-              ["<leader>[a"] = "@parameter.inner",
+              ["<leader>[,"] = "@parameter.inner",
               ["<leader>[f"] = "@function.outer",
               ["<leader>[c"] = "@class.outer",
               ["<leader>[l"] = "@loop.outer",
@@ -876,7 +899,7 @@ return {
             enable = true,
             set_jumps = true, -- whether to set jumps in the jumplist
             goto_next_start = {
-              ["]A"] = "@parameter.outer",
+              ["];"] = "@parameter.outer",
               ["]F"] = "@function.outer",
               ["]C"] = "@class.outer",
               ["]L"] = "@loop.outer",
@@ -884,7 +907,7 @@ return {
               ["]I"] = "@conditional.outer",
             },
             goto_next_end = {
-              ["]a"] = "@parameter.outer",
+              ["],"] = "@parameter.outer",
               ["]f"] = "@function.outer",
               ["]c"] = "@class.outer",
               ["]l"] = "@loop.outer",
@@ -892,7 +915,7 @@ return {
               ["]i"] = "@conditional.outer",
             },
             goto_previous_start = {
-              ["[A"] = "@parameter.outer",
+              ["[;"] = "@parameter.outer",
               ["[F"] = "@function.outer",
               ["[C"] = "@class.outer",
               ["[L"] = "@loop.outer",
@@ -900,7 +923,7 @@ return {
               ["[I"] = "@conditional.outer",
             },
             goto_previous_end = {
-              ["[a"] = "@parameter.outer",
+              ["[,"] = "@parameter.outer",
               ["[f"] = "@function.outer",
               ["[c"] = "@class.outer",
               ["[l"] = "@loop.outer",
@@ -1183,6 +1206,10 @@ return {
     ft = { 'csv' },
   },
   {
+    'MTDL9/vim-log-highlighting',
+    ft = { 'log' },
+  },
+  {
     'folke/tokyonight.nvim',
     config = function()
       require("tokyonight").setup {
@@ -1263,9 +1290,12 @@ return {
         return dir .. base
       end
 
-      vim.api.nvim_command(
-        'highlight StatusDirectory ctermbg=black guibg=#191919 ctermfg=blue guifg=#7aa2f7'
-      )
+      vim.api.nvim_set_hl(0, 'StatusDirectory', {
+        fg = '#7aa2f7',
+        bg = '#191919',
+        ctermfg = 'blue',
+        ctermbg = 'black',
+      })
       local abbrev_path_memoizes = 0
       local abbrev_path_memoize = {}
       local function abbrev_path(dir, file, space)
@@ -1275,12 +1305,16 @@ return {
           return m_value
         end
         dir = dir:gsub("^"..home_path, "~")
-        local file_len = file:len()
         local dir_len = dir:len()
-        local tot_len = dir_len + file_len
-        local delta = dir_len / 4
-        dir = abbrev_rel_path(dir, math.floor(space * (dir_len - delta)/tot_len), 1)
-        file = abbrev_rel_path(file, math.ceil(space * (file_len + delta)/tot_len), 2)
+        local file_len = file:len()
+        local dir_space = space - file_len - 4
+        if dir_len > dir_space then
+          dir = abbrev_rel_path(dir, dir_space, 1)
+          dir_len = dir:len()
+          if dir_len > dir_space then
+            file = abbrev_rel_path(file, space - dir_len - 4, 2)
+          end
+        end
         local result = '%#StatusDirectory#' .. dir .. '/%*' .. file
         if abbrev_path_memoizes > 512 then
           abbrev_path_memoize[next(abbrev_path_memoize)] = nil
@@ -1290,7 +1324,26 @@ return {
         abbrev_path_memoize[m_key] = result
         return result
       end
-      local fix_space = 24
+      local len_without_hl_memoizes = 0
+      local len_without_hl_memoize = {}
+      local function len_without_hl(s)
+        local m_value = len_without_hl_memoize[s] 
+        if m_value ~= nil then
+          return m_value
+        end
+        local result = vim.fn.strdisplaywidth(s:gsub('%%#[^#]+#', '')) + 1
+        if len_without_hl_memoizes > 128 then
+          len_without_hl_memoize[next(len_without_hl_memoize)] = nil
+        else
+          len_without_hl_memoizes = len_without_hl_memoizes + 1
+        end
+        len_without_hl_memoize[s] = result
+        return result
+      end
+      local fix_space = 18
+      local branch_space = 0
+      local diff_space = 0
+      local diag_space = 0
 
       require"lualine".setup {
         options = {
@@ -1305,29 +1358,63 @@ return {
           },
           lualine_b = {
             {'branch', fmt=function(s)
-                local space = (vim.fn.winwidth(0) - fix_space) * 0.2 -- %
-                if s:len() <= space then
+                if s == '' then
+                  branch_space = 0
                   return s
-                else
+                end
+                local space = math.floor((vim.fn.winwidth(0) - fix_space) * 0.2) -- %
+                local s_len = s:len()
+                if s_len > space then
+                  branch_space = space + 3
                   return s:sub(1, space - 1)..'…'
+                else
+                  branch_space = s_len + 3
+                  return s
                 end
               end,
               padding = 0},
             {'diff', -- symbols = {added = '', modified = '', removed = ''},
+              fmt=function(s)
+                if s == '' then
+                  diff_space = 0
+                  return s
+                end
+                s = s:gsub('%s+', '')
+                diff_space = len_without_hl(s)
+                return s
+              end,
               padding = {left=1, right=0}},
             {'diagnostics', sources={'nvim_diagnostic'},
+              fmt=function(s)
+                if s == '' then
+                  diag_space = 0
+                  return s
+                end
+                s = s:gsub('%s+', '')
+                diag_space = len_without_hl(s)
+                return s
+              end,
+              update_in_insert = false,
               symbols = {error = '', warn = '', info = '', hint = '♲'},
               padding = {left=1, right=0}},
             -- {spellstatus},
+            { require("lazy.status").updates,
+              cond = require("lazy.status").has_updates,
+              color = { fg = "#ff9e64" } },
           },
           lualine_c = {
             {'filename', path=1, shorting_target=0, padding = 0,
               symbols = {modified='✎', readonly='⛒'},
               fmt=function(s)
                 if vim.bo.buftype == "" then
-                  return abbrev_path(vim.fn.getcwd(), s, vim.fn.winwidth(0) - fix_space)
+                  return abbrev_path(
+                    vim.fn.getcwd(), s,
+                    vim.fn.winwidth(0) - fix_space - branch_space - diff_space - diag_space
+                  )
                 elseif vim.bo.buftype == "terminal" then
-                  return abbrev_term(s, vim.fn.winwidth(0) - fix_space)
+                  return abbrev_term(
+                    s, vim.fn.winwidth(0) - fix_space - branch_space - diff_space - diag_space
+                  )
                 else
                   return s
                 end
@@ -1406,7 +1493,7 @@ return {
   },
   {
     'nmac427/guess-indent.nvim',
-    event = 'BufReadPre',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       require('guess-indent').setup {}
     end,
@@ -1421,16 +1508,17 @@ return {
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
-      { 'nvim-lua/plenary.nvim' },
-      { 'hrsh7th/cmp-buffer' },
-      { 'ray-x/cmp-treesitter' },
-      { 'hrsh7th/cmp-path' },
-      { 'petertriho/cmp-git' },
-      { 'hrsh7th/cmp-cmdline' },
-      { 'saadparwaiz1/cmp_luasnip' },
-      { 'rafamadriz/friendly-snippets' },
       { 'davidsierradz/cmp-conventionalcommits' },
-      { 'L3MON4D3/LuaSnip' }
+      { 'hrsh7th/cmp-buffer' },
+      { 'hrsh7th/cmp-cmdline' },
+      { 'hrsh7th/cmp-path' },
+      { 'hrsh7th/cmp-nvim-lsp-signature-help' },
+      { 'L3MON4D3/LuaSnip' },
+      { 'nvim-lua/plenary.nvim' },
+      { 'petertriho/cmp-git' },
+      { 'rafamadriz/friendly-snippets' },
+      { 'ray-x/cmp-treesitter' },
+      { 'saadparwaiz1/cmp_luasnip' },
     },
     event = 'VeryLazy',
     config = function()
@@ -1470,6 +1558,7 @@ return {
         }),
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },
+          { name = 'nvim_lsp_signature_help' },
           { name = 'treesitter' },
           -- { name = 'vsnip' }, -- For vsnip users.
           { name = 'luasnip' }, -- For luasnip users.
@@ -1521,7 +1610,7 @@ return {
     dependencies = {
       { 'hrsh7th/cmp-nvim-lsp' },
       -- { 'lvimuser/lsp-inlayhints.nvim' },
-      { 'ray-x/lsp_signature.nvim' },
+      -- { 'ray-x/lsp_signature.nvim' },
       { 'j-hui/fidget.nvim' },
     },
     ft = ft_prog,
@@ -1541,9 +1630,9 @@ return {
 
       -- Lsp config
       local lspconfig = require'lspconfig'
-      require'lsp_signature'.setup {
-        toggle_key = '<C-s>',
-      }
+      -- require'lsp_signature'.setup {
+      --   toggle_key = '<C-s>',
+      -- }
       -- require'lsp-inlayhints'.setup {
       --   inlay_hints = {
       --     parameter_hints = {
@@ -1653,8 +1742,7 @@ return {
 
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
-      local servers = { 'pyright', 'intelephense', 'html', 'jsonls', 'ccls' }
-      for _, lsp in ipairs(servers) do
+      for _, lsp in ipairs({ 'pyright', 'intelephense', 'html', 'jsonls', 'ccls' }) do
         lspconfig[lsp].setup {
           on_attach = on_attach,
           capabilities = capabilities,
@@ -1725,12 +1813,25 @@ return {
       }
       -- Linters
       lspconfig.eslint.setup {}
+      local lspconfigs = require'lspconfig.configs'
+      -- pip install ruff-lsp
+      lspconfigs.ruff_lsp = {
+        default_config = {
+          cmd = { 'ruff-lsp' },
+          filetypes = { 'python' },
+          root_dir = lspconfig.util.find_git_ancestor,
+          init_options = {
+            args = {}
+          },
+        },
+      }
+      lspconfig.ruff_lsp.setup { }
 
       -- Handlers
       vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, {
           virtual_text = {
-            spacing = 2,
+            spacing = 1,
             prefix = '▪',
             format = function(diagnostic)
               return diagnostic.message:match('^%s*(.-)%s*$'):gsub('%s%s+', ' ')
@@ -1831,9 +1932,30 @@ return {
       mapset('n', '<leader>dr', require"dap".repl.toggle, opts)
       mapset('n', '<leader>dl', require"dap".list_breakpoints, opts)
       mapset('n', '<leader>dd', require"dap".clear_breakpoints, opts)
+      mapset('n', '<leader>dR', require"dap".run_last, opts)
+      mapset('n', '<leader>dB', function()
+        require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))
+      end, opts)
+      mapset('n', '<leader>dL', function()
+        require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+      end, opts)
 
       require'which-key'.register({
-        d = { name = 'Dap' },
+        d = {
+          name = 'Dap',
+          B = 'Breakpoint condition',
+          b = 'Toggle breakpoint',
+          c = 'Continue',
+          n = 'Step over',
+          p = 'Step back',
+          o = 'Step out',
+          i = 'Step into',
+          R = 'Run last',
+          r = 'Repl toggle',
+          L = 'Log point message',
+          l = 'List breakpoints',
+          d = 'Clear breakpoints',
+        },
       }, { mode = 'n', prefix = '<leader>' })
     end
   },
@@ -1859,56 +1981,115 @@ return {
     end
   },
   {
-    'lpoto/actions.nvim',
-    keys = { { '<leader>fa', function() require'actions.telescope'.available_actions() end } },
+    'mxsdev/nvim-dap-vscode-js',
+    dependencies = {
+      'nvim-dap',
+      {
+        'microsoft/vscode-js-debug',
+        build = 'npm install --legacy-peer-deps && npm run compile',
+      },
+    },
+    ft = { 'javascript', 'typescript' },
     config = function()
-      require'actions'.setup {
-        actions = {
-          ['Docker Compose gigas CORE up'] = function()
-            return {
-              steps = {
-                'docker-compose up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider'
-              }
-            }
-          end,
-          ['Docker Compose gigas CORE stop'] = function()
-            return {
-              steps = {
-                'docker-compose stop db_maria db_mysql db_redis rabbitmq websockifier id-provider'
-              }
-            }
-          end,
-          ['Docker Compose gigas KVM up'] = function()
-            return {
-              steps = {
-                'docker-compose up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm'
-              }
-            }
-          end,
-          ['Docker Compose gigas KVM stop'] = function()
-            return {
-              steps = {
-                'docker-compose stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm'
-              }
-            }
-          end,
-        },
-      }
+      require("dap-vscode-js").setup({
+        -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
+        -- debugger_path = "(runtimedir)/site/pack/packer/opt/vscode-js-debug", -- Path to vscode-js-debug installation.
+        -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
+        adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
+        -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
+        -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
+        -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
+      })
+      for _, language in ipairs({ "typescript", "javascript" }) do
+        require("dap").configurations[language] = {
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+            cwd = "${workspaceFolder}",
+          },
+          {
+            type = "pwa-node",
+            request = "attach",
+            name = "Attach",
+            processId = require'dap.utils'.pick_process,
+            cwd = "${workspaceFolder}",
+          },
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Debug Jest Tests",
+            -- trace = true, -- include debugger info
+            runtimeExecutable = "node",
+            runtimeArgs = {
+              "./node_modules/jest/bin/jest.js",
+              "--runInBand",
+            },
+            rootPath = "${workspaceFolder}",
+            cwd = "${workspaceFolder}",
+            console = "integratedTerminal",
+            internalConsoleOptions = "neverOpen",
+          }
+        }
+      end
     end
   },
+  -- {
+  --   'lpoto/actions.nvim',
+  --   keys = { { '<leader>fa', function() require'actions.telescope'.available_actions() end } },
+  --   config = function()
+  --     require'actions'.setup {
+  --       actions = {
+  --         ['Docker Compose gigas CORE up'] = function()
+  --           return {
+  --             steps = {
+  --               'docker-compose up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider'
+  --             }
+  --           }
+  --         end,
+  --         ['Docker Compose gigas CORE stop'] = function()
+  --           return {
+  --             steps = {
+  --               'docker-compose stop db_maria db_mysql db_redis rabbitmq websockifier id-provider'
+  --             }
+  --           }
+  --         end,
+  --         ['Docker Compose gigas KVM up'] = function()
+  --           return {
+  --             steps = {
+  --               'docker-compose up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm'
+  --             }
+  --           }
+  --         end,
+  --         ['Docker Compose gigas KVM stop'] = function()
+  --           return {
+  --             steps = {
+  --               'docker-compose stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm'
+  --             }
+  --           }
+  --         end,
+  --       },
+  --     }
+  --   end
+  -- },
   {
     'skanehira/denops-docker.vim',
     dependencies = { 'vim-denops/denops.vim' },
     init = function()
       vim.cmd([=[
-        command! DockerImages lua require("lazy").load({ plugins = { "denops-docker.vim" } });
-          \vim.defer_fn(function() vim.cmd"DockerImages" end, 100)
-        command! DockerContainers lua require("lazy").load({ plugins = { "denops-docker.vim" } });
-          \vim.defer_fn(function() vim.cmd"DockerContainers" end, 100)
-        command! DockerSearchImage lua require("lazy").load({ plugins = { "denops-docker.vim" } });
-          \vim.defer_fn(function() vim.cmd"DockerSearchImage" end, 100)
-        command! -nargs=+ Docker lua require("lazy").load({ plugins = { "denops-docker.vim" } });
-          \vim.defer_fn(function() vim.cmd[[:call denops#notify("docker","runDockerCLI",[<f-args>])]] end, 500)
+        "command! DockerImages lua require("lazy").load({ plugins = { "denops-docker.vim" } });
+        "  \vim.cmd'call denops#plugin#wait("docker") | DockerImages'
+        "command! DockerContainers lua require("lazy").load({ plugins = { "denops-docker.vim" } });
+        "  \vim.cmd'call denops#plugin#wait("docker") | DockerContainer'
+        "command! DockerSearchImage lua require("lazy").load({ plugins = { "denops-docker.vim" } });
+        "  \vim.cmd'call denops#plugin#wait("docker") | DockerSearchImage'
+        "command! -nargs=+ Docker lua require("lazy").load({ plugins = { "denops-docker.vim" } });
+        "  \vim.cmd'call denops#plugin#wait("docker") | call denops#notify("docker","runDockerCLI",[<f-args>])'
+        command! DockerImages Lazy load denops-docker.vim|call denops#plugin#wait("docker")|DockerImages
+        command! DockerContainers Lazy load denops-docker.vim|call denops#plugin#wait("docker")|DockerContainer
+        command! DockerSearchImage Lazy load denops-docker.vim|call denops#plugin#wait("docker")|DockerSearchImage
+        command! -nargs=+ Docker Lazy load denops-docker.vim|call denops#plugin#wait("docker")|call denops#notify("docker","runDockerCLI",[<f-args>])
         "command! -nargs=1 -complete=customlist,docker#listContainer DockerAttachContainer :call docker#attachContainer(<f-args>)
         "command! -nargs=1 -complete=customlist,docker#listContainer DockerExecContainer :call docker#execContainer(<f-args>)
         "command! -nargs=1 -complete=customlist,docker#listContainer DockerEditFile :call docker#editContainerFile(<f-args>)

@@ -1,13 +1,12 @@
 local api = vim.api
 local opt = vim.opt
 local o = vim.o
-local wo = vim.wo
 local bo = vim.bo
 local g = vim.g
 local noremap_silent = {noremap = true, silent = true}
 local noremap_expr = {noremap = true, expr = true}
 local noremap = {noremap = true}
-local map = api.nvim_set_keymap
+-- local map = api.nvim_set_keymap
 local mapset = vim.keymap.set
 local fn = vim.fn
 opt.clipboard = ""
@@ -22,6 +21,10 @@ o.updatetime = 2000
 o.cmdheight = 0
 o.showmode = false
 o.fileencoding = 'utf-8'
+-- [ nvim-ufo
+o.foldlevel = 99
+o.foldenable = true
+-- ]
 
 -- opt.lazyredraw = true  -- It is only meant to be set temporarily
 opt.encoding = 'utf-8'
@@ -39,10 +42,6 @@ opt.sidescrolloff = 1
 opt.foldmethod = "manual"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldenable = true
--- [ nvim-ufo
-wo.foldlevel = 99
-wo.foldenable = true
--- ]
 opt.background = "dark"
 opt.signcolumn = "number"
 opt.fixendofline = false
@@ -98,7 +97,8 @@ vim.cmd([[
     " Recompile plugins.lua
     "autocmd BufWritePost plugins.lua source | PackerCompile
     " Terminal config
-    autocmd TermOpen * setlocal scrollback=100000 nospell
+    autocmd TermOpen term://* setlocal scrollback=100000 nospell|startinsert
+    autocmd BufWinEnter,WinEnter term://* startinsert
   augroup end
 
   highlight Whitespace ctermbg=red guibg=#D2042d
@@ -127,6 +127,7 @@ vim.cmd([[
   let g:VM_maps["Add Cursor Up"]      = '<M-k>'
 
   " Abbreviations
+  cabbrev <expr> E 'e '.expand('%:p:h')
   cabbrev vh vert help
   cabbrev bdn bn<bar>bd#
   cabbrev bdp bp<bar>bd#
@@ -135,8 +136,12 @@ vim.cmd([[
   cabbrev lpi lua print(vim.inspect
 
   " Commands
+  " command! -nargs=1 E exec 'e' expand('%:p:h').'/'.<f-args>
+  command! Cd exec 'cd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
+  command! Lcd exec 'lcd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
   command! SetStatusline lua vim.go.statusline = "%{%v:lua.require'lualine'.statusline()%}"
   command! Q mksession! ~/.config/nvim/session/_last.vim|qall
+  command! S mksession! ~/.config/nvim/session/_last.vim
   command! L source ~/.config/nvim/session/_last.vim
   command! -count=9 Command if bufexists("CommandOutput")|sil! bdelete CommandOutput|endif|
     \bel <count>new|nnoremap <buffer> q :bd<cr>|
@@ -165,7 +170,8 @@ vim.cmd([[
     return luaeval("vim.fn.getcwd():gsub('.*/', '')")
   endfunction
 ]])
-api.nvim_create_autocmd({ "BufRead" }, {
+local wo = vim.wo
+api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
@@ -352,20 +358,21 @@ function _G.win_double_width()
 end
 
 -- Keymap bindings
-map('', '<leader>V', '<cmd>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<cr>', noremap)
-map('t', '<Esc><Esc>', '<C-\\><C-n>', noremap)
-map('x', 'zx', "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>", noremap)
-mapset('x', '<leader>p', '"_dP')
-mapset({ 'n', 'x' }, '<leader>c', '"_c')
+mapset('', '<leader>V', '<cmd>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<cr>', noremap)
+mapset('t', '<Esc><Esc>', '<C-\\><C-n>', noremap)
+mapset('x', 'zx', "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>", noremap)
+mapset('x', '\\p', '"_dP')
+mapset({ 'n', 'x' }, '\\c', '"_c')
+mapset({ 'n', 'x' }, '\\d', '"_d')
 -- added in vim version 0.8.0
 -- map('x', '<leader>*', '"0y/<C-R>0<CR>', noremap)
 -- map('x', '<leader>#', '"0y?<C-R>0<CR>', noremap)
-map('n', 'zdc', ':%g/^[ \t]*class /normal! zc<CR>', noremap)
-map('n', 'zdf', ':%g/^[ \t]*\\(function\\|def\\) /normal! zc<CR>', noremap)
-map('n', '<leader><Return>', 'i<CR><C-\\><C-n>', noremap)
+mapset('n', 'zdc', ':%g/^[ \t]*class /normal! zc<CR>', noremap)
+mapset('n', 'zdf', ':%g/^[ \t]*\\(function\\|def\\) /normal! zc<CR>', noremap)
+mapset('n', '<leader><Return>', 'i<CR><C-\\><C-n>', noremap)
 mapset('n', '<C-W>*', win_double_width)
 mapset('n', '<C-W>/', win_half_width)
-map('n', '<C-W>0', '<CMD>copen<CR>', noremap)
+mapset('n', '<C-W>0', '<CMD>copen<CR>', noremap)
 mapset('n', '<C-W>1', function() set_curr_win(1) end)
 mapset('n', '<C-W>2', function() set_curr_win(2) end)
 mapset('n', '<C-W>3', function() set_curr_win(3) end)
@@ -375,81 +382,81 @@ mapset('n', '<C-W>6', function() set_curr_win(6) end)
 mapset('n', '<C-W>7', function() set_curr_win(7) end)
 mapset('n', '<C-W>8', function() set_curr_win(8) end)
 mapset('n', '<C-W>9', function() set_curr_win(9) end)
-map('n', '<C-W>s', '<C-W>s:bn<CR>', noremap)
-map('n', '<C-W>v', '<C-W>v:bn<CR>', noremap)
+mapset('n', '<C-W>s', '<C-W>s:bn<CR>', noremap)
+mapset('n', '<C-W>v', '<C-W>v:bn<CR>', noremap)
 mapset('n', '<C-W>w', win_fit_width_to_content)
 mapset('n', '<C-W>W', win_fit_filetype_width)
-map('n', '<leader>CC', '<CMD>lclose<CR>', noremap)
-map('n', '<leader>Cc', '<CMD>cclose<CR>', noremap)
-map('n', '<leader>CO', '<CMD>lopen<CR>', noremap)
-map('n', '<leader>Co', '<CMD>copen<CR>', noremap)
-map('n', '<leader>CF', '<CMD>lfirst<CR>', noremap)
-map('n', '<leader>Cf', '<CMD>cfirst<CR>', noremap)
-map('n', '<leader>CN', '<CMD>lnext<CR>', noremap)
-map('n', '<leader>Cn', '<CMD>cnext<CR>', noremap)
-map('n', '<leader>CP', '<CMD>lprevious<CR>', noremap)
-map('n', '<leader>Cp', '<CMD>cprevious<CR>', noremap)
-map('n', '<leader>CL', '<CMD>llast<CR>', noremap)
-map('n', '<leader>Cl', '<CMD>clast<CR>', noremap)
-map('n', '<A-y>',
+mapset('n', '<leader>CC', '<CMD>lclose<CR>', noremap)
+mapset('n', '<leader>Cc', '<CMD>cclose<CR>', noremap)
+mapset('n', '<leader>CO', '<CMD>lopen<CR>', noremap)
+mapset('n', '<leader>Co', '<CMD>copen<CR>', noremap)
+mapset('n', '<leader>CF', '<CMD>lfirst<CR>', noremap)
+mapset('n', '<leader>Cf', '<CMD>cfirst<CR>', noremap)
+mapset('n', '<leader>CN', '<CMD>lnext<CR>', noremap)
+mapset('n', '<leader>Cn', '<CMD>cnext<CR>', noremap)
+mapset('n', '<leader>CP', '<CMD>lprevious<CR>', noremap)
+mapset('n', '<leader>Cp', '<CMD>cprevious<CR>', noremap)
+mapset('n', '<leader>CL', '<CMD>llast<CR>', noremap)
+mapset('n', '<leader>Cl', '<CMD>clast<CR>', noremap)
+mapset('n', '<A-y>',
   ':registers "0123456789abcdefghijklmnopqrstuvwxyz*+.<CR>',
   noremap_silent)
-map('n', '<leader>Wc', ':lcd %:h', noremap)
-map('n', '<leader>We', ':e <C-R>=expand("%:p:h") . "/" <CR>', noremap)
-map('n', '<leader>Ww', ':w <C-R>=expand("%:p:h") . "/" <CR>', noremap)
-map('n', '<leader>Ws', ':sp <C-R>=expand("%:p:h") . "/" <CR>', noremap)
-map('n', '<leader>Wv', ':vs <C-R>=expand("%:p:h") . "/" <CR>', noremap)
-map('n', '<leader>Wt', ':terminal <C-R>=expand("%:p:h") . "/" <CR>',
+mapset('n', '<leader>Wc', ':lcd %:h', noremap)
+mapset('n', '<leader>We', ':e <C-R>=expand("%:p:h") . "/" <CR>', noremap)
+mapset('n', '<leader>Ww', ':w <C-R>=expand("%:p:h") . "/" <CR>', noremap)
+mapset('n', '<leader>Ws', ':sp <C-R>=expand("%:p:h") . "/" <CR>', noremap)
+mapset('n', '<leader>Wv', ':vs <C-R>=expand("%:p:h") . "/" <CR>', noremap)
+mapset('n', '<leader>Wt', ':terminal <C-R>=expand("%:p:h") . "/" <CR>',
   noremap)
-map('n', '<leader>Yfn', ':let @+=expand("%")<CR>', noremap)
-map('n', '<leader>Yfp', ':let @+=expand("%:p")<CR>', noremap)
-map('n', '<leader>Yfd', ':let @+=expand("%:p:h")<CR>', noremap)
-map('n', '<leader>Pp', ':put =execute(\\"\\")<Left><Left><Left>', noremap)
-map('n', '<leader>Pv', ':vnew<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap)
-map('n', '<leader>Ps', ':new<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap)
-map('n', '<C-l>',
+mapset('n', '<leader>Yfn', ':let @+=expand("%")<CR>', noremap)
+mapset('n', '<leader>Yfp', ':let @+=expand("%:p")<CR>', noremap)
+mapset('n', '<leader>Yfd', ':let @+=expand("%:p:h")<CR>', noremap)
+mapset('n', '<leader>Pp', ':put =execute(\\"\\")<Left><Left><Left>', noremap)
+mapset('n', '<leader>Pv', ':vnew<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap)
+mapset('n', '<leader>Ps', ':new<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap)
+mapset('n', '<C-l>',
   ':hi Normal ctermbg=NONE guibg=NONE|nohlsearch|diffupdate<CR><C-L>',
   noremap)
-map('n', '<leader>S:',
+mapset('n', '<leader>S:',
   ':mkview! ~/.config/nvim/session/_view.vim<CR>:bn|bd#',
   noremap)
-map('n', '<leader>S.',
+mapset('n', '<leader>S.',
   ':source ~/.config/nvim/session/_view.vim<CR>',
   noremap)
-map('n', '<leader>S_',
+mapset('n', '<leader>S_',
   ':mksession! ~/.config/nvim/session/_last.vim<CR>',
   noremap)
-map('n', '<leader>S-',
+mapset('n', '<leader>S-',
   ':source ~/.config/nvim/session/_last.vim<CR>',
   noremap)
-map('n', '<leader>SS',
+mapset('n', '<leader>SS',
   ':mksession! ~/.config/nvim/session/.vim<Left><Left><Left><Left>',
   noremap)
-map('n', '<leader>Ss',
+mapset('n', '<leader>Ss',
   ':mksession ~/.config/nvim/session/.vim<Left><Left><Left><Left>',
   noremap)
-map('n', '<leader>SV',
+mapset('n', '<leader>SV',
   ':mkview! ~/.config/nvim/session/.vim<Left><Left><Left><Left>',
   noremap)
-map('n', '<leader>Sv',
+mapset('n', '<leader>Sv',
   ':mkview ~/.config/nvim/session/.vim<Left><Left><Left><Left>',
   noremap)
-map('n', '<leader>Sl',
+mapset('n', '<leader>Sl',
   ':source ~/.config/nvim/session/',
   noremap)
-map('n', '<leader>SWS',
+mapset('n', '<leader>SWS',
   ':mksession! ~/.config/nvim/session/<C-R>=v:lua.getcwdhead()<CR>-.vim<Left><Left><Left><Left>',
   noremap)
-map('n', '<leader>SWs',
+mapset('n', '<leader>SWs',
   ':mksession ~/.config/nvim/session/<C-R>=v:lua.getcwdhead()<CR>-.vim<Left><Left><Left><Left>',
   noremap)
-map('n', '<leader>SWV',
+mapset('n', '<leader>SWV',
   ':mkview! ~/.config/nvim/session/<C-R>=v:lua.getcwdhead()<CR>-.vim<Left><Left><Left><Left>',
   noremap)
-map('n', '<leader>SWv',
+mapset('n', '<leader>SWv',
   ':mkview ~/.config/nvim/session/<C-R>=v:lua.getcwdhead()<CR>-.vim<Left><Left><Left><Left>',
   noremap)
-map('n', '<leader>SWl',
+mapset('n', '<leader>SWl',
   ':source ~/.config/nvim/session/<C-R>=v:lua.getcwdhead()<CR>',
   noremap)
 mapset('n', '<leader>ES', vim.diagnostic.show)
@@ -457,37 +464,57 @@ mapset('n', '<leader>Es', function() vim.diagnostic.show(nil, 0) end)
 mapset('n', '<leader>EH', vim.diagnostic.hide)
 mapset('n', '<leader>Eh', function() vim.diagnostic.hide(nil, 0) end)
 -- Emacs style keybindings
-map('i', '<A-p>', '<C-p>', noremap_silent)
-map('i', '<A-n>', '<C-n>', noremap_silent)
-map('i', '<C-p>', '<Up>', noremap_silent)
-map('i', '<C-n>', '<Down>', noremap_silent)
-map('i', '<A-b>', '<S-Left>', noremap_silent)
-map('i', '<A-f>', '<S-Right>', noremap_silent)
-map('i', '<C-b>', '<Left>', noremap_silent)
-map('i', '<C-f>', '<Right>', noremap_silent)
-map('i', '<C-x><C-a>', '<C-a>', noremap_silent)
-map('i', '<C-a>', '<Home>', noremap_silent)
-map('i', '<C-e>', '<End>', noremap_silent)
-map('i', '<C-d>', '<Del>', noremap_silent)
-map('i', '<A-d>', '<C-o>dw', noremap_silent)
--- map('i', '<A-v>', '<PageUp>', noremap_silent)
--- map('i', '<C-v>', '<PageDown>', noremap_silent)
-map('i', '<C-k>', '<C-o>D', noremap_silent)
+mapset('i', '<A-p>', '<C-p>', noremap_silent)
+mapset('i', '<A-n>', '<C-n>', noremap_silent)
+mapset('i', '<C-p>', '<Up>', noremap_silent)
+mapset('i', '<C-n>', '<Down>', noremap_silent)
+mapset('i', '<A-b>', '<S-Left>', noremap_silent)
+mapset('i', '<A-f>', '<S-Right>', noremap_silent)
+mapset('i', '<C-b>', '<Left>', noremap_silent)
+mapset('i', '<C-f>', '<Right>', noremap_silent)
+mapset('i', '<C-x><C-a>', '<C-a>', noremap_silent)
+mapset('i', '<C-a>', '<Home>', noremap_silent)
+mapset('i', '<C-e>', '<End>', noremap_silent)
+mapset('i', '<C-d>', '<Del>', noremap_silent)
+mapset('i', '<A-d>', '<C-o>dw', noremap_silent)
+-- mapset('i', '<A-v>', '<PageUp>', noremap_silent)
+-- mapset('i', '<C-v>', '<PageDown>', noremap_silent)
+mapset('i', '<C-k>', '<C-o>D', noremap_silent)
 -- Both <BS> and <C-BS> sends ^? on terminals
--- map('i', '<C-BS>', '<C-o>db', noremap_silent)
-map('i', '<A-BS>', '<C-o>db', noremap_silent)
+-- mapset('i', '<C-BS>', '<C-o>db', noremap_silent)
+mapset('i', '<A-BS>', '<Left><C-o>dvb', noremap_silent)
 -- <C-u> already exists
-map('c', '<A-p>', '<C-p>', noremap)
-map('c', '<A-n>', '<C-n>', noremap)
-map('c', '<A-b>', '<C-f>b<C-c>', noremap)
-map('c', '<A-f>', '<C-f>e<C-c><Right>', noremap)
-map('c', '<C-b>', '<Left>', noremap)
-map('c', '<C-f>', 'getcmdpos()>strlen(getcmdline())?&cedit:"\\<Lt>Right>"', noremap_expr)
-map('c', '<C-x><C-a>', '<C-a>', noremap)
-map('c', '<C-a>', '<Home>', noremap)
+mapset('c', '<A-p>', '<C-p>', noremap)
+mapset('c', '<A-n>', '<C-n>', noremap)
+mapset('c', '<A-b>', '<C-f>b<C-c>', noremap)
+mapset('c', '<A-f>', '<C-f>e<C-c><Right>', noremap)
+mapset('c', '<C-b>', '<Left>', noremap)
+mapset('c', '<C-f>', function()
+  -- 'getcmdpos()>strlen(getcmdline())?&cedit:"\\<Lt>Right>"'
+  if vim.fn.getcmdpos() > vim.fn.getcmdline():len() then
+    return '<C-f>'
+  else
+    return '<Right>'
+  end
+end, noremap_expr)
+mapset('c', '<C-x><C-a>', '<C-a>', noremap)
+mapset('c', '<C-a>', '<Home>', noremap)
 -- <C-e> already exists
--- map('c', '<C-e>', '<End>', noremap_silent)
-map('c', '<C-d>', 'getcmdpos()>strlen(getcmdline())?"\\<Lt>C-D>":"\\<Lt>Del>"', noremap_expr)
-map('c', '<A-d>', '<C-f>dw<C-c>', noremap)
-map('c', '<C-k>', '<C-f>D<C-c><Right>', noremap)
-map('c', '<A-BS>', '<C-f>db<C-c>', noremap)
+-- mapset('c', '<C-e>', '<End>', noremap_silent)
+mapset('c', '<C-d>', function()
+  -- 'getcmdpos()>strlen(getcmdline())?"\\<Lt>C-D>":"\\<Lt>Del>"'
+  if vim.fn.getcmdpos() > vim.fn.getcmdline():len() then
+    return '<C-d>'
+  else
+    return '<Del>'
+  end
+end, noremap_expr)
+mapset('c', '<A-d>', '<C-f>dw<C-c>', noremap)
+mapset('c', '<C-k>', '<C-f>D<C-c><Right>', noremap)
+mapset('c', '<A-BS>', function()
+  if vim.fn.getcmdpos() > vim.fn.getcmdline():len() then
+    return '<C-f>dvb<C-c><Right>'
+  else
+    return '<C-f>db<C-c>'
+  end
+end, noremap_expr)
