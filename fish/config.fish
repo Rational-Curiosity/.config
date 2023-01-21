@@ -6,12 +6,18 @@ set -xg VISUAL vi
 
 switch (uname -n)
 case 'gigas*'
-    set -xg COMPOSE_FILE "$HOME/Prog/gigas/gigas_devenv/docker-compose.yml"
-    set -xg CODEPATH "$HOME/Prog/gigas"
-    set -xg CODELIBSPATH "$CODEPATH/libs"
-    set -xg CODEPKGSPATH "$CODELIBSPATH/npm-packages"
-    set -xg HOSTBILL_UID '1000'
-    set -xg HOSTBILL_GID '1000'
+    function activate-gigas
+        set -xg COMPOSE_FILE "$HOME/Prog/gigas/gigas_devenv/docker-compose.yml"
+        set -xg CODEPATH "$HOME/Prog/gigas"
+        set -xg CODELIBSPATH "$CODEPATH/libs"
+        set -xg CODEPKGSPATH "$CODELIBSPATH/npm-packages"
+        set -xg HOSTBILL_UID '1000'
+        set -xg HOSTBILL_GID '1000'
+    end
+    activate-gigas
+    function deactivate-gigas
+        set -e COMPOSE_FILE CODEPATH CODELIBSPATH CODEPKGSPATH HOSTBILL_UID HOSTBILL_GID
+    end
 end
 
 abbr -a m math
