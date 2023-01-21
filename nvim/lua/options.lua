@@ -63,6 +63,8 @@ end
 g.python3_host_prog = vim.fn.executable('/usr/local/bin/python3') == 1 and
   '/usr/local/bin/python3' or '/usr/bin/python3'
 g.netrw_scp_cmd = 'yad --separator= --form --field=Password:H|sshpass scp -q'
+g.loaded_ruby_provider = 0
+g.loaded_perl_provider = 0
 
 -- CSV
 g.csv_no_conceal = 1
@@ -127,13 +129,15 @@ vim.cmd([[
   let g:VM_maps["Add Cursor Up"]      = '<M-k>'
 
   " Abbreviations
-  cabbrev <expr> E 'e '.expand('%:p:h')
-  cabbrev vh vert help
-  cabbrev bdn bn<bar>bd#
-  cabbrev bdp bp<bar>bd#
-  cabbrev Mess Messages
-  cabbrev lp lua print
-  cabbrev lpi lua print(vim.inspect
+  cabbrev <expr> E getcmdtype() == ':' ? 'e '.expand('%:p:h') : 'E'
+  cabbrev <expr> VS getcmdtype() == ':' ? 'vs '.expand('%:p:h') : 'VS'
+  cabbrev <expr> SP getcmdtype() == ':' ? 'sp '.expand('%:p:h') : 'SP'
+  cabbrev <expr> vh getcmdtype() == ':' ? 'vert help' : 'vh'
+  cabbrev <expr> bdn getcmdtype() == ':' ? 'bn<bar>bd#' : 'bdn'
+  cabbrev <expr> bdp getcmdtype() == ':' ? 'bp<bar>bd#' : 'bdp'
+  cabbrev <expr> Mess getcmdtype() == ':' ? 'Messages' : 'Mess'
+  cabbrev <expr> lp getcmdtype() == ':' ? 'lua print' : 'lp'
+  cabbrev <expr> lpi getcmdtype() == ':' ? 'lua print(vim.inspect' : 'lpi'
 
   " Commands
   " command! -nargs=1 E exec 'e' expand('%:p:h').'/'.<f-args>
