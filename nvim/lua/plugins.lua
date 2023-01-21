@@ -30,19 +30,17 @@ return {
     dependencies = {
       'anuvyklack/keymap-layer.nvim',
     },
-    keys = { '<C-w>' },
+    keys = { '<C-w>m', '<leader>hm', '<leader>dm' },
     config = function()
       local Hydra = require('hydra')
       local gitsigns = require('gitsigns')
 
       Hydra({
         hint = [[
-        _J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
-        _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full 
-        ^ ^              _S_: stage buffer      ^ ^                 _/_: show base file
-        ^
-        ^ ^              _<Enter>_: Neogit              _q_: exit
-        ]],
+ _J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
+ _K_: prev hunk   _u_: undo stage hunk   _p_: preview hunk   _B_: blame show full 
+ ^ ^              _S_: stage buffer      ^ ^                 _/_: show base file
+ ^ ^              _<Enter>_: Neogit      _<Esc>_ or _q_: exit]],
         config = {
           color = 'teal',
           invoke_on_body = true,
@@ -61,7 +59,7 @@ return {
             gitsigns.toggle_deleted(false)
           end
         },
-        mode = {'n','x'},
+        mode = { 'n', 'x' },
         body = '<leader>hm',
         heads = {
           { 'J', function()
@@ -84,32 +82,69 @@ return {
           { '/', gitsigns.show, { exit = true } }, -- show the base of the file
           { '<Enter>', '<cmd>Neogit<CR>', { exit = true } },
           { 'q', nil, { exit = true, nowait = true } },
+          { '<Esc>', nil, { exit = true, nowait = true } },
+        }
+      })
+
+      Hydra({
+        hint = [[
+ _n_: step over  _b_: toggle breakpoint     _c_: continue
+ _p_: step back  _l_: list breakpoints      _r_: toggle repl
+ _o_: step out   _d_: clear breakpoints     _L_: log point msg 
+ _i_: step into  _B_: breakpoint condition  _R_: run last
+         _<Esc>_ or _q_: exit               _Q_: terminate]],
+        config = {
+          invoke_on_body = true,
+          hint = {
+            position = 'bottom',
+            border = 'rounded'
+          },
+        },
+        mode = 'n',
+        body = '<leader>dm',
+        heads = {
+          { 'b', '<leader>db', { private = false } },
+          { 'c', '<leader>dc' },
+          { 'n', '<leader>dn' },
+          { 'p', '<leader>dp' },
+          { 'o', '<leader>do' },
+          { 'i', '<leader>di' },
+          { 'r', '<leader>dr' },
+          { 'l', '<leader>dl' },
+          { 'd', '<leader>dd' },
+          { 'R', '<leader>dR' },
+          { 'B', '<leader>dB' },
+          { 'L', '<leader>dL' },
+          { 'Q', '<leader>dQ' },
+          { 'q', nil, { exit = true, nowait = true } },
+          { '<Esc>', nil, { exit = true, nowait = true } },
         }
       })
 
       Hydra({
         name = 'WINDOWS',
         hint = [[
-        ^^^ Move  ^^  ^^^^ Size  ^^  ^^ Split
-        ^^^-------^^  ^^^^-------^^  ^^--------
-        ^ ^ _k_ ^ ^    ^ ^ _-_ ^ ^   _s_: horizontally
-        _h_ ^ ^ _l_    _<_ ^ ^ _>_   _v_: vertically
-        ^ ^ _j_ ^ ^    ^ ^ _+_ ^ ^
-        ^^^^^^^^^^      _=_ equalize  _q_: close
-        ]],
+ ^ ^Move^ ^ ^  ^^^^ Size  ^^  ^^ Split
+ ^-^----^-^-^  ^^^^-------^^  ^^--------
+  ^ ^ _k_ ^ ^    ^ ^ _-_ ^ ^   _s_: horizontally 
+  _h_ ^ ^ _l_    _<_ ^ ^ _>_   _v_: vertically
+  ^ ^ _j_ ^ ^    ^ ^ _+_ ^ ^
+ ^^^^^^^^^^      _=_ equalize  _q_: close]],
         config = {
           timeout = false,
+          invoke_on_body = true,
           hint = {
             border = 'rounded',
             position = 'middle'
           }
         },
         mode = 'n',
-        body = '<C-w>',
+        body = '<C-w>m',
         heads = {
           { 'h', '<C-w>h', { private = true } },
           { 'j', '<C-w>j', { private = true } },
-          { 'k', [[<CMD>try | wincmd k | catch /^Vim\%((\a\+)\)\=:E11:/ | close | endtry<CR>]], { private = true } },
+          { 'k', [[<CMD>try | wincmd k | catch /^Vim\%((\a\+)\)\=:E11:/ | close | endtry<CR>]],
+            { private = true } },
           { 'l', '<C-w>l', { private = true } },
 
           { '<', '<C-w><' },
@@ -121,7 +156,8 @@ return {
 
           { 's', '<C-w>s', { private = true } },
           { 'v', '<C-w>v', { private = true } },
-          { 'q', [[<CMD>try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry<CR>]], { private = true } },
+          { 'q', [[<CMD>try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry<CR>]],
+            { private = true } },
           { '<Esc>', nil,  { exit = true, desc = false } }
         }
       })
@@ -232,7 +268,7 @@ return {
   },
   {
     'numToStr/Comment.nvim',
-    keys = {'gc', 'gb', {'gc', mode = 'x' }, { 'gb', mode = 'x' } },
+    keys = { 'gc', 'gb', { 'gc', mode = 'x' }, { 'gb', mode = 'x' } },
     config = function()
       require('Comment').setup()
     end
@@ -720,6 +756,7 @@ return {
           "haskell",
           "help",
           "html",
+          "htmldjango",
           "http",
           "ini",
           "java",
@@ -1558,7 +1595,7 @@ return {
       { 'ray-x/cmp-treesitter' },
       { 'saadparwaiz1/cmp_luasnip' },
     },
-    event = 'VeryLazy',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     config = function()
       -- Setup nvim-cmp.
       local cmp = require'cmp'
@@ -1972,6 +2009,7 @@ return {
       mapset('n', '<leader>dL', function()
         require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
       end, opts)
+      mapset('n', '<leader>dQ', require"dap".terminate, opts)
 
       require'which-key'.register({
         d = {
@@ -2010,7 +2048,7 @@ return {
       local mapset = vim.keymap.set
       mapset('n', '<leader>dF', '<cmd>lua require"dap-python".test_method()<CR>', opts)
       mapset('n', '<leader>dC', '<cmd>lua require"dap-python".test_class()<CR>', opts)
-      mapset('n', '<leader>dS', '<ESC>:lua require"dap-python".debug_selection()<CR>', opts)
+      mapset('v', '<leader>dS', '<ESC>:lua require"dap-python".debug_selection()<CR>', opts)
     end
   },
   {
