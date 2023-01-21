@@ -74,7 +74,7 @@ hints:
       binding:
         key: P
         mods: Control|Shift
-    - regex: "[^[:space:]│]+([Ee][Rr][Rr]|[Ee][Xx][Cc][Ee][Pp][Tt]|[Ff][Aa][Ii][Ll]).*"
+    - regex: "[^[:space:]│]*([Ee][Rr][Rr]|[Ee][Xx][Cc][Ee][Pp][Tt]|[Ff][Aa][Ii][Ll])[^│]*"
       action: Copy
       post_processing: false
       mouse:
@@ -82,7 +82,7 @@ hints:
       binding:
         key: E
         mods: Control|Shift
-    - regex: "(sudo|b?[as]sh|docker-compose|docker|git|ls|cd|mkdir|cat|n?vim?|c?make|cargo|rust\
+    - regex: "(sudo|b?[as]sh|if|for|docker-compose|docker|git|ls|cd|mkdir|cat|n?vim?|c?make|cargo|rust\
               |python[23]?|pip|pytest|mvn|apt\
               |php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl|sed|basename|dirname\
               )( +[^[:space:]│]+)+"
