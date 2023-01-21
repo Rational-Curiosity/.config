@@ -1,7 +1,6 @@
 local noremap = { noremap = true }
 local silent = { silent = true }
 local noremap_silent = { noremap = true, silent = true }
-local map = vim.api.nvim_set_keymap
 local mapset = vim.keymap.set
 local ft_prog = {
   'python', 'php', 'json',
@@ -251,37 +250,37 @@ return {
       { 'lpoto/telescope-tasks.nvim' },
     },
     keys = {
-      { '<leader>f,', ':Telescope grep_string  initial_mode=insert search=' },
-      { '<leader>f-', '<cmd>Telescope resume initial_mode=insert<cr>' },
-      { '<leader>f.', '<cmd>Telescope grep_string<cr>' },
-      { '<leader>f:', '<cmd>Telescope grep_string ft=true<cr>' },
-      { '<leader>f;', ':Telescope grep_string ft=true  initial_mode=insert search=' },
-      { '<leader>fa', '<cmd>Telescope tasks initial_mode=insert<cr>' },
-      { '<leader>fb', '<cmd>Telescope buffers initial_mode=insert<cr>' },
-      { '<leader>fc', '<cmd>Telescope textcase normal_mode initial_mode=insert<cr>' },
-      { '<leader>fc', '<cmd>Telescope textcase visual_mode initial_mode=insert<cr>', mode = 'v' },
-      { '<leader>fd', '<cmd>Telescope diagnostics<cr>' },
-      { '<leader>ff', '<cmd>Telescope find_files initial_mode=insert<cr>' },
-      { '<leader>fgC', '<cmd>Telescope git_commits<cr>' },
-      { '<leader>fgS', '<cmd>Telescope git_stash<cr>' },
-      { '<leader>fgb', '<cmd>Telescope git_branches<cr>' },
-      { '<leader>fgc', '<cmd>Telescope git_bcommits<cr>' },
-      { '<leader>fgf', '<cmd>Telescope git_files<cr>' },
-      { '<leader>fgs', '<cmd>Telescope git_status<cr>' },
-      { '<leader>fh', '<cmd>Telescope help_tags initial_mode=insert<cr>' },
-      { '<leader>flA', '<cmd>Telescope lsp_range_code_actions<cr>' },
-      { '<leader>fla', '<cmd>Telescope lsp_code_actions<cr>' },
-      { '<leader>fld', '<cmd>Telescope lsp_definitions<cr>' },
-      { '<leader>fli', '<cmd>Telescope lsp_implementations<cr>' },
-      { '<leader>flr', '<cmd>Telescope lsp_references<cr>' },
-      { '<leader>fls', '<cmd>Telescope lsp_workspace_symbols<cr>' },
-      { '<leader>fo', '<cmd>Telescope oldfiles initial_mode=insert<cr>' },
-      { '<leader>fR', '<cmd>Telescope live_grep ft=true initial_mode=insert<cr>' },
-      { '<leader>fr', '<cmd>Telescope live_grep initial_mode=insert<cr>' },
-      { '<leader>fs', '<cmd>Telescope treesitter<cr>' },
-      { '<leader>fu', '<cmd>Telescope undo<cr>' },
-      { '<leader>f.', '"0y:Telescope grep_string search=<c-r>0<cr>', mode = 'x' },
-      { '<leader>f:', '"0y:Telescope grep_string ft=true search=<c-r>0<cr>', mode = 'x' },
+      { '<leader>f,', ':Telescope grep_string  initial_mode=insert search=', desc = 'Telescope grep_string search' },
+      { '<leader>f-', '<cmd>Telescope resume initial_mode=insert<cr>', desc = 'Telescope resume' },
+      { '<leader>f.', '<cmd>Telescope grep_string<cr>', desc = 'Telescope grep_string' },
+      { '<leader>f:', '<cmd>Telescope grep_string ft=true<cr>', desc = 'Telescope grep_string ft' },
+      { '<leader>f;', ':Telescope grep_string ft=true initial_mode=insert search=', desc = 'Telescope grep_string ft search' },
+      { '<leader>fa', '<cmd>Telescope tasks initial_mode=insert<cr>', desc = 'Telescope tasks' },
+      { '<leader>fb', '<cmd>Telescope buffers initial_mode=insert<cr>', desc = 'Telescope buffers' },
+      { '<leader>fc', '<cmd>Telescope textcase normal_mode initial_mode=insert<cr>', desc = 'Telescope textcase' },
+      { '<leader>fc', '<cmd>Telescope textcase visual_mode initial_mode=insert<cr>', mode = 'v', desc = 'Telescope textcase' },
+      { '<leader>fd', '<cmd>Telescope diagnostics<cr>', desc = 'Telescope diagnostic' },
+      { '<leader>ff', '<cmd>Telescope find_files initial_mode=insert<cr>', desc = 'Telescope find_files' },
+      { '<leader>fgC', '<cmd>Telescope git_commits<cr>', desc = 'Telescope git_commits' },
+      { '<leader>fgS', '<cmd>Telescope git_stash<cr>', desc = 'Telescope git_stash' },
+      { '<leader>fgb', '<cmd>Telescope git_branches<cr>', desc = 'Telescope git_branches' },
+      { '<leader>fgc', '<cmd>Telescope git_bcommits<cr>', desc = 'Telescope git_bcommits' },
+      { '<leader>fgf', '<cmd>Telescope git_files<cr>', desc = 'Telescope git_files' },
+      { '<leader>fgs', '<cmd>Telescope git_status<cr>', desc = 'Telescope git_status' },
+      { '<leader>fh', '<cmd>Telescope help_tags initial_mode=insert<cr>', desc = 'Telescope help_tags' },
+      { '<leader>flA', '<cmd>Telescope lsp_range_code_actions<cr>', desc = 'Telescope lsp_range_code_actions' },
+      { '<leader>fla', '<cmd>Telescope lsp_code_actions<cr>', desc = 'Telescope lsp_code_actions' },
+      { '<leader>fld', '<cmd>Telescope lsp_definitions<cr>', desc = 'Telescope lsp_definitions' },
+      { '<leader>fli', '<cmd>Telescope lsp_implementations<cr>', desc = 'Telescope lsp_implementations' },
+      { '<leader>flr', '<cmd>Telescope lsp_references<cr>', desc = 'Telescope lsp_references' },
+      { '<leader>fls', '<cmd>Telescope lsp_workspace_symbols<cr>', desc = 'Telescope lsp_workspace_symbols' },
+      { '<leader>fo', '<cmd>Telescope oldfiles initial_mode=insert<cr>', desc = 'Telescope oldfiles' },
+      { '<leader>fR', '<cmd>Telescope live_grep ft=true initial_mode=insert<cr>', desc = 'Telescope live_grep ft' },
+      { '<leader>fr', '<cmd>Telescope live_grep initial_mode=insert<cr>', desc = 'Telescope live_grep' },
+      { '<leader>fs', '<cmd>Telescope treesitter<cr>', desc = 'Telescope treesitter' },
+      { '<leader>fu', '<cmd>Telescope undo<cr>', desc = 'Telescope undo' },
+      { '<leader>f.', '"0y:Telescope grep_string search=<c-r>0<cr>', mode = 'x', desc = 'Telescope grep_string' },
+      { '<leader>f:', '"0y:Telescope grep_string ft=true search=<c-r>0<cr>', mode = 'x', desc = 'Telescope grep_string ft' },
     },
     cmd = 'Telescope',
     config = function()
@@ -385,7 +384,7 @@ return {
       telescope.load_extension('textcase')
       telescope.load_extension('tasks')
       local tasks = require'telescope'.extensions.tasks
-      tasks.generators.add {
+      tasks.generators.custom.add {
         generator = function(buf)
           return {
             {
@@ -491,6 +490,9 @@ return {
   {
     'sbdchd/neoformat',
     cmd = 'Neoformat',
+    config = function()
+      vim.g.neoformat_only_msg_on_error = 1
+    end
   },
   {
     'kylechui/nvim-surround',
@@ -619,27 +621,27 @@ return {
           enable = false
         },
       }
-      map('n', ']h', "&diff ? ']h' : '<cmd>Gitsigns next_hunk<CR>'", { noremap=true, expr=true })
-      map('n', '[h', "&diff ? '[h' : '<cmd>Gitsigns prev_hunk<CR>'", { noremap=true, expr=true })
+      mapset('n', ']h', "&diff ? ']h' : '<cmd>Gitsigns next_hunk<CR>'", { noremap=true, expr=true })
+      mapset('n', '[h', "&diff ? '[h' : '<cmd>Gitsigns prev_hunk<CR>'", { noremap=true, expr=true })
 
-      map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>', noremap)
-      map('v', '<leader>hs', ':Gitsigns stage_hunk<CR>', noremap)
-      map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', noremap)
-      map('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>', noremap)
-      map('v', '<leader>hr', ':Gitsigns reset_hunk<CR>', noremap)
-      map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', noremap)
-      map('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', noremap)
-      map('n', '<leader>hB', '<cmd>lua require"gitsigns".blame_line{full=true}<CR>', noremap)
-      map('n', '<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<CR>', noremap)
-      map('n', '<leader>hts', '<cmd>Gitsigns toggle_signs<CR>', noremap)
-      map('n', '<leader>htn', '<cmd>Gitsigns toggle_numhl<CR>', noremap)
-      map('n', '<leader>htl', '<cmd>Gitsigns toggle_linehl<CR>', noremap)
-      map('n', '<leader>htw', '<cmd>Gitsigns toggle_word_diff<CR>', noremap)
-      map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', noremap)
-      map('n', '<leader>hU', '<cmd>Gitsigns reset_buffer_index<CR>', noremap)
+      mapset('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>', noremap)
+      mapset('v', '<leader>hs', ':Gitsigns stage_hunk<CR>', noremap)
+      mapset('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', noremap)
+      mapset('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>', noremap)
+      mapset('v', '<leader>hr', ':Gitsigns reset_hunk<CR>', noremap)
+      mapset('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', noremap)
+      mapset('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', noremap)
+      mapset('n', '<leader>hB', '<cmd>lua require"gitsigns".blame_line{full=true}<CR>', noremap)
+      mapset('n', '<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<CR>', noremap)
+      mapset('n', '<leader>hts', '<cmd>Gitsigns toggle_signs<CR>', noremap)
+      mapset('n', '<leader>htn', '<cmd>Gitsigns toggle_numhl<CR>', noremap)
+      mapset('n', '<leader>htl', '<cmd>Gitsigns toggle_linehl<CR>', noremap)
+      mapset('n', '<leader>htw', '<cmd>Gitsigns toggle_word_diff<CR>', noremap)
+      mapset('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', noremap)
+      mapset('n', '<leader>hU', '<cmd>Gitsigns reset_buffer_index<CR>', noremap)
 
-      map('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>', noremap)
-      map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>', noremap)
+      mapset('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>', noremap)
+      mapset('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>', noremap)
     end
   },
   {
@@ -684,6 +686,8 @@ return {
 
       require'nvim-treesitter.configs'.setup {
         ensure_installed = {
+          "arduino",
+          "awk",
           "bash",
           "bibtex",
           "c",
@@ -695,11 +699,18 @@ return {
           "cpp",
           "css",
           "dart",
+          "diff",
           "dockerfile",
           "dot",
           "elixir",
           "elm",
           "erlang",
+          "fennel",
+          "fish",
+          "git_rebase",
+          "gitattributes",
+          "gitcommit",
+          "gitignore",
           "glimmer",
           "go",
           "godot_resource",
@@ -707,22 +718,33 @@ return {
           "gowork",
           "graphql",
           "haskell",
+          "help",
           "html",
+          "http",
+          "ini",
           "java",
           "javascript",
+          "jq",
           "jsdoc",
           "json",
           "json5",
           "jsonc",
+          "jsonnet",
+          "julia",
           "kotlin",
           "latex",
+          "llvm",
           "lua",
           "make",
           "markdown",
+          "markdown_inline",
+          "meson",
+          "ninja",
           -- "norg", "norg_meta", "norg_table",
           "org",
           "perl",
           "php",
+          "phpdoc",
           "python",
           "ql",
           "query",
@@ -730,7 +752,10 @@ return {
           "rst",
           "rust",
           "scala",
+          "scheme",
           "scss",
+          "sql",
+          "svelte",
           "toml",
           "tsx",
           "typescript",
@@ -814,8 +839,8 @@ return {
         -- },
       }
 
-      vim.api.nvim_set_keymap('', '<space>I',
-        '<cmd>echo nvim_treesitter#statusline()<cr>', { noremap = true })
+      vim.keymap.set('', '<space>I',
+        '<cmd>echo nvim_treesitter#statusline()<cr>')
       -- vim.treesitter.set_query("python", "folds", [[
       --   (function_definition (block) @fold)
       --   (class_definition (block) @fold)
@@ -1076,14 +1101,25 @@ return {
     cmd = { 'TSJToggle', 'TSJSplit', 'TSJJoin' },
     dependencies = { 'nvim-treesitter' },
     keys = {
-      { '<leader>ss', '<cmd>TSJSplit<CR>' },
-      { '<leader>sj', '<cmd>TSJJoin<CR>' },
+      { '<leader>ss', '<cmd>TSJSplit<CR>', desc = 'TSJSplit' },
+      { '<leader>sj', '<cmd>TSJJoin<CR>', desc = 'TSJJoin' },
     },
     config = function()
       require('treesj').setup {
         check_syntax_error = false,
         max_join_length = 150,
       }
+    end,
+  },
+  {
+    'ckolkey/ts-node-action',
+    cmd = { 'NodeAction' },
+    dependencies = { 'nvim-treesitter' },
+    keys = {
+      { '<leader>sa', '<cmd>NodeAction<cr>', desc = 'NodeAction' },
+    },
+    config = function()
+      require'ts-node-action'.setup {}
     end,
   },
   {
@@ -1357,6 +1393,8 @@ return {
               padding = {left=0, right=0}}
           },
           lualine_b = {
+            {function() if vim.env.VIRTUAL_ENV then return '👾' else return '' end end,
+              color = { fg = "#ff9e64" }, padding = 0},
             {'branch', fmt=function(s)
                 if s == '' then
                   branch_space = 0
@@ -1684,7 +1722,8 @@ return {
         mapset('n', '<leader>ln', vim.lsp.buf.rename, opts)
         mapset('n', '<leader>la', vim.lsp.buf.code_action, opts)
         mapset('n', '<leader>lr', vim.lsp.buf.references, opts)
-        mapset({ 'n', 'v' }, '<leader>lf', vim.lsp.buf.format, opts)
+        --mapset({ 'n', 'v' }, '<leader>lf', vim.lsp.buf.format, opts)
+        mapset({ 'n', 'v' }, '<leader>lf', function() vim.lsp.buf.format { async = true } end, opts)
 
         mapset('n', '<leader>lwD', function()
           vim.api.nvim_command('vsplit')
@@ -1813,19 +1852,13 @@ return {
       }
       -- Linters
       lspconfig.eslint.setup {}
-      local lspconfigs = require'lspconfig.configs'
-      -- pip install ruff-lsp
-      lspconfigs.ruff_lsp = {
-        default_config = {
-          cmd = { 'ruff-lsp' },
-          filetypes = { 'python' },
-          root_dir = lspconfig.util.find_git_ancestor,
-          init_options = {
-            args = {}
-          },
-        },
+      lspconfig.ruff_lsp.setup {
+        init_options = {
+          settings = {
+            args = { '--line-length', '79' }
+          }
+        }
       }
-      lspconfig.ruff_lsp.setup { }
 
       -- Handlers
       vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
@@ -1974,10 +2007,10 @@ return {
         dap_python.test_runner = 'pytest'
       end
       local opts = { noremap=true, silent=true }
-      local map = vim.api.nvim_set_keymap
-      map('n', '<leader>dF', '<cmd>lua require"dap-python".test_method()<CR>', opts)
-      map('n', '<leader>dC', '<cmd>lua require"dap-python".test_class()<CR>', opts)
-      map('n', '<leader>dS', '<ESC>:lua require"dap-python".debug_selection()<CR>', opts)
+      local mapset = vim.keymap.set
+      mapset('n', '<leader>dF', '<cmd>lua require"dap-python".test_method()<CR>', opts)
+      mapset('n', '<leader>dC', '<cmd>lua require"dap-python".test_class()<CR>', opts)
+      mapset('n', '<leader>dS', '<ESC>:lua require"dap-python".debug_selection()<CR>', opts)
     end
   },
   {
