@@ -84,7 +84,7 @@ hints:
         mods: Control|Shift
     - regex: "(sudo|b?[as]sh|if|for|docker-compose|docker|git|ls|cd|mkdir|cat|n?vim?|c?make|cargo|rust\
               |python[23]?|pip|pytest|mvn|apt\
-              |php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl|sed|basename|dirname\
+              |php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl|sed|basename|dirname|head|tail\
               )( +[^[:space:]│]+)+"
       action: Copy
       post_processing: false
@@ -100,7 +100,7 @@ hints:
       mouse:
         enabled: true
       binding:
-        key: U
+        key: K
         mods: Control|Shift
     - regex: "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+\\.[0-9]+)?(:[0-9]+)?"
       action: Copy
