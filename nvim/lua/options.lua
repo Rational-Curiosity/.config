@@ -129,15 +129,15 @@ vim.cmd([[
   let g:VM_maps["Add Cursor Up"]      = '<M-k>'
 
   " Abbreviations
-  cabbrev <expr> E getcmdtype() == ':' ? 'e '.expand('%:p:h') : 'E'
-  cabbrev <expr> VS getcmdtype() == ':' ? 'vs '.expand('%:p:h') : 'VS'
-  cabbrev <expr> SP getcmdtype() == ':' ? 'sp '.expand('%:p:h') : 'SP'
-  cabbrev <expr> vh getcmdtype() == ':' ? 'vert help' : 'vh'
+  cabbrev <expr> E getcmdpos() == 2 && getcmdtype() == ':' ? 'e '.expand('%:p:h') : 'E'
+  cabbrev <expr> VS getcmdpos() == 3 && getcmdtype() == ':' ? 'vs '.expand('%:p:h') : 'VS'
+  cabbrev <expr> SP getcmdpos() == 3 && getcmdtype() == ':' ? 'sp '.expand('%:p:h') : 'SP'
+  cabbrev <expr> vh getcmdpos() == 3 && getcmdtype() == ':' ? 'vert help' : 'vh'
   cabbrev <expr> bdn getcmdtype() == ':' ? 'bn<bar>bd#' : 'bdn'
   cabbrev <expr> bdp getcmdtype() == ':' ? 'bp<bar>bd#' : 'bdp'
-  cabbrev <expr> Mess getcmdtype() == ':' ? 'Messages' : 'Mess'
-  cabbrev <expr> lp getcmdtype() == ':' ? 'lua print' : 'lp'
-  cabbrev <expr> lpi getcmdtype() == ':' ? 'lua print(vim.inspect' : 'lpi'
+  cabbrev <expr> Mess getcmdpos() == 5 && getcmdtype() == ':' ? 'Messages' : 'Mess'
+  cabbrev <expr> lp getcmdpos() == 3 && getcmdtype() == ':' ? 'lua print' : 'lp'
+  cabbrev <expr> lpi getcmdpos() == 4 && getcmdtype() == ':' ? 'lua print(vim.inspect' : 'lpi'
 
   " Commands
   " command! -nargs=1 E exec 'e' expand('%:p:h').'/'.<f-args>
