@@ -286,7 +286,7 @@ return {
       { 'lpoto/telescope-tasks.nvim' },
     },
     keys = {
-      { '<leader>f,', ':Telescope grep_string  initial_mode=insert search=', desc = 'Telescope grep_string search' },
+      { '<leader>f,', ':Telescope grep_string initial_mode=insert search=', desc = 'Telescope grep_string search' },
       { '<leader>f-', '<cmd>Telescope resume initial_mode=insert<cr>', desc = 'Telescope resume' },
       { '<leader>f.', '<cmd>Telescope grep_string<cr>', desc = 'Telescope grep_string' },
       { '<leader>f:', '<cmd>Telescope grep_string ft=true<cr>', desc = 'Telescope grep_string ft' },
@@ -315,8 +315,16 @@ return {
       { '<leader>fr', '<cmd>Telescope live_grep initial_mode=insert<cr>', desc = 'Telescope live_grep' },
       { '<leader>fs', '<cmd>Telescope treesitter<cr>', desc = 'Telescope treesitter' },
       { '<leader>fu', '<cmd>Telescope undo<cr>', desc = 'Telescope undo' },
-      { '<leader>f.', '"0y:Telescope grep_string search=<c-r>0<cr>', mode = 'x', desc = 'Telescope grep_string' },
-      { '<leader>f:', '"0y:Telescope grep_string ft=true search=<c-r>0<cr>', mode = 'x', desc = 'Telescope grep_string ft' },
+      { '<leader>f.', function()
+        -- '"0y:Telescope grep_string search=<c-r>0<cr>'
+        vim.api.nvim_command('normal! "0y')
+        require'telescope.builtin'.grep_string({ search = vim.fn.getreg('0') })
+      end, mode = 'x', desc = 'Telescope grep_string' },
+      { '<leader>f:', function()
+        -- '"0y:Telescope grep_string ft=true search=<c-r>0<cr>'
+        vim.api.nvim_command('normal! "0y')
+        require'telescope.builtin'.grep_string({ ft = true, search = vim.fn.getreg('0') })
+      end, mode = 'x', desc = 'Telescope grep_string ft' },
     },
     cmd = 'Telescope',
     config = function()
