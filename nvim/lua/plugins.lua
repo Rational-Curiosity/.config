@@ -2211,6 +2211,19 @@ return {
     end
   },
   {
+    'Exafunction/codeium.vim',
+    ft = ft_prog,
+    cmd = { 'Codeium' },
+    config = function ()
+      vim.g.codeium_disable_bindings = 1
+      vim.keymap.set('i', '<A-h>', vim.fn['codeium#Complete'])
+      vim.keymap.set('i', '<A-l>', vim.fn['codeium#Accept'], { expr = true })
+      vim.keymap.set('i', '<A-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+      vim.keymap.set('i', '<A-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+      vim.keymap.set('i', '<A-e>', vim.fn['codeium#Clear'], { expr = true })
+    end
+  },
+  {
     "folke/which-key.nvim",
     event = 'VeryLazy',
     config = function()
