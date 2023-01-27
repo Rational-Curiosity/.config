@@ -1698,13 +1698,19 @@ return {
     },
     ft = ft_prog,
     config = function()
-      -- vim.diagnostic.config({
-      --   virtual_text = true,
-      --   signs = true,
-      --   underline = true,
-      --   update_in_insert = false,
-      --   severity_sort = false,
-      -- })
+      local diagnostic_config = {
+          virtual_text = {
+            spacing = 1,
+            prefix = '▪',
+            format = function(diagnostic)
+              return diagnostic.message:match('^%s*(.-)%s*$'):gsub('%s%s+', ' ')
+            end,
+          },
+          signs = true,
+          underline = false,
+          update_in_insert = false,
+        }
+      vim.diagnostic.config(diagnostic_config)
       -- local signs = { Error = "E", Warn = "W", Hint = "H", Info = "I" }
       -- for type, icon in pairs(signs) do
       --   local hl = "DiagnosticSign" .. type
@@ -1907,18 +1913,7 @@ return {
 
       -- Handlers
       vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics, {
-          virtual_text = {
-            spacing = 1,
-            prefix = '▪',
-            format = function(diagnostic)
-              return diagnostic.message:match('^%s*(.-)%s*$'):gsub('%s%s+', ' ')
-            end,
-          },
-          signs = true,
-          underline = false,
-          update_in_insert = false,
-        }
+        vim.lsp.diagnostic.on_publish_diagnostics, diagnostic_config
       )
     end
   },
