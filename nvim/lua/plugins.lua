@@ -2060,7 +2060,7 @@ return {
       'nvim-dap',
       {
         'microsoft/vscode-js-debug',
-        build = 'npm install --legacy-peer-deps && npm run compile',
+        build = 'npm install --legacy-peer-deps && npm run compile; git checkout package-lock.json',
       },
     },
     ft = { 'javascript', 'typescript' },
