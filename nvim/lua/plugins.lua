@@ -1699,17 +1699,17 @@ return {
     ft = ft_prog,
     config = function()
       local diagnostic_config = {
-          virtual_text = {
-            spacing = 1,
-            prefix = '▪',
-            format = function(diagnostic)
-              return diagnostic.message:match('^%s*(.-)%s*$'):gsub('%s%s+', ' ')
-            end,
-          },
-          signs = true,
-          underline = false,
-          update_in_insert = false,
-        }
+        virtual_text = {
+          spacing = 1,
+          prefix = '▪',
+          format = function(diagnostic)
+            return diagnostic.message:match('^%s*(.-)%s*$'):gsub('%s%s+', ' ')
+          end,
+        },
+        signs = true,
+        underline = true,
+        update_in_insert = false,
+      }
       vim.diagnostic.config(diagnostic_config)
       -- local signs = { Error = "E", Warn = "W", Hint = "H", Info = "I" }
       -- for type, icon in pairs(signs) do
@@ -1915,6 +1915,12 @@ return {
       vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, diagnostic_config
       )
+
+      -- Highlights
+      -- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true })
+      -- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineHint', { undercurl = true })
+      -- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineInfo', { undercurl = true })
+      -- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true })
     end
   },
   {
@@ -2031,6 +2037,16 @@ return {
           d = 'Clear breakpoints',
         },
       }, { mode = 'n', prefix = '<leader>' })
+    end
+  },
+  {
+    'rcarriga/nvim-dap-ui',
+    dependencies = { 'nvim-dap' },
+    ft = ft_prog,
+    config = function()
+      local dapui = require'dapui'
+      dapui.setup {}
+      vim.keymap.set('n', '<leader>dU', dapui.toggle, { silent=true, desc='Dap UI Toggle' })
     end
   },
   {
@@ -2220,7 +2236,7 @@ return {
       vim.keymap.set('i', '<A-l>', vim.fn['codeium#Accept'], { expr = true })
       vim.keymap.set('i', '<A-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
       vim.keymap.set('i', '<A-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
-      vim.keymap.set('i', '<A-e>', vim.fn['codeium#Clear'], { expr = true })
+      vim.keymap.set('i', '<C-x>', vim.fn['codeium#Clear'], { expr = true })
     end
   },
   {
