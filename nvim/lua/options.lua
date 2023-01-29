@@ -147,6 +147,7 @@ vim.cmd([[
   command! Q mksession! ~/.config/nvim/session/_last.vim|qall
   command! S mksession! ~/.config/nvim/session/_last.vim
   command! L source ~/.config/nvim/session/_last.vim
+  command! Vterm 72vs|exe "normal \<c-w>r"|term
   command! -count=9 Command if bufexists("CommandOutput")|sil! bdelete CommandOutput|endif|
     \bel <count>new|nnoremap <buffer> q :bd<cr>|
     \file CommandOutput|put =execute(\"command\")|setlocal nomod noma buftype=nofile|0goto
@@ -175,6 +176,22 @@ vim.cmd([[
   endfunction
 ]])
 local wo = vim.wo
+api.nvim_create_autocmd({ "TermEnter" }, {
+  group = "initAutoGroup",
+  pattern = {"*"},
+  callback = function()
+    wo.relativenumber = false
+    wo.number = false
+  end
+})
+api.nvim_create_autocmd({ "TermLeave" }, {
+  group = "initAutoGroup",
+  pattern = {"*"},
+  callback = function()
+    wo.number = true
+    wo.relativenumber = true
+  end
+})
 api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   group = "initAutoGroup",
   pattern = {"*"},
@@ -386,8 +403,6 @@ mapset('n', '<C-W>6', function() set_curr_win(6) end)
 mapset('n', '<C-W>7', function() set_curr_win(7) end)
 mapset('n', '<C-W>8', function() set_curr_win(8) end)
 mapset('n', '<C-W>9', function() set_curr_win(9) end)
-mapset('n', '<C-W>s', '<C-W>s:bn<CR>', noremap)
-mapset('n', '<C-W>v', '<C-W>v:bn<CR>', noremap)
 mapset('n', '<C-W>w', win_fit_width_to_content)
 mapset('n', '<C-W>W', win_fit_filetype_width)
 mapset('n', '<leader>CC', '<CMD>lclose<CR>', noremap)
