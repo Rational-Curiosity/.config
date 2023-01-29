@@ -20,6 +20,25 @@ case 'gigas*'
     end
 end
 
+set -xg DELTA_COLUMNS 169
+function delta_sidebyside --on-signal WINCH
+    if test $COLUMNS -ge $DELTA_COLUMNS
+        if test -z "$DELTA_FEATURES"
+            set -xga DELTA_FEATURES +side-by-side
+        else if ! contains +side-by-side $DELTA_FEATURES
+                and ! contains side-by-side $DELTA_FEATURES
+            set -xga DELTA_FEATURES side-by-side
+        end
+    else
+        if test "$DELTA_FEATURES" = +side-by-side
+            set -ge DELTA_FEATURES
+        else if contains side-by-side $DELTA_FEATURES
+            set -ge DELTA_FEATURES[(contains --index side-by-side $DELTA_FEATURES)]
+        end
+    end
+end
+delta_sidebyside
+
 abbr -a m math
 abbr -a v nvim
 abbr -a ec 'emacsclient -c -n -a ""'
