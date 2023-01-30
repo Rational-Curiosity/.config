@@ -207,7 +207,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+bindsym $mod+u focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
@@ -297,13 +297,11 @@ bar {
     status_command i3status-rs ~/.config/i3/config.toml
 }
 
-# exec --no-startup-id "if zellij ls|grep scratchpad >/dev/null;\
-#  then alacritty --class Scratchpad,Alacritty -e zellij a scratchpad;\
-#  else alacritty --class Scratchpad,Alacritty -e zellij -s scratchpad; fi &"
-exec_always --no-startup-id "pgrep -x alacritty >/dev/null||\
- if tmux ls|grep scratchpad >/dev/null;\
- then alacritty --class Scratchpad,Alacritty -e tmux a -t scratchpad;\
- else alacritty --class Scratchpad,Alacritty -e tmux new -s scratchpad; fi &"
+exec_always --no-startup-id "case $(tmux ls|sed -nE 's/^(scratchpad: )[^)]+\) ?(\(attached\))?$/\1\2/p') in
+ 'scratchpad: (attached)') :;;
+ 'scratchpad: ') alacritty --class Scratchpad,Alacritty -e tmux a -t scratchpad;;
+ *) alacritty --class Scratchpad,Alacritty -e tmux new -s scratchpad;;
+esac &"
 exec_always --no-startup-id "PID=$(pgrep -x i3bar); while [ -z $PID ];\
  do sleep 1; PID=$(pgrep -x i3bar); done;\
  kill -s STOP $PID && kill -s CONT $PID && pkill -f 'sh -c i3bar'"
