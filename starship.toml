@@ -8,7 +8,7 @@ $singularity\
 $kubernetes\
 [](bg:#DA627D fg:#9A348E)\
 $directory\
-[](fg:#DA627D bg:#FCA17D)\
+[ ](fg:#DA627D bg:#FCA17D)\
 $vcsh\
 $git_branch\
 $git_commit\
@@ -18,7 +18,7 @@ $git_status\
 $hg_branch\
 $docker_context\
 $package\
-[](fg:#FCA17D bg:#86BBD8)\
+[ ](fg:#FCA17D bg:#86BBD8)\
 $c\
 $cmake\
 $cobol\
@@ -68,7 +68,8 @@ $openstack\
 $azure\
 $env_var\
 $crystal\
-$custom\
+${custom.docker-compose}\
+${custom.remap}\
 $sudo\
 [](fg:#06969A bg:#33658A)\
 $cmd_duration\
@@ -124,7 +125,23 @@ style_user = "bg:#9A348E"
 style_root = "bg:#9A348E"
 format = '[$user ]($style)'
 
+[hostname]
+style = "bg:#9A348E"
+
+[localip]
+style = "bg:#9A348E"
+
+[shlvl]
+style = "bg:#9A348E"
+
+[singularity]
+style = "bg:#9A348E"
+
+[kubernetes]
+style = "bg:#9A348E"
+
 [package]
+display_private = true
 symbol = "📦"
 style = "bg:#FCA17D fg:#101010"
 format = '[$symbol$version ]($style)'
@@ -133,44 +150,44 @@ format = '[$symbol$version ]($style)'
 [c]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [cmake]
 symbol = "△"
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [deno]
 symbol = "🦕"
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [elixir]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [elm]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [git_branch]
 truncation_length = 16
 symbol = " "
 style = "bg:#FCA17D fg:#101010"
-format = '[ $symbol$branch ]($style)'
+format = '[$symbol$branch ]($style)'
 
 [git_commit]
 style = "bg:#FCA17D fg:#101010"
-format = '[ \($hash$tag\) ]($style)'
+format = '[\($hash$tag\) ]($style)'
 
 [git_metrics]
-format = '([+$added ]($added_style))([-$deleted ]($deleted_style))'
+format = '([+$added]($added_style))([-$deleted]($deleted_style))[ ](bg:#FCA17D fg:#101010)'
 
 [git_state]
 style = "bg:#FCA17D fg:#101010"
-format = '[\($state($progress_current/$progress_total)\)]($style)'
+format = '[\($state($progress_current/$progress_total)\) ]($style)'
 
 [git_status]
 style = "bg:#FCA17D fg:#101010"
@@ -179,73 +196,73 @@ format = '[$all_status$ahead_behind]($style)'
 [golang]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [haskell]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [java]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [julia]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [nim]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [nodejs]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
 not_capable_style = "bg:#86BBD8 fg:#FF2000"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [kotlin]
 symbol = "🅺"
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [lua]
 symbol = "🌙"
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [perl]
 symbol = "🐪"
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [php]
 symbol = "🐘"
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [python]
 symbol = "🐍"
 style = "bg:#86BBD8 fg:#101010"
-format = '[ ${symbol}${pyenv_prefix}(${version} )(👾$virtualenv )]($style)'
+format = '[${symbol}${pyenv_prefix}(${version} )(👾$virtualenv )]($style)'
 
 [rust]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [scala]
 symbol = ""
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 [zig]
 symbol = "↯"
 style = "bg:#86BBD8 fg:#101010"
-format = '[ $symbol($version) ]($style)'
+format = '[$symbol($version) ]($style)'
 
 # Environment
 [cmd_duration]
@@ -255,7 +272,7 @@ format = '[took ]($style)[$duration]($style bold yellow)'
 [docker_context]
 symbol = ""
 style = "bg:#06969A fg:#101010"
-format = '[ $symbol $context ]($style) $path'
+format = '[$symbol $context ]($style) $path'
 
 [custom.docker-compose]
 command = """switch $COMPOSE_FILE
@@ -268,9 +285,16 @@ when = """test -n "$COMPOSE_FILE""""
 shell = ["fish", "--no-config"]
 symbol = "🐙"
 style = "bg:#06969A"
-format = "[ $symbol$output ]($style)"
+format = "[$symbol$output ]($style)"
+
+[custom.remap]
+when = "pgrep -x remap"
+shell = ["fish", "--no-config"]
+symbol = "ﲗ"
+style = "bg:#06969A fg:#101010"
+format = "[$symbol]($style bold)"
 
 [sudo]
 symbol = "🧙"
 style = "bg:#06969A"
-format = '[ $symbol ]($style)'
+format = '[$symbol ]($style)'
