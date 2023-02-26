@@ -43,7 +43,8 @@ opt.foldmethod = "manual"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldenable = true
 opt.background = "dark"
-opt.signcolumn = "number"
+opt.numberwidth = 2
+opt.signcolumn = "auto:1" -- "number"
 opt.fixendofline = false
 -- opt.iskeyword:prepend("-")
 -- opt.iskeyword:prepend("$")
@@ -147,7 +148,7 @@ vim.cmd([[
   command! Q mksession! ~/.config/nvim/session/_last.vim|qall
   command! S mksession! ~/.config/nvim/session/_last.vim
   command! L source ~/.config/nvim/session/_last.vim
-  command! Vterm 72vs|exe "normal \<c-w>r"|term
+  command! Vterm 72vs|exe "term"|setlocal wfw|exe "normal \<c-w>r\<c-w>="
   command! -count=9 Command if bufexists("CommandOutput")|sil! bdelete CommandOutput|endif|
     \bel <count>new|nnoremap <buffer> q :bd<cr>|
     \file CommandOutput|put =execute(\"command\")|setlocal nomod noma buftype=nofile|0goto
@@ -226,42 +227,44 @@ api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter"
     end
   end
 })
-local yank_registers = { "r", "s", "t", "u", "v", "w", "x", "y", "z" }
-local update_yank_ring = function(register)
-  if fn.getreg(register, 1) == fn.getreg(yank_registers[1], 1) then
-    return
-  end
-  local index = #yank_registers
-  for i = 1, index - 1 do
-    if fn.getreg(yank_registers[i], 1) == fn.getreg(yank_registers[i + 1], 1) then
-      index = i
-      break
+do
+  local yank_registers = { "r", "s", "t", "u", "v", "w", "x", "y", "z" }
+  local update_yank_ring = function(register)
+    if fn.getreg(register, 1) == fn.getreg(yank_registers[1], 1) then
+      return
     end
+    local index = #yank_registers
+    for i = 1, index - 1 do
+      if fn.getreg(yank_registers[i], 1) == fn.getreg(yank_registers[i + 1], 1) then
+        index = i
+        break
+      end
+    end
+    for i = index, 2, -1 do
+      fn.setreg(yank_registers[i], fn.getreg(yank_registers[i - 1], 1),
+                fn.getregtype(yank_registers[i - 1]))
+    end
+    fn.setreg(yank_registers[1], fn.getreg(register, 1), fn.getregtype(register))
   end
-  for i = index, 2, -1 do
-    fn.setreg(yank_registers[i], fn.getreg(yank_registers[i - 1], 1),
-              fn.getregtype(yank_registers[i - 1]))
-  end
-  fn.setreg(yank_registers[1], fn.getreg(register, 1), fn.getregtype(register))
+  api.nvim_create_autocmd({ "TextYankPost" }, {
+    group = "initAutoGroup",
+    pattern = {"*"},
+    callback = function()
+      local yanked = fn.getreg('"', 1)
+      if yanked:len() > 1 and yanked ~= fn.getreg('1', 1) then
+        update_yank_ring('"')
+        vim.highlight.on_yank { higroup = 'Visual', timeout = 300 }
+      end
+    end
+  })
+  api.nvim_create_autocmd({ "FocusGained" }, {
+    group = "initAutoGroup",
+    pattern = {"*"},
+    callback = function()
+      update_yank_ring('+')
+    end
+  })
 end
-api.nvim_create_autocmd({ "TextYankPost" }, {
-  group = "initAutoGroup",
-  pattern = {"*"},
-  callback = function()
-    local yanked = fn.getreg('"', 1)
-    if yanked:len() > 1 and yanked ~= fn.getreg('1', 1) then
-      update_yank_ring('"')
-      vim.highlight.on_yank { higroup = 'Visual', timeout = 300 }
-    end
-  end
-})
-api.nvim_create_autocmd({ "FocusGained" }, {
-  group = "initAutoGroup",
-  pattern = {"*"},
-  callback = function()
-    update_yank_ring('+')
-  end
-})
 -- api.nvim_create_autocmd({"CursorHoldI", "CmdlineEnter"}, {
 --   group = "initAutoGroup",
 --   pattern = {"*"},
@@ -283,6 +286,124 @@ api.nvim_create_autocmd({ "CmdlineLeave" }, {
     o.cmdheight = 0
   end
 })
+do
+  local filetype_max_line_length = {
+        c = 80,
+        java = 110,
+        javascript = 100,
+        php = 80,
+        python = 79,
+        rs = 100,
+        typescript = 100,
+  }
+  api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+    group = "initAutoGroup",
+    pattern = {"*"},
+    callback = function()
+      local columns = filetype_max_line_length[bo.filetype]
+      if columns then
+        local last_pos = fn.getpos("']")
+        if last_pos[4] ~= 0 then
+          return
+        end
+        local last = last_pos[2]
+        local first = fn.getpos("'[")[2]
+        if wo.colorcolumn == '' then
+          local lines = api.nvim_buf_get_lines(0, first - 1, last, false)
+          if next(lines) == nil then
+            return
+          end
+          local max_index = #lines
+          local max_len = fn.strdisplaywidth(table.remove(lines))
+          for index, line in pairs(lines) do
+            local line_len = fn.strdisplaywidth(line)
+            if line_len > max_len then
+              max_len = line_len
+              max_index = index
+            end
+          end
+          if columns < max_len then
+            api.nvim_buf_set_mark(
+              0, "r", first + max_index - 1, max_len - 1, {}
+            )
+            vim.opt_local.colorcolumn = tostring(columns + 1)
+          end
+        else
+          local max_mark = api.nvim_buf_get_mark(0, "r")[1]
+          if max_mark ~= 0 then
+            if max_mark + 1 < first or last < max_mark then
+              return
+            end
+            local lines = api.nvim_buf_get_lines(
+              0, max_mark - 1, max_mark + 1, false
+            )
+            if next(lines) ~= nil then
+              local max_len = fn.strdisplaywidth(table.remove(lines))
+              for _, line in pairs(lines) do
+                local line_len = fn.strdisplaywidth(line)
+                if line_len > max_len then
+                  max_len = line_len
+                end
+              end
+              if columns < max_len then
+                return
+              end
+            end
+          end
+          api.nvim_buf_del_mark(0, "r")
+          local first = vim.fn.line("w0")
+          lines = api.nvim_buf_get_lines(
+            0, first - 1, vim.fn.line("w$"), true
+          )
+          local max_index = #lines
+          local max_len = fn.strdisplaywidth(table.remove(lines))
+          for index, line in pairs(lines) do
+            local line_len = fn.strdisplaywidth(line)
+            if line_len > max_len then
+              max_len = line_len
+              max_index = index
+            end
+          end
+          if columns < max_len then
+            api.nvim_buf_set_mark(
+              0, "r", first + max_index - 1, max_len - 1, {}
+            )
+          else
+            vim.opt_local.colorcolumn = ''
+          end
+        end
+      end
+    end
+  })
+  function _G.win_fit_filetype_width()
+    if wo.winfixwidth then
+      print("Fixed width window")
+      return
+    end
+    local width = filetype_max_line_length[bo.filetype] or 80
+    if wo.number then
+      width = width + int_len(api.nvim_buf_line_count(0)) + 1
+    end
+    if opt.listchars:get().eol ~= nil then
+      width = width + 1
+    end
+    api.nvim_win_set_width(0, width)
+    wo.winfixwidth = true
+    api.nvim_command('horizontal wincmd =')
+    wo.winfixwidth = false
+  end
+end
+
+-- Notifications
+do
+  local orig_notify_once = vim.notify_once
+  vim.notify_once = function(msg, level, opts)
+    if msg:sub(1, 47) == 'vim.treesitter.get_node_at_pos() is deprecated,' then
+      return
+    end
+    orig_notify_once(msg, level, opts)
+  end
+end
 
 -- Global functions
 function _G.getcwdhead()
@@ -312,33 +433,6 @@ function _G.int_len(integer)
   return len
 end
 
-local filetype_width = {
-      ["c"] = 80,
-      ["java"] = 110,
-      ["javascript"] = 100,
-      ["php"] = 80,
-      ["python"] = 79,
-      ["rs"] = 100,
-      ["typescript"] = 100,
-}
-function _G.win_fit_filetype_width()
-  if wo.winfixwidth then
-    print("Fixed width window")
-    return
-  end
-  local width = filetype_width[bo.filetype] or 80
-  if wo.number then
-    width = width + int_len(api.nvim_buf_line_count(0)) + 1
-  end
-  if opt.listchars:get().eol ~= nil then
-    width = width + 1
-  end
-  api.nvim_win_set_width(0, width)
-  wo.winfixwidth = true
-  api.nvim_command('horizontal wincmd =')
-  wo.winfixwidth = false
-end
-
 function _G.win_fit_width_to_content()
   if wo.winfixwidth then
     print("Fixed width window")
@@ -349,9 +443,10 @@ function _G.win_fit_width_to_content()
     print("The buffer has too many lines")
     return
   end
-  local max_len = 0
-  for _, line in ipairs(api.nvim_buf_get_lines(0, 0, -1, true)) do
-    local line_len = line:len()
+  local lines = api.nvim_buf_get_lines(0, 0, -1, true)
+  local max_len = fn.strdisplaywidth(table.remove(lines))
+  for _, line in pairs(lines) do
+    local line_len = fn.strdisplaywidth(line)
     if line_len > max_len then
       max_len = line_len
     end
