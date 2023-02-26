@@ -3,9 +3,9 @@ local silent = { silent = true }
 local noremap_silent = { noremap = true, silent = true }
 local mapset = vim.keymap.set
 local ft_prog = {
-  'python', 'php', 'json',
+  'python', 'php', 'json', 'json5', 'jsonc', 'jsonnet',
   'js', 'ts', 'jsx', 'tsx',
-  'javascript', 'typescript', 'typescriptreact',
+  'javascript', 'javascriptreact', 'typescript', 'typescriptreact',
   'rust', 'c', 'cpp', 'h', 'hpp', 'java'
 }
 return {
@@ -32,8 +32,10 @@ return {
     },
     keys = { '<C-w>m', '<leader>hm', '<leader>dm' },
     config = function()
-      local Hydra = require('hydra')
-      local gitsigns = require('gitsigns')
+      local Hydra = require'hydra'
+      local gitsigns = require'gitsigns'
+      local dap = require'dap'
+      local dapui = require'dapui'
 
       Hydra({
         hint = [[
@@ -42,7 +44,7 @@ return {
  ^ ^              _S_: stage buffer      ^ ^                 _/_: show base file
  ^ ^              _<Enter>_: Neogit      _<Esc>_ or _q_: exit]],
         config = {
-          color = 'teal',
+          color = 'pink',
           invoke_on_body = true,
           hint = {
             position = 'bottom',
@@ -87,13 +89,15 @@ return {
       })
 
       Hydra({
+        name = 'DAP',
         hint = [[
- _n_: step over  _b_: toggle breakpoint     _c_: continue
- _p_: step back  _l_: list breakpoints      _r_: toggle repl
- _o_: step out   _d_: clear breakpoints     _L_: log point msg 
- _i_: step into  _B_: breakpoint condition  _R_: run last
-         _<Esc>_ or _q_: exit               _Q_: terminate]],
+^^ _n_: step over  _b_: toggle breakpoint     _c_: continue
+^^ _p_: step back  _l_: list breakpoints      _r_: toggle repl
+^^ _o_: step out   _d_: clear breakpoints     _L_: log point msg 
+^^ _i_: step into  _B_: breakpoint condition  _R_: run last
+_<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         config = {
+          color = 'pink',
           invoke_on_body = true,
           hint = {
             position = 'bottom',
@@ -103,19 +107,24 @@ return {
         mode = 'n',
         body = '<leader>dm',
         heads = {
-          { 'b', '<leader>db', { private = false } },
-          { 'c', '<leader>dc' },
-          { 'n', '<leader>dn' },
-          { 'p', '<leader>dp' },
-          { 'o', '<leader>do' },
-          { 'i', '<leader>di' },
-          { 'r', '<leader>dr' },
-          { 'l', '<leader>dl' },
-          { 'd', '<leader>dd' },
-          { 'R', '<leader>dR' },
-          { 'B', '<leader>dB' },
-          { 'L', '<leader>dL' },
-          { 'Q', '<leader>dQ' },
+          { 'b', dap.toggle_breakpoint },
+          { 'c', dap.continue },
+          { 'n', dap.step_over },
+          { 'p', dap.step_back },
+          { 'o', dap.step_out },
+          { 'i', dap.step_into },
+          { 'r', dap.repl.toggle },
+          { 'l', dap.list_breakpoints },
+          { 'd', dap.clear_breakpoints },
+          { 'R', dap.run_last },
+          { 'U', dapui.toggle },
+          { 'B', function()
+            dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
+          end },
+          { 'L', function()
+            dap.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+          end },
+          { 'Q', dap.terminate },
           { 'q', nil, { exit = true, nowait = true } },
           { '<Esc>', nil, { exit = true, nowait = true } },
         }
@@ -287,25 +296,24 @@ return {
     },
     keys = {
       { '<leader>f,', ':Telescope grep_string initial_mode=insert search=', desc = 'Telescope grep_string search' },
-      { '<leader>f-', '<cmd>Telescope resume initial_mode=insert<cr>', desc = 'Telescope resume' },
-      { '<leader>f.', '<cmd>Telescope grep_string<cr>', desc = 'Telescope grep_string' },
-      { '<leader>f:', '<cmd>Telescope grep_string ft=true<cr>', desc = 'Telescope grep_string ft' },
+      { '<leader>f-', '<cmd>Telescope resume initial_mode=normal<cr>', desc = 'Telescope resume' },
+      { '<leader>f.', '<cmd>Telescope grep_string<cr>', mode = { 'x', 'n' }, desc = 'Telescope grep_string' },
+      { '<leader>f:', '<cmd>Telescope grep_string ft=true<cr>', mode = { 'x', 'n' }, desc = 'Telescope grep_string ft' },
       { '<leader>f;', ':Telescope grep_string ft=true initial_mode=insert search=', desc = 'Telescope grep_string ft search' },
-      { '<leader>fa', '<cmd>Telescope tasks initial_mode=insert<cr>', desc = 'Telescope tasks' },
       { '<leader>fb', '<cmd>Telescope buffers initial_mode=insert<cr>', desc = 'Telescope buffers' },
       { '<leader>fc', '<cmd>Telescope textcase normal_mode initial_mode=insert<cr>', desc = 'Telescope textcase' },
       { '<leader>fc', '<cmd>Telescope textcase visual_mode initial_mode=insert<cr>', mode = 'v', desc = 'Telescope textcase' },
       { '<leader>fd', '<cmd>Telescope diagnostics<cr>', desc = 'Telescope diagnostic' },
       { '<leader>ff', '<cmd>Telescope find_files initial_mode=insert<cr>', desc = 'Telescope find_files' },
-      { '<leader>fgC', '<cmd>Telescope git_commits<cr>', desc = 'Telescope git_commits' },
-      { '<leader>fgS', '<cmd>Telescope git_stash<cr>', desc = 'Telescope git_stash' },
       { '<leader>fgb', '<cmd>Telescope git_branches<cr>', desc = 'Telescope git_branches' },
       { '<leader>fgc', '<cmd>Telescope git_bcommits<cr>', desc = 'Telescope git_bcommits' },
+      { '<leader>fgC', '<cmd>Telescope git_commits<cr>', desc = 'Telescope git_commits' },
       { '<leader>fgf', '<cmd>Telescope git_files<cr>', desc = 'Telescope git_files' },
+      { '<leader>fgS', '<cmd>Telescope git_stash<cr>', desc = 'Telescope git_stash' },
       { '<leader>fgs', '<cmd>Telescope git_status<cr>', desc = 'Telescope git_status' },
       { '<leader>fh', '<cmd>Telescope help_tags initial_mode=insert<cr>', desc = 'Telescope help_tags' },
-      { '<leader>flA', '<cmd>Telescope lsp_range_code_actions<cr>', desc = 'Telescope lsp_range_code_actions' },
       { '<leader>fla', '<cmd>Telescope lsp_code_actions<cr>', desc = 'Telescope lsp_code_actions' },
+      { '<leader>flA', '<cmd>Telescope lsp_range_code_actions<cr>', desc = 'Telescope lsp_range_code_actions' },
       { '<leader>fld', '<cmd>Telescope lsp_definitions<cr>', desc = 'Telescope lsp_definitions' },
       { '<leader>fli', '<cmd>Telescope lsp_implementations<cr>', desc = 'Telescope lsp_implementations' },
       { '<leader>flr', '<cmd>Telescope lsp_references<cr>', desc = 'Telescope lsp_references' },
@@ -314,17 +322,18 @@ return {
       { '<leader>fR', '<cmd>Telescope live_grep ft=true initial_mode=insert<cr>', desc = 'Telescope live_grep ft' },
       { '<leader>fr', '<cmd>Telescope live_grep initial_mode=insert<cr>', desc = 'Telescope live_grep' },
       { '<leader>fs', '<cmd>Telescope treesitter<cr>', desc = 'Telescope treesitter' },
+      { '<leader>ft', '<cmd>Telescope tasks initial_mode=insert<cr>', desc = 'Telescope tasks' },
       { '<leader>fu', '<cmd>Telescope undo<cr>', desc = 'Telescope undo' },
-      { '<leader>f.', function()
-        -- '"0y:Telescope grep_string search=<c-r>0<cr>'
-        vim.api.nvim_command('normal! "0y')
-        require'telescope.builtin'.grep_string({ search = vim.fn.getreg('0') })
-      end, mode = 'x', desc = 'Telescope grep_string' },
-      { '<leader>f:', function()
-        -- '"0y:Telescope grep_string ft=true search=<c-r>0<cr>'
-        vim.api.nvim_command('normal! "0y')
-        require'telescope.builtin'.grep_string({ ft = true, search = vim.fn.getreg('0') })
-      end, mode = 'x', desc = 'Telescope grep_string ft' },
+      -- { '<leader>f.', function()
+      --   -- '"0y:Telescope grep_string search=<c-r>0<cr>'
+      --   vim.api.nvim_command('normal! "0y')
+      --   require'telescope.builtin'.grep_string({ search = vim.fn.getreg('0') })
+      -- end, mode = 'x', desc = 'Telescope grep_string' },
+      -- { '<leader>f:', function()
+      --   -- '"0y:Telescope grep_string ft=true search=<c-r>0<cr>'
+      --   vim.api.nvim_command('normal! "0y')
+      --   require'telescope.builtin'.grep_string({ ft = true, search = vim.fn.getreg('0') })
+      -- end, mode = 'x', desc = 'Telescope grep_string ft' },
     },
     cmd = 'Telescope',
     config = function()
@@ -377,7 +386,10 @@ return {
           },
           tasks = {
             -- theme = "dropdown",
-            output_window = "float",
+            output = {
+              style = "float",
+            },
+            data_dir = false,
           },
         },
         defaults = {
@@ -432,20 +444,24 @@ return {
         generator = function(buf)
           return {
             {
-              'Docker Compose gigas CORE up',
+              name = 'Docker Compose gigas CORE up',
               cmd = 'docker-compose --ansi never up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider',
+              lock = true,
             },
             {
-              'Docker Compose gigas CORE stop',
+              name = 'Docker Compose gigas CORE stop',
               cmd = 'docker-compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider',
+              lock = true,
             },
             {
-              'Docker Compose gigas KVM up',
-              cmd = 'docker-compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm'
+              name = 'Docker Compose gigas KVM up',
+              cmd = 'docker-compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
+              lock = true,
             },
             {
-              'Docker Compose gigas KVM stop',
+              name = 'Docker Compose gigas KVM stop',
               cmd = 'docker-compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
+              lock = true,
             },
           }
         end,
@@ -537,6 +553,22 @@ return {
     config = function()
       vim.g.neoformat_only_msg_on_error = 1
     end
+    -- <XOR>
+    -- 'mhartington/formatter.nvim',
+    -- cmd = { 'Format', 'FormatWrite' },
+    -- config = function()
+    --   local filetypes = require'formatter.filetypes'
+    --   require'formatter'.setup {
+    --     logging = true,
+    --     log_level = vim.log.levels.ERROR,
+    --     filetype = {
+    --       rust = filetypes.rust.rustfmt,
+    --       python = filetypes.python.yapf,
+    --       php = filetypes.php.phpcbf,
+    --       json = filetypes.json.jq,
+    --     }
+    --   }
+    -- end
   },
   {
     'kylechui/nvim-surround',
@@ -1316,7 +1348,7 @@ return {
       -- },
     },
     config = function()
-      local home_path = os.getenv("HOME")
+      local home_path = vim.env.HOME
       -- local function spellstatus()
       --   if (vim.opt.spell:get()) then 
       --     return [[spell]] 
@@ -1492,11 +1524,13 @@ return {
                 if vim.bo.buftype == "" then
                   return abbrev_path(
                     vim.fn.getcwd(), s,
-                    vim.fn.winwidth(0) - fix_space - branch_space - diff_space - diag_space
+                    vim.fn.winwidth(0) - fix_space - branch_space - diff_space
+                    - diag_space - (vim.g.codeium_disable_bindings == 1 and 3 or 0)
                   )
                 elseif vim.bo.buftype == "terminal" then
                   return abbrev_term(
-                    s, vim.fn.winwidth(0) - fix_space - branch_space - diff_space - diag_space
+                    s, vim.fn.winwidth(0) - fix_space - branch_space - diff_space
+                    - diag_space - (vim.g.codeium_disable_bindings == 1 and 3 or 0)
                   )
                 else
                   return s
@@ -1532,6 +1566,15 @@ return {
               end
               return table.concat(status, ' ')
             end, padding = {left=1, right=0}},
+            {function() 
+              return vim.fn['codeium#GetStatusString']()
+            end,
+            cond = function()
+              return vim.g.codeium_disable_bindings == 1
+            end,
+            color = { fg = "#3b4261" },
+            padding = 0},
+            -- {'tabnine'},
           },
           lualine_y = {
             {'encoding', padding = 0,
@@ -1559,20 +1602,26 @@ return {
     end
   },
   {
-    'windwp/nvim-autopairs',
-    event = "InsertEnter",
+    -- 'windwp/nvim-autopairs',
+    -- event = "InsertEnter",
+    -- config = function()
+    --   require'nvim-autopairs'.setup {
+    --     disable_filetype = { "TelescopePrompt" , "vim" },
+    --     disable_in_macro = true,
+    --     enable_moveright = false,
+    --     enable_check_bracket_line = false,
+    --     ignored_next_char = "",
+    --     check_ts = true,
+    --     map_bs = false,
+    --     fast_wrap = {},
+    --   }
+    -- end
+    -- <XOR>
+    'altermo/ultimate-autopair.nvim',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     config = function()
-      require'nvim-autopairs'.setup {
-        disable_filetype = { "TelescopePrompt" , "vim" },
-        disable_in_macro = true,
-        enable_moveright = false,
-        enable_check_bracket_line = false,
-        ignored_next_char = "",
-        check_ts = true,
-        map_bs = false,
-        fast_wrap = {},
-      }
-    end
+      require('ultimate-autopair').setup {}
+    end,
   },
   {
     'nmac427/guess-indent.nvim',
@@ -1649,6 +1698,7 @@ return {
           -- { name = 'snippy' }, -- For snippy users.
           { name = 'orgmode' },
           -- { name = 'neorg' },
+          -- { name = 'codeium' },
         }, {
           { name = 'buffer' },
         })
@@ -1706,16 +1756,17 @@ return {
             return diagnostic.message:match('^%s*(.-)%s*$'):gsub('%s%s+', ' ')
           end,
         },
+        float = { source = true },
         signs = true,
         underline = true,
         update_in_insert = false,
       }
       vim.diagnostic.config(diagnostic_config)
-      -- local signs = { Error = "E", Warn = "W", Hint = "H", Info = "I" }
-      -- for type, icon in pairs(signs) do
-      --   local hl = "DiagnosticSign" .. type
-      --   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-      -- end
+
+      for type, icon in pairs({ Error = '', Warn = '', Hint = '', Info = '' }) do
+        local hl = 'DiagnosticSign' .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl })
+      end
 
       -- Lsp config
       local lspconfig = require'lspconfig'
@@ -1832,7 +1883,7 @@ return {
 
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
-      for _, lsp in ipairs({ 'pyright', 'intelephense', 'html', 'jsonls', 'ccls' }) do
+      for _, lsp in ipairs({ 'pyright', 'vtsls', 'intelephense', 'html', 'jsonls', 'ccls' }) do
         lspconfig[lsp].setup {
           on_attach = on_attach,
           capabilities = capabilities,
@@ -1841,37 +1892,37 @@ return {
           }
         }
       end
-      lspconfig.tsserver.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = {
-          debounce_text_changes = 1000,
-        },
-        settings = {
-          typescript = {
-            inlayHints = {
-              includeInlayParameterNameHints = 'all',
-              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-              includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
-            }
-          },
-          javascript = {
-            inlayHints = {
-              includeInlayParameterNameHints = 'all',
-              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-              includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
-            }
-          }
-        }
-      }
+      -- lspconfig.tsserver.setup {
+      --   on_attach = on_attach,
+      --   capabilities = capabilities,
+      --   flags = {
+      --     debounce_text_changes = 1000,
+      --   },
+      --   settings = {
+      --     typescript = {
+      --       inlayHints = {
+      --         includeInlayParameterNameHints = 'all',
+      --         includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+      --         includeInlayFunctionParameterTypeHints = true,
+      --         includeInlayVariableTypeHints = true,
+      --         includeInlayPropertyDeclarationTypeHints = true,
+      --         includeInlayFunctionLikeReturnTypeHints = true,
+      --         includeInlayEnumMemberValueHints = true,
+      --       }
+      --     },
+      --     javascript = {
+      --       inlayHints = {
+      --         includeInlayParameterNameHints = 'all',
+      --         includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+      --         includeInlayFunctionParameterTypeHints = true,
+      --         includeInlayVariableTypeHints = true,
+      --         includeInlayPropertyDeclarationTypeHints = true,
+      --         includeInlayFunctionLikeReturnTypeHints = true,
+      --         includeInlayEnumMemberValueHints = true,
+      --       }
+      --     }
+      --   }
+      -- }
       lspconfig.rust_analyzer.setup {
         on_attach = on_attach,
         capabilities = capabilities,
@@ -1894,7 +1945,7 @@ return {
         },
       }
       lspconfig.java_language_server.setup {
-        cmd = { os.getenv("HOME") .. '/tmp/java-language-server/dist/lang_server_linux.sh' },
+        cmd = { vim.env.HOME .. '/tmp/java-language-server/dist/lang_server_linux.sh' },
         on_attach = on_attach,
         capabilities = capabilities,
         flags = {
@@ -1982,7 +2033,7 @@ return {
     dependencies = { 'which-key.nvim' },
     ft = ft_prog,
     config = function()
-      -- local dap = require'dap'
+      local dap = require'dap'
       -- dap.adapters.python = {
       --   type = 'executable',
       --   command = 'python3',
@@ -2002,23 +2053,23 @@ return {
 
       local opts = { silent=true }
       local mapset = vim.keymap.set
-      mapset('n', '<leader>db', require"dap".toggle_breakpoint, opts)
-      mapset('n', '<leader>dc', require"dap".continue, opts)
-      mapset('n', '<leader>dn', require"dap".step_over, opts)
-      mapset('n', '<leader>dp', require"dap".step_back, opts)
-      mapset('n', '<leader>do', require"dap".step_out, opts)
-      mapset('n', '<leader>di', require"dap".step_into, opts)
-      mapset('n', '<leader>dr', require"dap".repl.toggle, opts)
-      mapset('n', '<leader>dl', require"dap".list_breakpoints, opts)
-      mapset('n', '<leader>dd', require"dap".clear_breakpoints, opts)
-      mapset('n', '<leader>dR', require"dap".run_last, opts)
+      mapset('n', '<leader>db', dap.toggle_breakpoint, opts)
+      mapset('n', '<leader>dc', dap.continue, opts)
+      mapset('n', '<leader>dn', dap.step_over, opts)
+      mapset('n', '<leader>dp', dap.step_back, opts)
+      mapset('n', '<leader>do', dap.step_out, opts)
+      mapset('n', '<leader>di', dap.step_into, opts)
+      mapset('n', '<leader>dr', dap.repl.toggle, opts)
+      mapset('n', '<leader>dl', dap.list_breakpoints, opts)
+      mapset('n', '<leader>dd', dap.clear_breakpoints, opts)
+      mapset('n', '<leader>dR', dap.run_last, opts)
       mapset('n', '<leader>dB', function()
-        require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))
+        dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
       end, opts)
       mapset('n', '<leader>dL', function()
-        require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+        dap.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
       end, opts)
-      mapset('n', '<leader>dQ', require"dap".terminate, opts)
+      mapset('n', '<leader>dQ', dap.terminate, opts)
 
       require'which-key'.register({
         d = {
@@ -2026,15 +2077,17 @@ return {
           B = 'Breakpoint condition',
           b = 'Toggle breakpoint',
           c = 'Continue',
-          n = 'Step over',
-          p = 'Step back',
-          o = 'Step out',
-          i = 'Step into',
-          R = 'Run last',
-          r = 'Repl toggle',
-          L = 'Log point message',
-          l = 'List breakpoints',
           d = 'Clear breakpoints',
+          i = 'Step into',
+          l = 'List breakpoints',
+          L = 'Log point message',
+          m = 'Hydra menu',
+          n = 'Step over',
+          o = 'Step out',
+          p = 'Step back',
+          Q = 'Terminate',
+          r = 'Repl toggle',
+          R = 'Run last',
         },
       }, { mode = 'n', prefix = '<leader>' })
     end
@@ -2076,14 +2129,15 @@ return {
       'nvim-dap',
       {
         'microsoft/vscode-js-debug',
-        build = 'npm install --legacy-peer-deps && npm run compile; git checkout package-lock.json',
+        -- commit = '9c9a3f3',
+        build = 'npm install --legacy-peer-deps && npm run compile; COD=$?; git checkout package-lock.json; (exit $COD)',
       },
     },
     ft = { 'javascript', 'typescript' },
     config = function()
       require("dap-vscode-js").setup({
         -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
-        -- debugger_path = "(runtimedir)/site/pack/packer/opt/vscode-js-debug", -- Path to vscode-js-debug installation.
+        debugger_path = vim.env.HOME .. "/.local/share/nvim/lazy/vscode-js-debug", -- Path to vscode-js-debug installation.
         -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
         adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
         -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
@@ -2115,6 +2169,7 @@ return {
             runtimeArgs = {
               "./node_modules/jest/bin/jest.js",
               "--runInBand",
+              "--testTimeout=100000000",
             },
             rootPath = "${workspaceFolder}",
             cwd = "${workspaceFolder}",
@@ -2227,6 +2282,13 @@ return {
     end
   },
   {
+    -- 'codota/tabnine-nvim',
+    -- build = './dl_binaries.sh',
+    -- ft = ft_prog,
+    -- config = function()
+    --   require'tabnine'.setup {}
+    -- end
+    -- <XOR>
     'Exafunction/codeium.vim',
     ft = ft_prog,
     cmd = { 'Codeium' },
@@ -2237,7 +2299,27 @@ return {
       vim.keymap.set('i', '<A-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
       vim.keymap.set('i', '<A-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
       vim.keymap.set('i', '<C-x>', vim.fn['codeium#Clear'], { expr = true })
+      vim.api.nvim_create_user_command(
+        'CodeiumStart',
+        'call codeium#server#Start()',
+        -- <XOR>
+        -- "call timer_start(0, function('codeium#server#Start'))",
+        { bar = true, desc = 'Start codeium server' }
+      )
     end
+    -- <XOR>
+    -- "jcdickinson/codeium.nvim",
+    -- dependencies = {
+    --   "nvim-lua/plenary.nvim",
+    --   "MunifTanjim/nui.nvim",
+    --   "nvim-cmp",
+    -- },
+    -- cmd = { 'Codeium' },
+    -- ft = ft_prog,
+    -- config = function()
+    --   require("codeium").setup({
+    --   })
+    -- end
   },
   {
     "folke/which-key.nvim",
