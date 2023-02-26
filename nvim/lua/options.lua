@@ -33,7 +33,9 @@ opt.shiftwidth = 4
 opt.softtabstop = 2
 opt.expandtab = true
 opt.list = true
-opt.listchars = {tab='⇤·⇥', eol='↲', nbsp='␣', trail='•', extends='⟩', precedes='⟨'}
+opt.listchars = {
+  tab='⇤·⇥', eol='↲', nbsp='␣', trail='•', extends='⟩', precedes='⟨',
+}
 opt.cursorline = true
 -- opt.number = true
 -- opt.relativenumber = true
@@ -206,7 +208,9 @@ api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
     end
   end
 })
-api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, {
+api.nvim_create_autocmd({
+  "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter",
+}, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
@@ -216,7 +220,9 @@ api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeav
     end
   end
 })
-api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" }, {
+api.nvim_create_autocmd({
+  "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave",
+}, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
@@ -235,7 +241,8 @@ do
     end
     local index = #yank_registers
     for i = 1, index - 1 do
-      if fn.getreg(yank_registers[i], 1) == fn.getreg(yank_registers[i + 1], 1) then
+      if fn.getreg(yank_registers[i], 1)
+        == fn.getreg(yank_registers[i + 1], 1) then
         index = i
         break
       end
@@ -244,7 +251,9 @@ do
       fn.setreg(yank_registers[i], fn.getreg(yank_registers[i - 1], 1),
                 fn.getregtype(yank_registers[i - 1]))
     end
-    fn.setreg(yank_registers[1], fn.getreg(register, 1), fn.getregtype(register))
+    fn.setreg(
+      yank_registers[1], fn.getreg(register, 1), fn.getregtype(register)
+    )
   end
   api.nvim_create_autocmd({ "TextYankPost" }, {
     group = "initAutoGroup",
@@ -291,6 +300,7 @@ do
         c = 80,
         java = 110,
         javascript = 100,
+        lua = 80,
         php = 80,
         python = 79,
         rs = 100,
@@ -474,7 +484,9 @@ function _G.win_double_width()
 end
 
 -- Keymap bindings
-mapset('', '<leader>V', '<cmd>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<cr>', noremap)
+mapset('', '<leader>V',
+  '<cmd>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<cr>',
+  noremap)
 mapset('t', '<Esc><Esc>', '<C-\\><C-n>', noremap)
 mapset('x', 'zx', "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>", noremap)
 mapset('x', '\\p', '"_dP')
@@ -526,8 +538,12 @@ mapset('n', '<leader>Yfn', ':let @+=expand("%")<CR>', noremap)
 mapset('n', '<leader>Yfp', ':let @+=expand("%:p")<CR>', noremap)
 mapset('n', '<leader>Yfd', ':let @+=expand("%:p:h")<CR>', noremap)
 mapset('n', '<leader>Pp', ':put =execute(\\"\\")<Left><Left><Left>', noremap)
-mapset('n', '<leader>Pv', ':vnew<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap)
-mapset('n', '<leader>Ps', ':new<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap)
+mapset(
+  'n', '<leader>Pv', ':vnew<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap
+)
+mapset(
+  'n', '<leader>Ps', ':new<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap
+)
 mapset('n', '<C-l>',
   ':hi Normal ctermbg=NONE guibg=NONE|nohlsearch|diffupdate<CR><C-L>',
   noremap)
