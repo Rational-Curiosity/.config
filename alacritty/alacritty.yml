@@ -71,6 +71,7 @@ hints:
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: P
         mods: Control|Shift
@@ -79,26 +80,31 @@ hints:
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: E
         mods: Control|Shift
-    - regex: "(❯|sudo|b?[as]sh|if|for|docker-compose|docker|git|ls|cd|mkdir|cat|n?vim?|c?make|cargo|rust\
+    - regex: "(❯|sudo|b?[as]sh|if|for|docker-compose|docker|git|ls|cd|mkdir\
+              |cat|n?vim?|c?make|cargo|rust\
               |python[23]?|pip|pytest|mvn|apt\
-              |php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl|sed|basename|dirname|head|tail\
+              |php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl\
+              |sed|basename|dirname|head|tail\
               )( +[^[:space:]│↲]+)+"
       action: Copy
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: C
         mods: Control|Shift
-    - regex: "(magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)\
+    - regex: "(magnet:|mailto:|gemini:|gopher:|https?:|news:|file:|git:|ssh:|ftp:)\
               [^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`\u21b2]+"
       command: rofi-open
       post_processing: true
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: K
         mods: Control|Shift
@@ -107,6 +113,7 @@ hints:
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: I
         mods: Control|Shift
@@ -115,6 +122,7 @@ hints:
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: W
         mods: Control|Shift
@@ -123,6 +131,7 @@ hints:
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: N
         mods: Control|Shift
@@ -132,6 +141,7 @@ hints:
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: Q
         mods: Control|Shift
@@ -140,6 +150,7 @@ hints:
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: S
         mods: Control|Shift
@@ -148,6 +159,7 @@ hints:
       post_processing: false
       mouse:
         enabled: true
+        mods: Shift
       binding:
         key: L
         mods: Control|Shift
