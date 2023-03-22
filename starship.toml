@@ -95,7 +95,7 @@ truncation_length = 3
 fish_style_pwd_dir_length = 2
 truncate_to_repo = false
 truncation_symbol = "…/"
-repo_root_style = "bold underline bg:#DA627D"
+repo_root_style = "bold underline bg:#DA627D fg:#B0FFE0"
 repo_root_format = "[ $before_root_path]($style)[$repo_root]($repo_root_style)[$path ]($style)[$read_only]($read_only_style)"
 style = "bg:#DA627D fg:#E0FFE0"
 format = "[ $path ]($style)"
@@ -174,7 +174,7 @@ format = '[$symbol($version) ]($style)'
 
 [git_branch]
 truncation_length = 16
-symbol = " "
+symbol = ""
 style = "bg:#FCA17D fg:#101010"
 format = '[$symbol$branch ]($style)'
 
@@ -191,7 +191,7 @@ format = '[\($state($progress_current/$progress_total)\) ]($style)'
 
 [git_status]
 style = "bg:#FCA17D fg:#101010"
-format = '[$all_status$ahead_behind]($style)'
+format = '([$all_status$ahead_behind ]($style))'
 
 [golang]
 symbol = ""
@@ -247,7 +247,7 @@ format = '[$symbol($version) ]($style)'
 [python]
 symbol = "🐍"
 style = "bg:#86BBD8 fg:#101010"
-format = '[${symbol}${pyenv_prefix}(${version} )(👾$virtualenv )]($style)'
+format = '[${symbol}${pyenv_prefix}(${version} )]($style)[(👾$virtualenv )](bg:#86BBD8 fg:#bf5e24)'
 
 [rust]
 symbol = ""
@@ -277,7 +277,7 @@ format = '[$symbol $context ]($style) $path'
 [custom.docker-compose]
 command = """switch $COMPOSE_FILE
 case '*/gigas_devenv/*'
-    echo 
+    echo -n 
 case '*'
     basename "$(dirname "$COMPOSE_FILE")"
 end"""
@@ -285,14 +285,14 @@ when = """test -n "$COMPOSE_FILE""""
 shell = ["fish", "--no-config"]
 symbol = "🐙"
 style = "bg:#06969A"
-format = "[$symbol$output ]($style)"
+format = "[$symbol$output]($style)"
 
-[custom.remap]
-when = "pgrep -x remap"
-shell = ["fish", "--no-config"]
-symbol = "ﲗ"
-style = "bg:#06969A fg:#101010"
-format = "[$symbol]($style bold)"
+# [custom.remap]
+# when = "pgrep -x remap"
+# shell = ["fish", "--no-config"]
+# symbol = "ﲗ"
+# style = "bg:#06969A fg:#101010"
+# format = "[$symbol]($style bold)"
 
 [sudo]
 symbol = "🧙"
