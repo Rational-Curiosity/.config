@@ -16,6 +16,7 @@ short = " $title.str(max_w:20) |"
 [[block]]
 block = "external_ip"
 format = "$ip.str(max_w:15,rot_interval:0.4)"
+use_ipv4 = true
 [block.theme_overrides]
 idle_bg = "#19FF70"
 idle_fg = "#101010"
@@ -102,10 +103,17 @@ block = "time"
 interval = 5
 [block.format]
 full = "$icon$timestamp.datetime(f:'%m\\%d %a %R', l:es_ES)"
-short = "$icon$timestamp.datetime(f:%R, l:es_ES)"
+short = "$icon$timestamp.datetime(f:'%m\\%d %R', l:es_ES)"
 [block.theme_overrides]
 idle_bg = "#123456"
 idle_fg = "#abcdef"
+
+[[block]]
+block = "custom"
+interval = 10
+format = "$text.pango-str()"
+command = """ps -do args|sed -n "s|^/bin/sh $HOME/bin/daemon-gigas-vpn\\$||p;s|^./remap -C .*|ﲗ|p"|tr -d '\n'"""
+merge_with_next = true
 
 [[block]]
 block = "battery"
