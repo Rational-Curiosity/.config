@@ -1,3 +1,4 @@
+-- vim.lsp.set_log_level('debug')
 local api = vim.api
 local opt = vim.opt
 local o = vim.o
@@ -13,6 +14,7 @@ opt.clipboard = ""
 
 -- g.did_load_filetypes = 1  -- use {'nathom/filetype.nvim'}
 
+g.editorconfig = false
 g.tokyonight_style = "night"
 g.tokyonight_transparent = true
 -- g.tokyonight_colors = { fg_gutter = "#ffba00" }
@@ -45,8 +47,8 @@ opt.foldmethod = "manual"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldenable = true
 opt.background = "dark"
-opt.numberwidth = 2
-opt.signcolumn = "auto:1" -- "number"
+opt.numberwidth = 3
+opt.signcolumn = "number"
 opt.fixendofline = false
 -- opt.iskeyword:prepend("-")
 -- opt.iskeyword:prepend("$")
@@ -106,8 +108,6 @@ vim.cmd([[
     autocmd BufWinEnter,WinEnter term://* startinsert
   augroup end
 
-  highlight Whitespace ctermbg=red guibg=#D2042d
-
   " SNIPPETS
   " press <Tab> to expand or jump in a snippet. These can also be mapped separately
   " via <Plug>luasnip-expand-snippet and <Plug>luasnip-jump-next.
@@ -147,9 +147,9 @@ vim.cmd([[
   command! Cd exec 'cd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
   command! Lcd exec 'lcd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
   command! SetStatusline lua vim.go.statusline = "%{%v:lua.require'lualine'.statusline()%}"
-  command! Q mksession! ~/.config/nvim/session/_last.vim|qall
-  command! S mksession! ~/.config/nvim/session/_last.vim
-  command! L source ~/.config/nvim/session/_last.vim
+  command! -nargs=? Q mksession! ~/.config/nvim/session/_last_<args>.vim|qall
+  command! -nargs=? S mksession! ~/.config/nvim/session/_last_<args>.vim
+  command! -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
   command! Vterm 72vs|exe "term"|setlocal wfw|exe "normal \<c-w>r\<c-w>="
   command! -count=9 Command if bufexists("CommandOutput")|sil! bdelete CommandOutput|endif|
     \bel <count>new|nnoremap <buffer> q :bd<cr>|
@@ -299,6 +299,7 @@ do
   local filetype_max_line_length = {
         c = 80,
         java = 110,
+        org = 80,
         javascript = 100,
         lua = 80,
         php = 80,
@@ -306,7 +307,7 @@ do
         rs = 100,
         typescript = 100,
   }
-  api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+  api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
     group = "initAutoGroup",
     pattern = {"*"},
     callback = function()
@@ -405,15 +406,15 @@ do
 end
 
 -- Notifications
-do
-  local orig_notify_once = vim.notify_once
-  vim.notify_once = function(msg, level, opts)
-    if msg:sub(1, 47) == 'vim.treesitter.get_node_at_pos() is deprecated,' then
-      return
-    end
-    orig_notify_once(msg, level, opts)
-  end
-end
+-- do
+--   local orig_notify_once = vim.notify_once
+--   vim.notify_once = function(msg, level, opts)
+--     if msg:sub(1, 47) == 'vim.treesitter.get_node_at_pos() is deprecated,' then
+--       return
+--     end
+--     orig_notify_once(msg, level, opts)
+--   end
+-- end
 
 -- Global functions
 function _G.getcwdhead()
@@ -510,6 +511,9 @@ mapset('n', '<C-W>6', function() set_curr_win(6) end)
 mapset('n', '<C-W>7', function() set_curr_win(7) end)
 mapset('n', '<C-W>8', function() set_curr_win(8) end)
 mapset('n', '<C-W>9', function() set_curr_win(9) end)
+mapset('n', '<C-W>e', function()
+  o.signcolumn = o.signcolumn == 'number' and 'auto:1' or 'number'
+end)
 mapset('n', '<C-W>w', win_fit_width_to_content)
 mapset('n', '<C-W>W', win_fit_filetype_width)
 mapset('n', '<leader>CC', '<CMD>lclose<CR>', noremap)

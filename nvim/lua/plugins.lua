@@ -2,12 +2,13 @@ local noremap = { noremap = true }
 local silent = { silent = true }
 local noremap_silent = { noremap = true, silent = true }
 local mapset = vim.keymap.set
-local ft_prog = {
-  'python', 'php', 'json', 'json5', 'jsonc', 'jsonnet',
+local ft_prog_lsp = {
+  'python', 'php', 'json', 'json5', 'jsonc', 'jsonnet', 'sh',
   'js', 'ts', 'jsx', 'tsx',
   'javascript', 'javascriptreact', 'typescript', 'typescriptreact',
-  'rust', 'c', 'cpp', 'h', 'hpp', 'java'
+  'rust', 'c', 'cpp', 'h', 'hpp', 'java',
 }
+local ft_prog = { 'lua', 'smarty', unpack(ft_prog_lsp) }
 return {
   {
     'mbbill/undotree',
@@ -26,7 +27,7 @@ return {
     end
   },
   {
-    'anuvyklack/hydra.nvim', 
+    'anuvyklack/hydra.nvim',
     dependencies = {
       'anuvyklack/keymap-layer.nvim',
     },
@@ -228,15 +229,15 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           -- The diffview integration enables the diff popup, which is a wrapper around `sindrets/diffview.nvim`.
           --
           -- Requires you to have `sindrets/diffview.nvim` installed.
-          -- use { 
-          --   'TimUntersberger/neogit', 
-          --   requires = { 
+          -- use {
+          --   'TimUntersberger/neogit',
+          --   requires = {
           --     'nvim-lua/plenary.nvim',
-          --     'sindrets/diffview.nvim' 
+          --     'sindrets/diffview.nvim'
           --   }
           -- }
           --
-          diffview = false  
+          diffview = false,
         },
         -- Setting any section to `false` will make the section not render at all
         sections = {
@@ -678,9 +679,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           delay = 1000,
           ignore_whitespace = false,
         },
-        current_line_blame_formatter_opts = {
-          relative_time = false
-        },
+        -- current_line_blame_formatter = ' <author>, <author_time:%Y-%m-%d> - <summary>',
         sign_priority = 6,
         update_debounce = 100,
         status_formatter = nil, -- Use default
@@ -696,28 +695,65 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         yadm = {
           enable = false
         },
+        on_attach = function(bufnr)
+          local gs = package.loaded.gitsigns
+          local opts = { buffer = bufnr }
+
+          mapset('n', ']h', gs.next_hunk, opts)
+          mapset('n', '[h', gs.prev_hunk, opts)
+          mapset({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>', opts)
+          mapset({'n', 'v'}, '<leader>hr', ':Gitsigns reset_hunk<CR>', opts)
+          mapset('n', '<leader>hS', gs.stage_buffer, opts)
+          mapset('n', '<leader>hu', gs.undo_stage_hunk, opts)
+          mapset('n', '<leader>hU', gs.reset_buffer_index, opts)
+          mapset('n', '<leader>hR', gs.reset_buffer, opts)
+          mapset('n', '<leader>hp', gs.preview_hunk, opts)
+          mapset('n', '<leader>hb', function()
+            gs.blame_line{full=true} end, opts)
+          mapset('n', '<leader>hd', gs.diffthis, opts)
+          mapset('n', '<leader>hD', function() gs.diffthis('~') end, opts)
+          mapset('n', '<leader>htb', gs.toggle_current_line_blame, opts)
+          mapset('n', '<leader>htd', gs.toggle_deleted, opts)
+          mapset('n', '<leader>hts', gs.toggle_signs, opts)
+          mapset('n', '<leader>htn', gs.toggle_numhl, opts)
+          mapset('n', '<leader>htl', gs.toggle_linehl, opts)
+          mapset('n', '<leader>htw', gs.toggle_word_diff, opts)
+
+          mapset({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', opts)
+          require'which-key'.register({
+            h = {
+              name = 'Gitsigns',
+              s = 'Stage hunk',
+              r = 'Reset hunk',
+              S = 'Stage buffer',
+              u = 'Undo stage hunk',
+              U = 'Reset buffer index',
+              R = 'Reset buffer',
+              p = 'Preview hunk',
+              b = 'Blame line',
+              d = 'Diff this',
+              D = 'Diff with ~',
+              m = 'Hydra menu',
+              t = {
+                name = 'Toggle gitsigns',
+                b = 'Current line blame',
+                d = 'Deleted',
+                s = 'Signs',
+                n = 'Number highlight',
+                l = 'Line highlight',
+                w = 'Word diff',
+              }
+            },
+          }, { mode = 'n', prefix = '<leader>', buffer = bufnr })
+          require'which-key'.register({
+            h = {
+              name = 'Gitsigns',
+              s = 'Stage hunk',
+              r = 'Reset hunk',
+            },
+          }, { mode = 'v', prefix = '<leader>', buffer = bufnr })
+        end
       }
-      mapset('n', ']h', "&diff ? ']h' : '<cmd>Gitsigns next_hunk<CR>'", { noremap=true, expr=true })
-      mapset('n', '[h', "&diff ? '[h' : '<cmd>Gitsigns prev_hunk<CR>'", { noremap=true, expr=true })
-
-      mapset('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>', noremap)
-      mapset('v', '<leader>hs', ':Gitsigns stage_hunk<CR>', noremap)
-      mapset('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', noremap)
-      mapset('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>', noremap)
-      mapset('v', '<leader>hr', ':Gitsigns reset_hunk<CR>', noremap)
-      mapset('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', noremap)
-      mapset('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', noremap)
-      mapset('n', '<leader>hB', '<cmd>lua require"gitsigns".blame_line{full=true}<CR>', noremap)
-      mapset('n', '<leader>hb', '<cmd>Gitsigns toggle_current_line_blame<CR>', noremap)
-      mapset('n', '<leader>hts', '<cmd>Gitsigns toggle_signs<CR>', noremap)
-      mapset('n', '<leader>htn', '<cmd>Gitsigns toggle_numhl<CR>', noremap)
-      mapset('n', '<leader>htl', '<cmd>Gitsigns toggle_linehl<CR>', noremap)
-      mapset('n', '<leader>htw', '<cmd>Gitsigns toggle_word_diff<CR>', noremap)
-      mapset('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', noremap)
-      mapset('n', '<leader>hU', '<cmd>Gitsigns reset_buffer_index<CR>', noremap)
-
-      mapset('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>', noremap)
-      mapset('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>', noremap)
     end
   },
   {
@@ -812,9 +848,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "latex",
           "llvm",
           "lua",
+          "luap",
           "make",
           "markdown",
           "markdown_inline",
+          "matlab",
           "meson",
           "ninja",
           -- "norg", "norg_meta", "norg_table",
@@ -826,6 +864,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "ql",
           "query",
           "regex",
+          "rasi",
+          "ron",
           "rst",
           "rust",
           "scala",
@@ -959,7 +999,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           select = {
             enable = true,
 
-            -- Automatically jump forward to textobj, similar to targets.vim 
+            -- Automatically jump forward to textobj, similar to targets.vim
             lookahead = true,
 
             keymaps = {
@@ -1200,6 +1240,20 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     end,
   },
   {
+    'lukas-reineke/indent-blankline.nvim',
+    ft = ft_prog,
+    config = function()
+      require'indent_blankline'.setup {
+        show_current_context = true,
+        show_trailing_blankline_indent = false,
+        show_end_of_line = true,
+      }
+      mapset('n', '<leader>i', function()
+        vim.g.indent_blankline_enabled = not vim.g.indent_blankline_enabled
+      end)
+    end
+  },
+  {
     'nvim-orgmode/orgmode',
     ft = { 'org' },
     dependencies = "nvim-treesitter",
@@ -1299,10 +1353,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
 
         --# customize highlight groups (setting this overrides colorscheme)
         snipruncolors = {
-          SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
-          SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
-          SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
-          SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
+          SniprunVirtualTextOk  = {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+          SniprunFloatingWinOk  = {fg="#66eeff",ctermfg="Cyan"},
+          SniprunVirtualTextErr = {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+          SniprunFloatingWinErr = {fg="#881515",ctermfg="DarkRed"},
         },
 
         --# miscellaneous compatibility/adjustement settings
@@ -1323,6 +1377,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     ft = { 'log' },
   },
   {
+    'imsnif/kdl.vim',
+    ft = { 'kdl' },
+  },
+  {
     'folke/tokyonight.nvim',
     config = function()
       require("tokyonight").setup {
@@ -1335,6 +1393,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       vim.cmd.colorscheme('tokyonight')
       vim.api.nvim_set_hl(0, 'LineNr', { fg = '#5081c0' })
       vim.api.nvim_set_hl(0, 'CursorLineNR', { fg = '#ffba00' })
+      vim.api.nvim_set_hl(0, 'IncSearch', { fg = '#ff9e64', bg = '#2a52be' })
+      vim.api.nvim_set_hl(0, 'Whitespace', { bg = '#d2042d', ctermbg = 'red' })
     end
   },
   {
@@ -1350,8 +1410,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     config = function()
       local home_path = vim.env.HOME
       -- local function spellstatus()
-      --   if (vim.opt.spell:get()) then 
-      --     return [[spell]] 
+      --   if (vim.opt.spell:get()) then
+      --     return [[spell]]
       --   else
       --     return ''
       --   end
@@ -1360,7 +1420,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local abbrev_term_memoize = {}
       local function abbrev_term(name, space)
         local m_key = name .. "," .. space
-        local m_value = abbrev_term_memoize[m_key] 
+        local m_value = abbrev_term_memoize[m_key]
         if m_value ~= nil then
           return m_value
         end
@@ -1413,7 +1473,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local abbrev_path_memoize = {}
       local function abbrev_path(dir, file, space)
         local m_key = dir .. "//" .. file .. "," .. space
-        local m_value = abbrev_path_memoize[m_key] 
+        local m_value = abbrev_path_memoize[m_key]
         if m_value ~= nil then
           return m_value
         end
@@ -1440,7 +1500,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local len_without_hl_memoizes = 0
       local len_without_hl_memoize = {}
       local function len_without_hl(s)
-        local m_value = len_without_hl_memoize[s] 
+        local m_value = len_without_hl_memoize[s]
         if m_value ~= nil then
           return m_value
         end
@@ -1454,6 +1514,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         return result
       end
       local fix_space = 18
+      local env_space = 0
       local branch_space = 0
       local diff_space = 0
       local diag_space = 0
@@ -1466,18 +1527,16 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
         sections = {
           lualine_a = {
-            {'mode', fmt=function(s) return s:sub(1,3) end,
-              padding = {left=0, right=0}}
+            { 'mode', fmt=function(s) return s:sub(1,3) end,
+              padding = {left=0, right=0} }
           },
           lualine_b = {
-            {function() if vim.env.VIRTUAL_ENV then return '👾' else return '' end end,
-              color = { fg = "#ff9e64" }, padding = 0},
-            {'branch', fmt=function(s)
+            { 'branch', fmt=function(s)
                 if s == '' then
                   branch_space = 0
                   return s
                 end
-                local space = math.floor((vim.fn.winwidth(0) - fix_space) * 0.2) -- %
+                local space = math.floor((vim.fn.winwidth(0) - fix_space) * 0.2)
                 local s_len = s:len()
                 if s_len > space then
                   branch_space = space + 3
@@ -1487,55 +1546,82 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                   return s
                 end
               end,
-              padding = 0},
-            {'diff', -- symbols = {added = '', modified = '', removed = ''},
+              padding = 0 },
+            { function()
+                if not vim.env.VIRTUAL_ENV then
+                  env_space = 0
+                  return ''
+                end
+                local env = '👾'..vim.env.VIRTUAL_ENV:match('[^/]+$')
+                if branch_space == 0 then
+                  env_space = len_without_hl(env)
+                  return env
+                else
+                  env_space = len_without_hl(env) + 1
+                  return ' '..env
+                end
+              end,
+              color = { fg = "#ff9e64" }, padding = 0 },
+            { 'diff', -- symbols = {added = '', modified = '', removed = ''},
               fmt=function(s)
                 if s == '' then
                   diff_space = 0
                   return s
                 end
                 s = s:gsub('%s+', '')
-                diff_space = len_without_hl(s)
-                return s
+                if branch_space == 0 and env_space == 0 then
+                  diff_space = len_without_hl(s)
+                  return s
+                else
+                  diff_space = len_without_hl(s) + 1
+                  return ' '..s
+                end
               end,
-              padding = {left=1, right=0}},
-            {'diagnostics', sources={'nvim_diagnostic'},
+              padding = 0 },
+            { 'diagnostics', sources = { 'nvim_diagnostic' },
               fmt=function(s)
                 if s == '' then
                   diag_space = 0
                   return s
                 end
                 s = s:gsub('%s+', '')
-                diag_space = len_without_hl(s)
-                return s
+                if branch_space == 0 and env_space == 0 and diff_space == 0 then
+                  diag_space = len_without_hl(s)
+                  return s
+                else
+                  diag_space = len_without_hl(s) + 1
+                  return ' '..s
+                end
               end,
               update_in_insert = false,
-              symbols = {error = '', warn = '', info = '', hint = '♲'},
-              padding = {left=1, right=0}},
+              symbols = { error = '', warn = '', info = '', hint = '♲' },
+              padding = 0 },
             -- {spellstatus},
             { require("lazy.status").updates,
               cond = require("lazy.status").has_updates,
               color = { fg = "#ff9e64" } },
           },
           lualine_c = {
-            {'filename', path=1, shorting_target=0, padding = 0,
-              symbols = {modified='✎', readonly='⛒'},
+            { 'filename', path=1, shorting_target=0, padding = 0,
+              symbols = { modified='✎', readonly='⛒' },
               fmt=function(s)
                 if vim.bo.buftype == "" then
                   return abbrev_path(
                     vim.fn.getcwd(), s,
-                    vim.fn.winwidth(0) - fix_space - branch_space - diff_space
-                    - diag_space - (vim.g.codeium_disable_bindings == 1 and 3 or 0)
+                    vim.fn.winwidth(0) - fix_space - env_space
+                    - branch_space - diff_space - diag_space
+                    - (vim.g.codeium_disable_bindings == 1 and 3 or 0)
                   )
                 elseif vim.bo.buftype == "terminal" then
                   return abbrev_term(
-                    s, vim.fn.winwidth(0) - fix_space - branch_space - diff_space
-                    - diag_space - (vim.g.codeium_disable_bindings == 1 and 3 or 0)
+                    s, vim.fn.winwidth(0) - fix_space - env_space
+                    - branch_space - diff_space - diag_space
+                    - (vim.g.codeium_disable_bindings == 1 and 3 or 0)
                   )
                 else
                   return s
                 end
-              end}
+              end }
           },
           lualine_x = {
             -- {'lsp_progress',
@@ -1552,49 +1638,49 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             --   display_components = {{'title', 'percentage', 'message'}, 'lsp_client_name', 'spinner'},
             --   spinner_symbols = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' }},
             -- { 'nvim_treesitter#statusline', max_length = 20 },
-            {function()
-              local status = {}
-              if vim.v.hlsearch ~= 0 then
-                local search = vim.fn.searchcount()
-                if search.total > 0 then
-                  table.insert(status, search.current.."/"..search.total)
+            { function()
+                local status = {}
+                if vim.v.hlsearch ~= 0 then
+                  local search = vim.fn.searchcount()
+                  if search.total > 0 then
+                    table.insert(status, search.current.."/"..search.total)
+                  end
                 end
-              end
-              local register = vim.fn.reg_recording()
-              if register ~= '' then
-                table.insert(status, 'rec@'..register)
-              end
-              return table.concat(status, ' ')
-            end, padding = {left=1, right=0}},
-            {function() 
-              return vim.fn['codeium#GetStatusString']()
-            end,
-            cond = function()
-              return vim.g.codeium_disable_bindings == 1
-            end,
-            color = { fg = "#3b4261" },
-            padding = 0},
+                local register = vim.fn.reg_recording()
+                if register ~= '' then
+                  table.insert(status, 'rec@'..register)
+                end
+                return table.concat(status, ' ')
+              end, padding = { left=1, right=0 } },
+            { function()
+                return vim.fn['codeium#GetStatusString']()
+              end,
+              cond = function()
+                return vim.g.codeium_disable_bindings == 1
+              end,
+              color = { fg = "#3b4261" },
+              padding = 0 },
             -- {'tabnine'},
           },
           lualine_y = {
-            {'encoding', padding = 0,
-            fmt=function(s)
-              if vim.bo.eol then
-                return "↲" .. s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
-              else
-                return s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
-              end
-            end},
-            {'fileformat', padding = 0},
+            { 'encoding', padding = 0,
+              fmt=function(s)
+                if vim.bo.eol then
+                  return "↲" .. s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
+                else
+                  return s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
+                end
+              end },
+            { 'fileformat', padding = 0 },
           },
-          lualine_z = {{'location', padding = 0}},
+          lualine_z = { { 'location', padding = 0 } },
         },
         inactive_sections = {
           lualine_a = {},
           lualine_b = {},
-          lualine_c = {{'filename', path=1, shorting_target=0,
-                       symbols = {modified='✎', readonly='⛒'}}},
-          lualine_x = {'location'},
+          lualine_c = { { 'filename', path=1, shorting_target=0,
+                          symbols = { modified='✎', readonly='⛒' } } },
+          lualine_x = { 'location' },
           lualine_y = {},
           lualine_z = {}
         }
@@ -1620,7 +1706,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     'altermo/ultimate-autopair.nvim',
     event = { 'InsertEnter', 'CmdlineEnter' },
     config = function()
-      require('ultimate-autopair').setup {}
+      require'ultimate-autopair'.setup {}
     end,
   },
   {
@@ -1746,11 +1832,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       -- { 'ray-x/lsp_signature.nvim' },
       { 'j-hui/fidget.nvim' },
     },
-    ft = ft_prog,
+    ft = ft_prog_lsp,
     config = function()
       local diagnostic_config = {
         virtual_text = {
-          spacing = 1,
+          spacing = 0,
           prefix = '▪',
           format = function(diagnostic)
             return diagnostic.message:match('^%s*(.-)%s*$'):gsub('%s%s+', ' ')
@@ -1824,8 +1910,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         mapset('n', '<leader>ln', vim.lsp.buf.rename, opts)
         mapset('n', '<leader>la', vim.lsp.buf.code_action, opts)
         mapset('n', '<leader>lr', vim.lsp.buf.references, opts)
-        --mapset({ 'n', 'v' }, '<leader>lf', vim.lsp.buf.format, opts)
-        mapset({ 'n', 'v' }, '<leader>lf', function() vim.lsp.buf.format { async = true } end, opts)
+        mapset({ 'n', 'v' }, '<leader>lf', function()
+          vim.lsp.buf.format { async = true } end, opts)
 
         mapset('n', '<leader>lwD', function()
           vim.api.nvim_command('vsplit')
@@ -1867,7 +1953,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
               d = 'definition',
               i = 'implementation',
               t = 'type definition',
-            } },
+            }
+          },
         }, { mode = 'n', prefix = '<leader>', buffer = bufnr })
         require'which-key'.register({
           l = {
@@ -1883,7 +1970,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
 
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
-      for _, lsp in ipairs({ 'pyright', 'vtsls', 'intelephense', 'html', 'jsonls', 'ccls' }) do
+      for _, lsp in pairs({
+        'pyright', 'intelephense', 'html', 'jsonls', 'ccls', 'bashls',
+      }) do
         lspconfig[lsp].setup {
           on_attach = on_attach,
           capabilities = capabilities,
@@ -1936,30 +2025,55 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
               importPrefix = "by_self",
             },
             cargo = {
-              loadOutDirsFromCheck = true
+              loadOutDirsFromCheck = true,
             },
             procMacro = {
-              enable = true
+              enable = true,
             },
           },
         },
       }
       lspconfig.java_language_server.setup {
-        cmd = { vim.env.HOME .. '/tmp/java-language-server/dist/lang_server_linux.sh' },
+        cmd = { vim.env.HOME ..
+        '/tmp/java-language-server/dist/lang_server_linux.sh' },
         on_attach = on_attach,
         capabilities = capabilities,
         flags = {
           debounce_text_changes = 1000,
-        }
+        },
       }
+      local util = require'lspconfig.util'
+      lspconfig.vtsls.setup {
+        single_file_support = false,
+        root_dir = function(fname)
+          return not util.root_pattern('deno.json', 'deno.jsonc')(fname)
+          and (util.root_pattern('tsconfig.json')(fname)
+          or util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
+          or util.root_pattern('.')(fname))
+        end,
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = {
+          debounce_text_changes = 1000,
+        },
+      }
+      lspconfig.denols.setup {
+        root_dir = util.root_pattern('deno.json', 'deno.jsonc'),
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = {
+          debounce_text_changes = 1000,
+        },
+      }
+
       -- Linters
       lspconfig.eslint.setup {}
       lspconfig.ruff_lsp.setup {
         init_options = {
           settings = {
-            args = { '--line-length', '79' }
-          }
-        }
+            args = { '--line-length', '79' },
+          },
+        },
       }
 
       -- Handlers
@@ -1968,10 +2082,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       )
 
       -- Highlights
-      -- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true })
-      -- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineHint', { undercurl = true })
-      -- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineInfo', { undercurl = true })
-      -- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true })
+      --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true })
+      --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineHint', { undercurl = true })
+      --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineInfo', { undercurl = true })
+      --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true })
     end
   },
   {
@@ -1982,7 +2096,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     end
   },
   {
-    'kevinhwang91/nvim-ufo', 
+    'kevinhwang91/nvim-ufo',
     dependencies = { 'kevinhwang91/promise-async' },
     event = 'VeryLazy',
     config = function()
@@ -2031,7 +2145,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   {
     'mfussenegger/nvim-dap',
     dependencies = { 'which-key.nvim' },
-    ft = ft_prog,
+    ft = ft_prog_lsp,
     config = function()
       local dap = require'dap'
       -- dap.adapters.python = {
@@ -2095,7 +2209,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   {
     'rcarriga/nvim-dap-ui',
     dependencies = { 'nvim-dap' },
-    ft = ft_prog,
+    ft = ft_prog_lsp,
     config = function()
       local dapui = require'dapui'
       dapui.setup {}
@@ -2255,6 +2369,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     end
   },
   {
+    'miversen33/netman.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require'netman'
+    end
+  },
+  {
     'chipsenkbeil/distant.nvim',
     cmd = {
       "DistantConnect",
@@ -2294,11 +2415,14 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     cmd = { 'Codeium' },
     config = function ()
       vim.g.codeium_disable_bindings = 1
-      vim.keymap.set('i', '<A-h>', vim.fn['codeium#Complete'])
-      vim.keymap.set('i', '<A-l>', vim.fn['codeium#Accept'], { expr = true })
-      vim.keymap.set('i', '<A-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
-      vim.keymap.set('i', '<A-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
-      vim.keymap.set('i', '<C-x>', vim.fn['codeium#Clear'], { expr = true })
+      vim.keymap.set('i', '<A-h>', vim.fn['codeium#CycleOrComplete'])
+      vim.keymap.set('i', '<A-l>', vim.fn['codeium#Accept'],
+      { script = true, silent = true, nowait = true, expr = true })
+      vim.keymap.set('i', '<A-k>', function()
+        vim.fn['codeium#CycleCompletions'](-1) end)
+      vim.keymap.set('i', '<A-j>', function()
+        vim.fn['codeium#CycleCompletions'](1) end)
+      vim.keymap.set('i', '<C-x>', vim.fn['codeium#Clear'])
       vim.api.nvim_create_user_command(
         'CodeiumStart',
         'call codeium#server#Start()',
