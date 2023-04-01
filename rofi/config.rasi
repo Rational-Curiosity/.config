@@ -112,8 +112,8 @@ configuration {
 	kb-remove-char-back: "BackSpace,Shift+BackSpace,Control+h";
 	kb-remove-to-eol: "Control+k";
 	kb-remove-to-sol: "Control+u";
-	kb-element-next: "Control+n";
-	kb-element-prev: "Control+p";
+	kb-element-next: "Control+n,Down";
+	kb-element-prev: "Control+p,Up";
 	kb-accept-entry: "Control+m,Return,KP_Enter";
 	kb-accept-custom: "Control+j,Control+Return";
 	kb-accept-custom-alt: "Control+Shift+Return";
@@ -205,6 +205,8 @@ configuration {
 }
 
 window {
+    height: 67%;
+    width: 67%;
     background-color: @background;
     border: 0;
     padding: 2.5ch;
