@@ -89,7 +89,7 @@ hints:
               |python[23]?|pip|pytest|mvn|apt\
               |php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl\
               |sed|basename|dirname|head|tail\
-              )( +[^[:space:]│↲]+)+"
+              ) +[^│↲]*[^[:space:]│↲]+"
       action: Copy
       post_processing: false
       mouse:
