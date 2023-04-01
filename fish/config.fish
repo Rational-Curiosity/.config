@@ -58,6 +58,8 @@ abbr -a ..9 'cd ../../../../../../../../..'
 abbr -a ..10 'cd ../../../../../../../../../..'
 abbr -a ..11 'cd ../../../../../../../../../../..'
 
+bind \cy fish_clipboard_paste
+bind \cH backward-kill-word
 bind \ez 'commandline -r fg; commandline -f execute'
 
 function fish_title
