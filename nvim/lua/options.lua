@@ -491,6 +491,7 @@ mapset('', '<leader>V',
 mapset('t', '<Esc><Esc>', '<C-\\><C-n>', noremap)
 mapset('x', 'zx', "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>", noremap)
 mapset('x', '\\p', '"_dP')
+mapset({ 'n', 'x' }, '\\C', '"_C')
 mapset({ 'n', 'x' }, '\\c', '"_c')
 mapset({ 'n', 'x' }, '\\d', '"_d')
 -- added in vim version 0.8.0
@@ -606,6 +607,7 @@ mapset('i', '<A-b>', '<S-Left>', noremap_silent)
 mapset('i', '<A-f>', '<S-Right>', noremap_silent)
 mapset('i', '<C-b>', '<Left>', noremap_silent)
 mapset('i', '<C-f>', '<Right>', noremap_silent)
+mapset({'i', 'c'}, '<C-y>', '<C-r>+', noremap_silent)
 mapset('i', '<C-x><C-a>', '<C-a>', noremap_silent)
 mapset('i', '<C-a>', '<Home>', noremap_silent)
 mapset('i', '<C-e>', '<End>', noremap_silent)
@@ -615,7 +617,8 @@ mapset('i', '<A-d>', '<C-o>dw', noremap_silent)
 -- mapset('i', '<C-v>', '<PageDown>', noremap_silent)
 mapset('i', '<C-k>', '<C-o>D', noremap_silent)
 -- Both <BS> and <C-BS> sends ^? on terminals
--- mapset('i', '<C-BS>', '<C-o>db', noremap_silent)
+-- <C-H> equals <C-BS> on st
+mapset('i', '<C-H>', '<Left><C-o>dvb', noremap_silent)
 mapset('i', '<A-BS>', '<Left><C-o>dvb', noremap_silent)
 -- <C-u> already exists
 mapset('c', '<A-p>', '<C-p>', noremap)

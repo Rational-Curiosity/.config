@@ -1513,12 +1513,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         len_without_hl_memoize[s] = result
         return result
       end
-      local fix_space = 18
+      local fix_space = 19
       local env_space = 0
       local branch_space = 0
       local diff_space = 0
       local diag_space = 0
 
+      local pos_bar = { '🭶', '🭷', '🭸', '🭹', '🭺', '🭻' }
       require"lualine".setup {
         options = {
           theme = 'tokyonight', -- powerline
@@ -1527,11 +1528,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
         sections = {
           lualine_a = {
-            { 'mode', fmt=function(s) return s:sub(1,3) end,
-              padding = {left=0, right=0} }
+            { 'mode', fmt = function(s) return s:sub(1,3) end,
+              padding = { left=0, right=0 } }
           },
           lualine_b = {
-            { 'branch', fmt=function(s)
+            { 'branch', fmt = function(s)
                 if s == '' then
                   branch_space = 0
                   return s
@@ -1561,9 +1562,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                   return ' '..env
                 end
               end,
-              color = { fg = "#ff9e64" }, padding = 0 },
+              color = { fg = '#ff9e64' }, padding = 0 },
             { 'diff', -- symbols = {added = '', modified = '', removed = ''},
-              fmt=function(s)
+              fmt = function(s)
                 if s == '' then
                   diff_space = 0
                   return s
@@ -1579,7 +1580,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
               end,
               padding = 0 },
             { 'diagnostics', sources = { 'nvim_diagnostic' },
-              fmt=function(s)
+              fmt = function(s)
                 if s == '' then
                   diag_space = 0
                   return s
@@ -1597,14 +1598,14 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
               symbols = { error = '', warn = '', info = '', hint = '♲' },
               padding = 0 },
             -- {spellstatus},
-            { require("lazy.status").updates,
-              cond = require("lazy.status").has_updates,
-              color = { fg = "#ff9e64" } },
+            { require('lazy.status').updates,
+              cond = require('lazy.status').has_updates,
+              color = { fg = '#ff9e64' } },
           },
           lualine_c = {
-            { 'filename', path=1, shorting_target=0, padding = 0,
-              symbols = { modified='✎', readonly='⛒' },
-              fmt=function(s)
+            { 'filename', path = 1, shorting_target = 0, padding = 0,
+              symbols = { modified = '✎', readonly = '⛒' },
+              fmt = function(s)
                 if vim.bo.buftype == "" then
                   return abbrev_path(
                     vim.fn.getcwd(), s,
@@ -1612,7 +1613,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                     - branch_space - diff_space - diag_space
                     - (vim.g.codeium_disable_bindings == 1 and 3 or 0)
                   )
-                elseif vim.bo.buftype == "terminal" then
+                elseif vim.bo.buftype == 'terminal' then
                   return abbrev_term(
                     s, vim.fn.winwidth(0) - fix_space - env_space
                     - branch_space - diff_space - diag_space
@@ -1643,7 +1644,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                 if vim.v.hlsearch ~= 0 then
                   local search = vim.fn.searchcount()
                   if search.total > 0 then
-                    table.insert(status, search.current.."/"..search.total)
+                    table.insert(status, search.current..'/'..search.total)
                   end
                 end
                 local register = vim.fn.reg_recording()
@@ -1651,35 +1652,50 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                   table.insert(status, 'rec@'..register)
                 end
                 return table.concat(status, ' ')
-              end, padding = { left=1, right=0 } },
+              end, padding = { left = 1, right = 0 } },
             { function()
                 return vim.fn['codeium#GetStatusString']()
               end,
               cond = function()
                 return vim.g.codeium_disable_bindings == 1
               end,
-              color = { fg = "#3b4261" },
+              color = { fg = '#3b4261' },
               padding = 0 },
             -- {'tabnine'},
           },
           lualine_y = {
             { 'encoding', padding = 0,
-              fmt=function(s)
+              fmt = function(s)
                 if vim.bo.eol then
-                  return "↲" .. s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
+                  return "↲" .. s:sub(1, 1) .. s:gsub('^[^0-9]*', '', 1)
                 else
-                  return s:sub(1, 1) .. s:gsub("^[^0-9]*", "", 1)
+                  return s:sub(1, 1) .. s:gsub('^[^0-9]*', '', 1)
                 end
               end },
             { 'fileformat', padding = 0 },
           },
-          lualine_z = { { 'location', padding = 0 } },
+          lualine_z = {
+            { 'location', padding = 0 },
+            { function()
+                local line = vim.api.nvim_win_get_cursor(0)[1]
+                local lines = vim.api.nvim_buf_line_count(0)
+                if line == lines then
+                  return pos_bar[#pos_bar]
+                elseif line == 1 then
+                  return pos_bar[1]
+                else
+                  return pos_bar[
+                    math.floor((line - 1)/(lines - 1)*(#pos_bar - 2)) + 2
+                  ]
+                end
+              end, padding = 0 }
+          },
         },
         inactive_sections = {
           lualine_a = {},
           lualine_b = {},
           lualine_c = { { 'filename', path=1, shorting_target=0,
-                          symbols = { modified='✎', readonly='⛒' } } },
+                          symbols = { modified = '✎', readonly = '⛒' } } },
           lualine_x = { 'location' },
           lualine_y = {},
           lualine_z = {}
