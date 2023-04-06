@@ -1382,6 +1382,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'folke/tokyonight.nvim',
+    dependencies = {
+      "nvim-treesitter",
+    },
     config = function()
       require("tokyonight").setup {
         style = "night",
@@ -1604,7 +1607,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           },
           lualine_c = {
             { 'filename', path = 1, shorting_target = 0, padding = 0,
-              symbols = { modified = '✎', readonly = '⛒' },
+              symbols = {
+                modified = '󰏫', readonly = '', unnamed = '', newfile = '',
+              },
               fmt = function(s)
                 if vim.bo.buftype == "" then
                   return abbrev_path(
@@ -1699,7 +1704,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           lualine_x = { 'location' },
           lualine_y = {},
           lualine_z = {}
-        }
+        },
+        extensions = { 'quickfix' },
       }
     end
   },
@@ -2116,6 +2122,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     dependencies = { 'kevinhwang91/promise-async' },
     event = 'VeryLazy',
     config = function()
+      vim.o.foldlevel = 99
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+
       local handler = function(virtText, lnum, endLnum, width, truncate)
         local newVirtText = {}
         local suffix = ('   %d '):format(endLnum - lnum)
@@ -2147,7 +2157,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       -- global handler
       require('ufo').setup({
         fold_virt_text_handler = handler,
-        provider_selector = function(bufnr, filetype)
+        provider_selector = function(bufnr, filetype, buftype)
           return {'treesitter', 'indent'}
         end
       })
@@ -2156,6 +2166,12 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       -- will override global handler if it is existed
       local bufnr = vim.api.nvim_get_current_buf()
       require('ufo').setFoldVirtTextHandler(bufnr, handler)
+
+      local mapset = vim.keymap.set
+      mapset('n', 'zR', require('ufo').openAllFolds)
+      mapset('n', 'zM', require('ufo').closeAllFolds)
+      mapset('n', 'zr', require('ufo').openFoldsExceptKinds)
+      mapset('n', 'zm', require('ufo').closeFoldsWith)
     end
   },
   {

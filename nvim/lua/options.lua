@@ -23,10 +23,6 @@ o.updatetime = 2000
 o.cmdheight = 0
 o.showmode = false
 o.fileencoding = 'utf-8'
--- [ nvim-ufo
-o.foldlevel = 99
-o.foldenable = true
--- ]
 
 -- opt.lazyredraw = true  -- It is only meant to be set temporarily
 opt.encoding = 'utf-8'
@@ -491,8 +487,9 @@ mapset('', '<leader>V',
 mapset('t', '<Esc><Esc>', '<C-\\><C-n>', noremap)
 mapset('x', 'zx', "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>", noremap)
 mapset('x', '\\p', '"_dP')
-mapset({ 'n', 'x' }, '\\C', '"_C')
+mapset('n', '\\C', '"_C')
 mapset({ 'n', 'x' }, '\\c', '"_c')
+mapset('n', '\\D', '"_D')
 mapset({ 'n', 'x' }, '\\d', '"_d')
 -- added in vim version 0.8.0
 -- map('x', '<leader>*', '"0y/<C-R>0<CR>', noremap)
