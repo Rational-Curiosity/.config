@@ -1,3 +1,4 @@
+vim.loader.enable()
 vim.api.nvim_command('syntax off')
 vim.opt.spell = false
 vim.g.mapleader = ' '
