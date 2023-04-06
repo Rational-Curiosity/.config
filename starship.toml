@@ -179,8 +179,10 @@ style = "bg:#FCA17D fg:#101010"
 format = '[$symbol$branch ]($style)'
 
 [git_commit]
+tag_disabled = false
+tag_symbol = ''
 style = "bg:#FCA17D fg:#101010"
-format = '[\($hash$tag\) ]($style)'
+format = '[$hash$tag ]($style)'
 
 [git_metrics]
 format = '([+$added]($added_style))([-$deleted]($deleted_style))[ ](bg:#FCA17D fg:#101010)'
