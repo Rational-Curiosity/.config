@@ -830,7 +830,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "gowork",
           "graphql",
           "haskell",
-          "help",
+          "hjson",
           "html",
           "htmldjango",
           "http",
@@ -983,7 +983,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       --   (class_declaration)
       --   (method_definition)
       -- ]])
-      vim.opt.spell = true
       vim.api.nvim_command('syntax on|runtime plugin/matchparen.vim')
     end
   },
@@ -1428,7 +1427,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           return m_value
         end
         name = name:gsub('//', '', 1):gsub('//', ':', 1):gsub(':/.*/', ':', 1)
-        print(name)
         local name_len = name:len()
         local subs
         while name_len > space do
@@ -1705,7 +1703,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           lualine_y = {},
           lualine_z = {}
         },
-        extensions = { 'quickfix' },
+        extensions = { },
       }
     end
   },

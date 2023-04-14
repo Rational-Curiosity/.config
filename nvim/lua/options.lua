@@ -86,17 +86,17 @@ vim.cmd([[
     " autocmd BufRead * if &buftype == '' | setlocal number | endif
     " autocmd BufEnter,FocusGained,InsertLeave * if &buftype == '' | setlocal relativenumber | endif
     " autocmd BufLeave,FocusLost,InsertEnter * if &buftype == '' | setlocal norelativenumber | endif
-    autocmd FileType * setlocal formatoptions-=o
     " Org, Neorg
     "autocmd FileType org,norg setlocal tabstop=2 shiftwidth=2
     "  \ foldenable foldmethod=expr foldtext=v:lua.require(\"pretty-fold\").foldtext.global()
     "autocmd FileType lua,html,css,handlebars,json,javascript,javascriptreact,typescript,typescriptreact setlocal tabstop=2 shiftwidth=2
-    autocmd FileType sh setlocal iskeyword+=$ iskeyword+={ iskeyword+=}|
-      \nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n|
-      \nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
-    autocmd FileType php,htmldjango setlocal iskeyword+=$|
-      \nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n|
-      \nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
+    " autocmd FileType sh setlocal iskeyword+=$ iskeyword+={ iskeyword+=}|
+    "   \nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n|
+    "   \nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
+    " autocmd FileType php,htmldjango setlocal iskeyword+=$|
+    "   \nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n|
+    "   \nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
+    " autocmd FileType log setlocal nospell
     " Recompile plugins.lua
     "autocmd BufWritePost plugins.lua source | PackerCompile
     " Terminal config
@@ -174,6 +174,33 @@ vim.cmd([[
     return luaeval("vim.fn.getcwd():gsub('.*/', '')")
   endfunction
 ]])
+api.nvim_create_autocmd({ "FileType" }, {
+  group = "initAutoGroup",
+  pattern = {"*"},
+  callback = function()
+    if bo.filetype == 'sh' then
+      vim.opt_local.spell = true
+      vim.cmd[[
+  setlocal iskeyword+=$ iskeyword+={ iskeyword+=}
+  nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n
+  nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
+      ]]
+    elseif bo.filetype == 'php' or bo.filetype == 'htmldjango' then
+      vim.opt_local.spell = true
+      vim.cmd[[
+  setlocal iskeyword+=$
+  nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n
+  nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
+      ]]
+    elseif bo.filetype == 'qf' then
+      vim.api.nvim_buf_set_keymap(0, 'n', '<C-CR>', '<CR><cmd>cclose<cr>', noremap)
+    elseif bo.filetype == '' or bo.filetype == 'log' then
+      vim.opt_local.spell = false
+    else
+      vim.opt_local.spell = true
+    end
+  end
+})
 local wo = vim.wo
 api.nvim_create_autocmd({ "TermEnter" }, {
   group = "initAutoGroup",
