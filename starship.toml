@@ -249,7 +249,7 @@ format = '[$symbol($version) ]($style)'
 [python]
 symbol = "🐍"
 style = "bg:#86BBD8 fg:#101010"
-format = '[${symbol}${pyenv_prefix}(${version} )]($style)[(👾$virtualenv )](bg:#86BBD8 fg:#bf5e24)'
+format = '[${symbol}${pyenv_prefix}(${version} )]($style)[(👾$virtualenv )](bg:#86BBD8 fg:#9f3e04)'
 
 [rust]
 symbol = ""
