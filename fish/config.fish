@@ -20,7 +20,9 @@ case 'gigas*'
     end
 end
 
-set -xg DELTA_COLUMNS 169
+if not set -q DELTA_COLUMNS
+    set -xg DELTA_COLUMNS 169
+end
 function delta_sidebyside --on-signal WINCH
     if test $COLUMNS -ge $DELTA_COLUMNS
         if test -z "$DELTA_FEATURES"
@@ -69,9 +71,12 @@ abbr -a ............ 'cd ../../../../../../../../../../..'
 abbr -a ..11 'cd ../../../../../../../../../../..'
 
 bind \cy fish_clipboard_paste
-bind \cH backward-kill-word
+# bind \cH backward-kill-word
 bind \ez 'commandline -r fg; commandline -f execute'
 
+if not set -q FISH_TITLE_CMD_MAX_LEN
+    set -xg FISH_TITLE_CMD_MAX_LEN 40
+end
 function fish_title
     # emacs' "term" is basically the only term that can't handle it.
     if not set -q INSIDE_EMACS; or string match -vq '*,term:*' -- $INSIDE_EMACS
@@ -82,14 +87,14 @@ function fish_title
         # An override for the current command is passed as the first parameter.
         # This is used by `fg` to show the true process name, among others.
         if set -q argv[1]
-            echo -- $ssh (prompt_pwd -d 1 -D 1)❯ (string sub -l 30 -- $argv[1])
+            echo -- $ssh (prompt_pwd -d 1 -D 1)❯ (string sub -l $FISH_TITLE_CMD_MAX_LEN -- $argv[1])
         else
             # Don't print "fish" because it's redundant
             set -l command (status current-command)
             if test "$command" = fish
                 set command
             end
-            echo -- $ssh (prompt_pwd -d 1 -D 1)❯ (string sub -l 30 -- $command)
+            echo -- $ssh (prompt_pwd -d 1 -D 1)❯ (string sub -l $FISH_TITLE_CMD_MAX_LEN -- $command)
         end
     end
 end

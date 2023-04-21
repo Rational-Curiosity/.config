@@ -853,6 +853,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "markdown",
           "markdown_inline",
           "matlab",
+          "mermaid",
           "meson",
           "ninja",
           -- "norg", "norg_meta", "norg_table",
@@ -983,7 +984,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       --   (class_declaration)
       --   (method_definition)
       -- ]])
-      vim.api.nvim_command('syntax on|runtime plugin/matchparen.vim')
+      vim.api.nvim_command(
+        'syntax on|runtime plugin/matchparen.vim|packadd cfilter'
+      )
     end
   },
   {
@@ -1237,6 +1240,28 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     config = function()
       require'ts-node-action'.setup {}
     end,
+  },
+  {
+    'toppair/peek.nvim',
+    build = 'deno task --quiet build:fast',
+    cmd = { 'PeekOpen' },
+    config = function()
+      local peek = require'peek'
+      peek.setup {
+        auto_load = false,
+      }
+      vim.api.nvim_create_user_command('PeekOpen', peek.open, {})
+      vim.api.nvim_create_user_command('PeekClose', peek.close, {})
+      vim.api.nvim_create_user_command('PeekReopen', function()
+        peek.close()
+        vim.wait(3000, function()
+          if not peek.is_open() then
+            peek.open()
+            return true
+          end
+        end, 500)
+      end, {})
+    end
   },
   {
     'lukas-reineke/indent-blankline.nvim',

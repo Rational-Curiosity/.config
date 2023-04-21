@@ -1,6 +1,6 @@
 vim.loader.enable()
 vim.api.nvim_command('syntax off')
-vim.opt.spell = false
+vim.o.spell = false
 vim.g.mapleader = ' '
 
 local datapath = vim.fn.stdpath("data")

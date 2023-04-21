@@ -10,7 +10,6 @@ local noremap = {noremap = true}
 -- local map = api.nvim_set_keymap
 local mapset = vim.keymap.set
 local fn = vim.fn
-opt.clipboard = ""
 
 -- g.did_load_filetypes = 1  -- use {'nathom/filetype.nvim'}
 
@@ -23,43 +22,42 @@ o.updatetime = 2000
 o.cmdheight = 0
 o.showmode = false
 o.fileencoding = 'utf-8'
+o.redrawtime = 750
 
 -- opt.lazyredraw = true  -- It is only meant to be set temporarily
-opt.encoding = 'utf-8'
-opt.tabstop = 4
-opt.shiftwidth = 4
-opt.softtabstop = 2
-opt.expandtab = true
-opt.list = true
+o.encoding = 'utf-8'
+o.tabstop = 4
+o.shiftwidth = 4
+o.softtabstop = 2
+o.expandtab = true
+o.list = true
 opt.listchars = {
   tab='⇤·⇥', eol='↲', nbsp='␣', trail='•', extends='⟩', precedes='⟨',
 }
-opt.cursorline = true
--- opt.number = true
--- opt.relativenumber = true
-opt.wrap = false
-opt.sidescrolloff = 1
-opt.foldmethod = "manual"
-opt.foldexpr = "nvim_treesitter#foldexpr()"
-opt.foldenable = true
-opt.background = "dark"
-opt.numberwidth = 3
-opt.signcolumn = "number"
-opt.fixendofline = false
+o.cursorline = true
+o.wrap = false
+o.sidescrolloff = 1
+o.foldmethod = "manual"
+o.foldexpr = "nvim_treesitter#foldexpr()"
+o.foldenable = true
+o.background = "dark"
+o.numberwidth = 3
+o.signcolumn = "number"
+o.fixendofline = false
 -- opt.iskeyword:prepend("-")
 -- opt.iskeyword:prepend("$")
 -- opt.iskeyword:remove("_")
 opt.shada:prepend(":200,'500")
 opt.shada:remove("'100")
-opt.spelllang = "en_us,es"
+o.spelllang = "en_us,es"
 
 -- Programs
-opt.grepprg = 'rg --vimgrep --smart-case --follow'
+o.grepprg = 'rg --vimgrep --smart-case --follow'
 opt.clipboard:prepend('unnamedplus')
-opt.ignorecase = true
-opt.smartcase = true
+o.ignorecase = true
+o.smartcase = true
 if vim.fn.executable('fish') == 1 then
-  opt.shell = 'fish'
+  o.shell = 'fish'
 end
 g.python3_host_prog = vim.fn.executable('/usr/local/bin/python3') == 1 and
   '/usr/local/bin/python3' or '/usr/bin/python3'
@@ -72,14 +70,13 @@ g.csv_no_conceal = 1
 g.csv_bind_B = 1
 
 -- UNDO
-opt.undodir = fn.stdpath('config') .. '/undo'
-opt.undofile = true
+o.undodir = fn.stdpath('config') .. '/undo'
+o.undofile = true
 
 -- UNDOTREE
 g.undotree_WindowLayout = 2
 
 vim.cmd([[
-  " set clipboard=
   augroup initAutoGroup
     autocmd!
     "  \ *.{c,cpp,h,hbs,htm,html,js,json,jsx,lua,php,py,rs,ts,tsx,md,org} setlocal number
@@ -148,25 +145,25 @@ vim.cmd([[
   command! -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
   command! Vterm 72vs|exe "term"|setlocal wfw|exe "normal \<c-w>r\<c-w>="
   command! -count=9 Command if bufexists("CommandOutput")|sil! bdelete CommandOutput|endif|
-    \bel <count>new|nnoremap <buffer> q :bd<cr>|
+    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file CommandOutput|put =execute(\"command\")|setlocal nomod noma buftype=nofile|0goto
   command! -count=9 Autocmd if bufexists("AutocmdOutput")|sil! bdelete AutocmdOutput|endif|
-    \bel <count>new|nnoremap <buffer> q :bd<cr>|
+    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file AutocmdOutput|put =execute(\"autocmd\")|setlocal nomod noma buftype=nofile|0goto
   command! -count=9 Function if bufexists("FunctionOutput")|sil! bdelete! FunctionOutput|endif|
-    \bel <count>new|nnoremap <buffer> q :bd<cr>|
+    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file FunctionOutput|put =execute(\"function\")|setlocal nomod noma buftype=nofile|0goto
   command! -count=9 Scriptnames if bufexists("ScriptnamesOutput")|sil! bdelete ScriptnamesOutput|endif|
-    \bel <count>new|nnoremap <buffer> q :bd<cr>|
+    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file ScriptnamesOutput|put =execute(\"scriptnames\")|setlocal nomod noma buftype=nofile|0goto
-  command! -count=9 Map if bufexists("MapOutput")|sil! bdelete MapOutput|endif|bel <count>new|
-    \nnoremap <buffer> q :bd<cr>|file MapOutput|put =execute(\"map\")|
+  command! -count=9 Map if bufexists("MapOutput")|sil! bdelete MapOutput|endif|
+    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|file MapOutput|put =execute(\"map\")|
     \setlocal nomod noma buftype=nofile|0goto
-  command! -count=9 Hi if bufexists("HiOutput")|sil! bdelete HiOutput|endif|bel <count>new|
-    \nnoremap <buffer> q :bd<cr>|file HiOutput|put =execute(\"hi\")|
+  command! -count=9 Hi if bufexists("HiOutput")|sil! bdelete HiOutput|endif|
+    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|file HiOutput|put =execute(\"hi\")|
     \setlocal nomod noma buftype=nofile|0goto
   command! -count=7 Messages if bufexists("MessagesOutput")|sil! bdelete MessagesOutput|endif|
-    \bel <count>new|nnoremap <buffer> q :bd<cr>|
+    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file MessagesOutput|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
 
   " Functions
@@ -177,7 +174,7 @@ vim.cmd([[
 api.nvim_create_autocmd({ "FileType" }, {
   group = "initAutoGroup",
   pattern = {"*"},
-  callback = function()
+  callback = function(ev)
     if bo.filetype == 'sh' then
       vim.opt_local.spell = true
       vim.cmd[[
@@ -193,7 +190,11 @@ api.nvim_create_autocmd({ "FileType" }, {
   nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
       ]]
     elseif bo.filetype == 'qf' then
-      vim.api.nvim_buf_set_keymap(0, 'n', '<C-CR>', '<CR><cmd>cclose<cr>', noremap)
+      vim.keymap.set('n', '<A-CR>', '<CR>:cclose<cr>', {
+        buffer = ev.buf,
+        noremap = true,
+        silent = true,
+      })
     elseif bo.filetype == '' or bo.filetype == 'log' then
       vim.opt_local.spell = false
     else
@@ -221,13 +222,17 @@ api.nvim_create_autocmd({ "TermLeave" }, {
 api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   group = "initAutoGroup",
   pattern = {"*"},
-  callback = function()
-    if bo.buftype == "" or bo.buftype == "acwrite" then
+  callback = function(ev)
+    if bo.buftype == '' or bo.buftype == 'acwrite' then
       if wo.number ~= true then
         wo.number = true
       end
-    elseif bo.buftype == "help" then
-      vim.api.nvim_buf_set_keymap(0, 'n', 'q', '<cmd>bdelete<cr>', noremap)
+    elseif bo.buftype == 'help' then
+      vim.keymap.set('n', 'q', '<cmd>bdelete<cr>', {
+        buffer = ev.buf,
+        noremap = true,
+        silent = true,
+      })
     end
   end
 })
@@ -333,7 +338,7 @@ do
   api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
     group = "initAutoGroup",
     pattern = {"*"},
-    callback = function()
+    callback = function(ev)
       local columns = filetype_max_line_length[bo.filetype]
       if columns then
         local last_pos = fn.getpos("']")
@@ -343,7 +348,7 @@ do
         local last = last_pos[2]
         local first = fn.getpos("'[")[2]
         if wo.colorcolumn == '' then
-          local lines = api.nvim_buf_get_lines(0, first - 1, last, false)
+          local lines = api.nvim_buf_get_lines(ev.buf, first - 1, last, false)
           if next(lines) == nil then
             return
           end
@@ -358,18 +363,18 @@ do
           end
           if columns < max_len then
             api.nvim_buf_set_mark(
-              0, "r", first + max_index - 1, max_len - 1, {}
+              ev.buf, "r", first + max_index - 1, max_len - 1, {}
             )
             vim.opt_local.colorcolumn = tostring(columns + 1)
           end
         else
-          local max_mark = api.nvim_buf_get_mark(0, "r")[1]
+          local max_mark = api.nvim_buf_get_mark(ev.buf, "r")[1]
           if max_mark ~= 0 then
             if max_mark + 1 < first or last < max_mark then
               return
             end
             local lines = api.nvim_buf_get_lines(
-              0, max_mark - 1, max_mark + 1, false
+              ev.buf, max_mark - 1, max_mark + 1, false
             )
             if next(lines) ~= nil then
               local max_len = fn.strdisplaywidth(table.remove(lines))
@@ -384,10 +389,10 @@ do
               end
             end
           end
-          api.nvim_buf_del_mark(0, "r")
+          api.nvim_buf_del_mark(ev.buf, "r")
           local first = vim.fn.line("w0")
           lines = api.nvim_buf_get_lines(
-            0, first - 1, vim.fn.line("w$"), true
+            ev.buf, first - 1, vim.fn.line("w$"), true
           )
           local max_index = #lines
           local max_len = fn.strdisplaywidth(table.remove(lines))
@@ -400,7 +405,7 @@ do
           end
           if columns < max_len then
             api.nvim_buf_set_mark(
-              0, "r", first + max_index - 1, max_len - 1, {}
+              ev.buf, "r", first + max_index - 1, max_len - 1, {}
             )
           else
             vim.opt_local.colorcolumn = ''
@@ -642,7 +647,7 @@ mapset('i', '<A-d>', '<C-o>dw', noremap_silent)
 mapset('i', '<C-k>', '<C-o>D', noremap_silent)
 -- Both <BS> and <C-BS> sends ^? on terminals
 -- <C-H> equals <C-BS> on st
-mapset('i', '<C-H>', '<Left><C-o>dvb', noremap_silent)
+-- mapset('i', '<C-H>', '<Left><C-o>dvb', noremap_silent)
 mapset('i', '<A-BS>', '<Left><C-o>dvb', noremap_silent)
 -- <C-u> already exists
 mapset('c', '<A-p>', '<C-p>', noremap)

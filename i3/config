@@ -66,9 +66,9 @@ bindsym $mod+Shift+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK
 floating_modifier $mod
 
 # start a terminal
-set $font 'Hack Nerd Font Mono:size=8.8'
-bindsym $mod+Return exec st -f $font tmux
-bindsym $mod+Shift+Return $root;layout splith;exec st -f $font tmux;resize set width 50 ppt
+set $font Hack Nerd Font Mono:size=$(font-size)
+bindsym $mod+Return exec st -f "$font" tmux
+bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font" tmux;resize set width 50 ppt
 # bindsym $mod+Return exec wezterm &
 # bindsym $mod+Shift+Return $root;layout splith;exec wezterm &;resize set width 50 ppt
 # bindsym $mod+Return exec alacritty msg create-window || alacritty &
@@ -186,7 +186,7 @@ mode $edit_mode {
   bindsym Up move up 10 ppt
   bindsym Right move right 10 ppt
 
-  bindsym Return exec st -f $font tmux
+  bindsym Return exec st -f "$font" tmux
   # bindsym Return exec alacritty msg create-window || alacritty &
 
   bindsym $mod+m mode "default"
@@ -283,6 +283,7 @@ for_window [window_role="pop-up"] floating enable
 for_window [class="Google-chrome|Chromium|Firefox-esr|Navigator|Gnome-calculator"] exec --no-startup-id\
  transset --id $(printf '%d' $($focused)) 0.9
 for_window [class="Scratchpad"] move scratchpad
+for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -308,8 +309,8 @@ bar {
 
 exec_always --no-startup-id "case $(tmux ls|sed -nE 's/^(scratchpad: )[^)]+\) ?(\(attached\))?$/\1\2/p') in
  'scratchpad: (attached)') :;;
- 'scratchpad: ') st -f $font -c Scratchpad tmux a -t scratchpad;;
- *) st -f $font -c Scratchpad tmux new -s scratchpad;;
+ 'scratchpad: ') st -f \"$font\" -c Scratchpad tmux a -t scratchpad;;
+ *) st -f \"$font\" -c Scratchpad tmux new -s scratchpad;;
 esac &"
 # exec_always --no-startup-id "wezterm cli --no-auto-start --class Scratchpad list-clients\
 #  || wezterm start --class Scratchpad &"

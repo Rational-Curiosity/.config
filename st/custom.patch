@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index 91ab8ca..0585ca8 100644
+index 91ab8ca..fe27f4b 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -93,6 +93,9 @@ char *termname = "st-256color";
@@ -12,7 +12,35 @@ index 91ab8ca..0585ca8 100644
  /* Terminal colors (16 first used in escape sequence) */
  static const char *colorname[] = {
  	/* 8 normal colors */
-@@ -472,3 +475,27 @@ static char ascii_printable[] =
+@@ -236,6 +239,18 @@ static KeySym mappedkeys[] = { -1 };
+  */
+ static uint ignoremod = Mod2Mask|XK_SWITCH_MOD;
+ 
++/*
++ *  Mask        | Value | Key
++ * -------------+-------+------------
++ *  ShiftMask   |     1 | Shift
++ *  LockMask    |     2 | Caps Lock
++ *  ControlMask |     4 | Ctrl
++ *  Mod1Mask    |     8 | Alt
++ *  Mod2Mask    |    16 | Num Lock
++ *  Mod3Mask    |    32 | Scroll Lock
++ *  Mod4Mask    |    64 | Windows
++ *  Mod5Mask    |   128 | ???
++ */
+ /*
+  * This is the huge key array which defines all compatibility to the Linux
+  * world. Please decide about changes wisely.
+@@ -350,6 +365,8 @@ static Key key[] = {
+ 	{ XK_Delete,        XK_ANY_MOD,     "\033[3~",      +1,    0},
+ 	{ XK_BackSpace,     XK_NO_MOD,      "\177",          0,    0},
+ 	{ XK_BackSpace,     Mod1Mask,       "\033\177",      0,    0},
++	{ XK_BackSpace,     ControlMask,    "\x1b\x7f",      0,    0},
++	{ XK_BackSpace,LockMask|ControlMask,"\x1b\x7f",      0,    0},
+ 	{ XK_Home,          ShiftMask,      "\033[2J",       0,   -1},
+ 	{ XK_Home,          ShiftMask,      "\033[1;2H",     0,   +1},
+ 	{ XK_Home,          XK_ANY_MOD,     "\033[H",        0,   -1},
+@@ -472,3 +489,27 @@ static char ascii_printable[] =
  	" !\"#$%&'()*+,-./0123456789:;<=>?"
  	"@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
  	"`abcdefghijklmnopqrstuvwxyz{|}~";
