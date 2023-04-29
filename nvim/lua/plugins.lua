@@ -1882,7 +1882,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           spacing = 0,
           prefix = '▪',
           format = function(diagnostic)
-            return diagnostic.message:match('^%s*(.-)%s*$'):gsub('%s%s+', ' ')
+            return diagnostic.message:match(
+              '^[%s\u{a0}]*(.-)[%s\u{a0}]*$'
+            ):gsub('[%s\u{a0}][%s\u{a0}][%s\u{a0}]+', '  ')
           end,
         },
         float = { source = true },
@@ -2017,6 +2019,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         'pyright', 'intelephense', 'html', 'jsonls', 'ccls', 'bashls',
       }) do
         lspconfig[lsp].setup {
+          autostart = true,
           on_attach = on_attach,
           capabilities = capabilities,
           flags = {
@@ -2056,6 +2059,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       --   }
       -- }
       lspconfig.rust_analyzer.setup {
+        autostart = true,
         on_attach = on_attach,
         capabilities = capabilities,
         flags = {
@@ -2063,20 +2067,34 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
         settings = {
           ["rust-analyzer"] = {
-            assist = {
-              importGranularity = "module",
-              importPrefix = "by_self",
+            diagnostics = {
+              enable = true,
+            },
+            imports = {
+              granularity = {
+                group = "module",
+              },
+              prefix = "self",
             },
             cargo = {
-              loadOutDirsFromCheck = true,
+              buildScripts = {
+                enable = true,
+              },
             },
             procMacro = {
               enable = true,
+            },
+            check = {
+              command = "clippy",
+            },
+            checkOnSave = {
+              command = "clippy",
             },
           },
         },
       }
       lspconfig.java_language_server.setup {
+        autostart = true,
         cmd = { vim.env.HOME ..
         '/tmp/java-language-server/dist/lang_server_linux.sh' },
         on_attach = on_attach,
@@ -2087,6 +2105,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       }
       local util = require'lspconfig.util'
       lspconfig.vtsls.setup {
+        autostart = true,
         single_file_support = false,
         root_dir = function(fname)
           return not util.root_pattern('deno.json', 'deno.jsonc')(fname)
@@ -2101,6 +2120,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
       }
       lspconfig.denols.setup {
+        autostart = true,
         root_dir = util.root_pattern('deno.json', 'deno.jsonc'),
         on_attach = on_attach,
         capabilities = capabilities,
