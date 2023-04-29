@@ -83,7 +83,7 @@ $container\
 $shell\
 $character
 """
-command_timeout = 600
+command_timeout = 750
 add_newline = false
 
 [status]
@@ -277,17 +277,28 @@ style = "bg:#06969A fg:#101010"
 format = '[$symbol $context ]($style) $path'
 
 [custom.docker-compose]
-command = """switch $COMPOSE_FILE
-case '*/gigas_devenv/*'
-    echo -n 
-case '*'
-    basename "$(dirname "$COMPOSE_FILE")"
-end"""
+command = """case $COMPOSE_FILE in
+(*/gigas_devenv/*) echo -n ;;
+(*) basename "$(dirname "$COMPOSE_FILE")"|tr -d'\n';;
+esac"""
 when = """test -n "$COMPOSE_FILE""""
-shell = ["fish", "--no-config"]
+shell = ["sh"]
 symbol = "🐙"
 style = "bg:#06969A"
 format = "[$symbol$output]($style)"
+
+# [custom.docker-compose]
+# command = """switch $COMPOSE_FILE
+# case '*/gigas_devenv/*'
+#     echo -n 
+# case '*'
+#     basename "$(dirname "$COMPOSE_FILE")"
+# end"""
+# when = """test -n "$COMPOSE_FILE""""
+# shell = ["fish", "--no-config"]
+# symbol = "🐙"
+# style = "bg:#06969A"
+# format = "[$symbol$output]($style)"
 
 # [custom.remap]
 # when = "pgrep -x remap"
