@@ -763,6 +763,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       { 'windwp/nvim-ts-autotag' },
     --   { 'p00f/nvim-ts-rainbow', opt = true },
     --   { 'nvim-treesitter/playground', opt = true },
+      { 'tokyonight.nvim' },
     },
     event = 'VeryLazy',
     config = function()
@@ -1406,9 +1407,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'folke/tokyonight.nvim',
-    dependencies = {
-      "nvim-treesitter",
-    },
     config = function()
       require("tokyonight").setup {
         style = "night",
