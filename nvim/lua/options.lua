@@ -144,8 +144,8 @@ vim.cmd([[
   command! -nargs=? S mksession! ~/.config/nvim/session/_last_<args>.vim
   command! -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
   command! -nargs=* Term set shell=fish|exe "term ".<q-args>|set shell=sh
-  command! -count=72 -nargs=* VTerm <count>vs|exe "Term ".<q-args>|exe "normal \<c-w>L"|setlocal wfw|exe "normal \<c-w>="
-  command! -count=10 -nargs=* HTerm <count>sp|exe "Term ".<q-args>|exe "normal \<c-w>J"|setlocal wfh|exe "normal \<c-w>="
+  command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
+  command! -count=10 -nargs=* HTerm botright <count>split|exe "Term ".<q-args>|setlocal wfh|exe "normal \<c-w>="
   command! -count=9 Command if bufexists("CommandOutput")|sil! bdelete CommandOutput|endif|
     \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file CommandOutput|put =execute(\"command\")|setlocal nomod noma buftype=nofile|0goto
