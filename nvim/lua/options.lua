@@ -197,6 +197,13 @@ api.nvim_create_autocmd({ "FileType" }, {
         noremap = true,
         silent = true,
       })
+      vim.keymap.set(
+        'n', '<leader><CR>',
+        ':let swbTMP=&switchbuf|set switchbuf=vsplit<cr><CR>:let &switchbuf=swbTMP|unlet swbTMP<cr>', {
+        buffer = ev.buf,
+        noremap = true,
+        silent = true,
+      })
     elseif bo.filetype == '' or bo.filetype == 'log' then
       vim.opt_local.spell = false
     else
@@ -519,12 +526,15 @@ mapset('', '<leader>V',
   '<cmd>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<cr>',
   noremap)
 mapset('t', '<Esc><Esc>', '<C-\\><C-n>', noremap)
+mapset('t', '<C-q>', '<C-\\><C-n><C-w><C-w>', noremap)
 mapset('x', 'zx', "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>", noremap)
 mapset('x', '\\p', '"_dP')
 mapset('n', '\\C', '"_C')
 mapset({ 'n', 'x' }, '\\c', '"_c')
 mapset('n', '\\D', '"_D')
 mapset({ 'n', 'x' }, '\\d', '"_d')
+mapset('n', '\\X', '"_X')
+mapset({ 'n', 'x' }, '\\x', '"_x')
 -- added in vim version 0.8.0
 -- map('x', '<leader>*', '"0y/<C-R>0<CR>', noremap)
 -- map('x', '<leader>#', '"0y?<C-R>0<CR>', noremap)
