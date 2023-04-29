@@ -58,9 +58,7 @@ o.grepprg = 'rg --vimgrep --smart-case --follow'
 opt.clipboard:prepend('unnamedplus')
 o.ignorecase = true
 o.smartcase = true
-if vim.fn.executable('fish') == 1 then
-  o.shell = 'fish'
-end
+o.shell = 'sh'
 g.python3_host_prog = vim.fn.executable('/usr/local/bin/python3') == 1 and
   '/usr/local/bin/python3' or '/usr/bin/python3'
 g.netrw_scp_cmd = 'yad --separator= --form --field=Password:H|sshpass scp -q'
@@ -136,16 +134,18 @@ vim.cmd([[
   cabbrev <expr> Mess getcmdpos() == 5 && getcmdtype() == ':' ? 'Messages' : 'Mess'
   cabbrev <expr> lp getcmdpos() == 3 && getcmdtype() == ':' ? 'lua print' : 'lp'
   cabbrev <expr> lpi getcmdpos() == 4 && getcmdtype() == ':' ? 'lua print(vim.inspect' : 'lpi'
+  cabbrev <expr> term getcmdpos() == 5 && getcmdtype() == ':' ? 'Term' : 'term'
 
   " Commands
-  " command! -nargs=1 E exec 'e' expand('%:p:h').'/'.<f-args>
   command! Cd exec 'cd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
   command! Lcd exec 'lcd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
   command! SetStatusline lua vim.go.statusline = "%{%v:lua.require'lualine'.statusline()%}"
   command! -nargs=? Q mksession! ~/.config/nvim/session/_last_<args>.vim|qall
   command! -nargs=? S mksession! ~/.config/nvim/session/_last_<args>.vim
   command! -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
-  command! Vterm 72vs|exe "term"|setlocal wfw|exe "normal \<c-w>r\<c-w>="
+  command! -nargs=* Term set shell=fish|exe "term ".<q-args>|set shell=sh
+  command! -count=72 -nargs=* VTerm <count>vs|exe "Term ".<q-args>|exe "normal \<c-w>L"|setlocal wfw|exe "normal \<c-w>="
+  command! -count=10 -nargs=* HTerm <count>sp|exe "Term ".<q-args>|exe "normal \<c-w>J"|setlocal wfh|exe "normal \<c-w>="
   command! -count=9 Command if bufexists("CommandOutput")|sil! bdelete CommandOutput|endif|
     \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file CommandOutput|put =execute(\"command\")|setlocal nomod noma buftype=nofile|0goto
