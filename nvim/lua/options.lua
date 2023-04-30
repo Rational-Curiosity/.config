@@ -23,6 +23,7 @@ o.cmdheight = 0
 o.showmode = false
 o.fileencoding = 'utf-8'
 o.redrawtime = 750
+o.synmaxcol = 400
 
 -- opt.lazyredraw = true  -- It is only meant to be set temporarily
 o.encoding = 'utf-8'
@@ -77,6 +78,8 @@ o.undofile = true
 g.undotree_WindowLayout = 2
 
 vim.cmd([[
+  syn sync maxlines=200
+  syn sync minlines=80
   augroup initAutoGroup
     autocmd!
     "  \ *.{c,cpp,h,hbs,htm,html,js,json,jsx,lua,php,py,rs,ts,tsx,md,org} setlocal number
@@ -114,6 +117,10 @@ vim.cmd([[
   " For changing choices in choiceNodes (not strictly necessary for a basic setup).
   imap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
   smap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
+
+  " MATCHPAREN
+  let g:matchparen_timeout = 150
+  let g:matchparen_insert_timeout = 50
 
   " VISUAL MULTI
   let g:VM_set_statusline = 0  " lualine conflict
