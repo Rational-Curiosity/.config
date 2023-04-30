@@ -17,9 +17,9 @@ return {
   {
     'ggandor/leap.nvim',
     keys = {
-      { '<A-f>', '<Plug>(leap-forward-to)', mode = { 'n', 'x', 'o' } },
-      { '<A-b>', '<Plug>(leap-backward-to)', mode = { 'n', 'x', 'o' } },
-      { '<A-w>', '<Plug>(leap-cross-window)', mode = { 'n', 'x', 'o' } },
+      { '<A-f>', '<Plug>(leap-forward-to)', mode = { 'n', 'x', 'o' }, desc = 'Leap forward' },
+      { '<A-b>', '<Plug>(leap-backward-to)', mode = { 'n', 'x', 'o' }, desc = 'Leap backward' },
+      { '<A-w>', '<Plug>(leap-cross-window)', mode = { 'n', 'x', 'o' }, desc = 'Leap cross window' },
     },
     config = function()
       local leap = require'leap'
@@ -31,7 +31,11 @@ return {
     dependencies = {
       'anuvyklack/keymap-layer.nvim',
     },
-    keys = { '<C-w>m', '<leader>hm', '<leader>dm' },
+    keys = {
+      { '<C-w>m', desc = 'Window menu' },
+      { '<leader>hm', desc = 'Hydra menu' },
+      { '<leader>dm', desc = 'DAP menu' },
+    },
     config = function()
       local Hydra = require'hydra'
       local gitsigns = require'gitsigns'
@@ -187,7 +191,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'jbyuki/venn.nvim',
-    keys = { { '<leader>B', ':VBox<cr>', mode = 'x' } },
+    keys = { { '<leader>B', ':VBox<cr>', mode = 'x', desc = 'VBox' } },
     cmd = { 'VBox' },
   },
   {
@@ -196,10 +200,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       { 'nvim-lua/plenary.nvim' },
     },
     keys = {
-      { '<leader>Gt', '<cmd>Neogit kind=tab<cr>' },
-      { '<leader>Gs', '<cmd>Neogit kind=split<cr>' },
-      { '<leader>Gv', '<cmd>Neogit kind=vsplit<cr>' },
-      { '<leader>Gr', '<cmd>Neogit kind=replace<cr>' },
+      { '<leader>Gt', '<cmd>Neogit kind=tab<cr>', desc = 'Neogit tab' },
+      { '<leader>Gs', '<cmd>Neogit kind=split<cr>', desc = 'Neogit split' },
+      { '<leader>Gv', '<cmd>Neogit kind=vsplit<cr>', desc = 'Neogit vsplit' },
+      { '<leader>Gr', '<cmd>Neogit kind=replace<cr>', desc = 'Neogit replace' },
     },
     cmd = 'Neogit',
     config = function()
@@ -278,7 +282,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'numToStr/Comment.nvim',
-    keys = { 'gc', 'gb', { 'gc', mode = 'x' }, { 'gb', mode = 'x' } },
+    keys = {
+      { 'gc', mode = { 'n', 'x' }, desc = 'Comment' },
+      { 'gb', mode = { 'n', 'x' }, desc = 'Comment block' },
+    },
     config = function()
       require('Comment').setup()
     end
@@ -533,15 +540,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   {
     'mg979/vim-visual-multi',
     keys = {
-      '<C-n>',
-      '<C-Down>',
-      '<C-Up>',
-      '<S-Right>',
-      '<S-Left>',
-      '<leader>gS',
-      '<leader>\\',
-      '<leader>/',
-      '<leader>A',
+      { '<C-n>', desc = 'Select words' },
+      { '<C-Down>', desc = 'Create cursors down' },
+      { '<C-Up>', desc = 'Create cursors up' },
+      { '<S-Right>', desc = 'Select one character right' },
+      { '<S-Left>', desc = 'Select one character left' },
     }
   },
   {
@@ -727,57 +730,38 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           local gs = package.loaded.gitsigns
           local opts = { buffer = bufnr }
 
-          mapset('n', ']h', gs.next_hunk, opts)
-          mapset('n', '[h', gs.prev_hunk, opts)
-          mapset({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>', opts)
-          mapset({'n', 'v'}, '<leader>hr', ':Gitsigns reset_hunk<CR>', opts)
-          mapset('n', '<leader>hS', gs.stage_buffer, opts)
-          mapset('n', '<leader>hu', gs.undo_stage_hunk, opts)
-          mapset('n', '<leader>hU', gs.reset_buffer_index, opts)
-          mapset('n', '<leader>hR', gs.reset_buffer, opts)
-          mapset('n', '<leader>hp', gs.preview_hunk, opts)
+          mapset('n', ']h', gs.next_hunk, { buffer = bufnr, desc = 'Next hunk' })
+          mapset('n', '[h', gs.prev_hunk, { buffer = bufnr, desc = 'Prev hunk' })
+          mapset({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>', { buffer = bufnr, desc = 'Stage hunk' })
+          mapset({'n', 'v'}, '<leader>hr', ':Gitsigns reset_hunk<CR>', { buffer = bufnr, desc = 'Reset hunk' })
+          mapset('n', '<leader>hS', gs.stage_buffer, { buffer = bufnr, desc = 'Stage buffer' })
+          mapset('n', '<leader>hu', gs.undo_stage_hunk, { buffer = bufnr, desc = 'Undo stage hunk' })
+          mapset('n', '<leader>hU', gs.reset_buffer_index, { buffer = bufnr, desc = 'Reset buffer index' })
+          mapset('n', '<leader>hR', gs.reset_buffer, { buffer = bufnr, desc = 'Reset buffer' })
+          mapset('n', '<leader>hp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview hunk' })
           mapset('n', '<leader>hb', function()
-            gs.blame_line{full=true} end, opts)
-          mapset('n', '<leader>hd', gs.diffthis, opts)
-          mapset('n', '<leader>hD', function() gs.diffthis('~') end, opts)
-          mapset('n', '<leader>htb', gs.toggle_current_line_blame, opts)
-          mapset('n', '<leader>htd', gs.toggle_deleted, opts)
-          mapset('n', '<leader>hts', gs.toggle_signs, opts)
-          mapset('n', '<leader>htn', gs.toggle_numhl, opts)
-          mapset('n', '<leader>htl', gs.toggle_linehl, opts)
-          mapset('n', '<leader>htw', gs.toggle_word_diff, opts)
+            gs.blame_line{full=true} end, { buffer = bufnr, desc = 'Blame line' })
+          mapset('n', '<leader>hd', gs.diffthis, { buffer = bufnr, desc = 'Diff this' })
+          mapset('n', '<leader>hD', function() gs.diffthis('~') end, { buffer = bufnr, desc = 'Diff this ~' })
+          mapset('n', '<leader>htb', gs.toggle_current_line_blame, { buffer = bufnr, desc = 'Toggle current line blame' })
+          mapset('n', '<leader>htd', gs.toggle_deleted, { buffer = bufnr, desc = 'Toggle deleted' })
+          mapset('n', '<leader>hts', gs.toggle_signs, { buffer = bufnr, desc = 'Toggle signs' })
+          mapset('n', '<leader>htn', gs.toggle_numhl, { buffer = bufnr, desc = 'Toggle number highlight' })
+          mapset('n', '<leader>htl', gs.toggle_linehl, { buffer = bufnr, desc = 'Toggle line highlight' })
+          mapset('n', '<leader>htw', gs.toggle_word_diff, { buffer = bufnr, desc = 'Toggle word diff' })
 
-          mapset({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', opts)
+          mapset({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { buffer = bufnr, desc = 'Select hunk' })
           require'which-key'.register({
             h = {
               name = 'Gitsigns',
-              s = 'Stage hunk',
-              r = 'Reset hunk',
-              S = 'Stage buffer',
-              u = 'Undo stage hunk',
-              U = 'Reset buffer index',
-              R = 'Reset buffer',
-              p = 'Preview hunk',
-              b = 'Blame line',
-              d = 'Diff this',
-              D = 'Diff with ~',
-              m = 'Hydra menu',
               t = {
                 name = 'Toggle gitsigns',
-                b = 'Current line blame',
-                d = 'Deleted',
-                s = 'Signs',
-                n = 'Number highlight',
-                l = 'Line highlight',
-                w = 'Word diff',
               }
             },
           }, { mode = 'n', prefix = '<leader>', buffer = bufnr })
           require'which-key'.register({
             h = {
               name = 'Gitsigns',
-              s = 'Stage hunk',
-              r = 'Reset hunk',
             },
           }, { mode = 'v', prefix = '<leader>', buffer = bufnr })
         end
@@ -1127,12 +1111,12 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     dependencies = { 'nvim-treesitter', 'which-key.nvim' },
     keys = {
       -- Normal Mode Swapping
-      { "vd", function() require("syntax-tree-surfer").move("n", false) end },
-      { "vu", function() require("syntax-tree-surfer").move("n", true) end },
+      { "vd", function() require("syntax-tree-surfer").move("n", false) end, desc = "Surfer move down" },
+      { "vu", function() require("syntax-tree-surfer").move("n", true) end, desc = "Surfer move up" },
       -- .select() will show you what you will be swapping with .move(), you'll get used to .select() and .move() behavior quite soon!
-      { "vx", function() require("syntax-tree-surfer").select() end },
+      { "vx", function() require("syntax-tree-surfer").select() end, desc = "Surfer select" },
       -- .select_current_node() will select the current node at your cursor
-      { "vn", function() require("syntax-tree-surfer").select_current_node() end },
+      { "vn", function() require("syntax-tree-surfer").select_current_node() end, desc = "Surfer select current" },
       -- NAVIGATION: Only change the keymap to your liking. I would not recommend changing anything about the .surf() parameters!
       { "J", function() require("syntax-tree-surfer").surf("next", "visual") end, mode = 'x' },
       { "K", function() require("syntax-tree-surfer").surf("prev", "visual") end, mode = 'x' },
@@ -1144,32 +1128,31 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     },
     config = function()
       local stf = require("syntax-tree-surfer")
-      local mapset = vim.keymap.set
 
       mapset("n", "glv", function()
         stf.targeted_jump({ "variable_declaration", "assignment" })
-      end)
+      end, { desc = 'Assignments' })
       mapset("n", "glf", function()
         stf.targeted_jump({ "function", "function_definition" })
-      end)
+      end, { desc = 'Functions' })
       mapset("n", "glc", function()
         stf.targeted_jump({ "class", "class_definition" })
-      end)
+      end, { desc = 'Classes' })
       mapset("n", "gli", function()
         stf.targeted_jump({ "if_statement", "else_statement", "elseif_statement" })
-      end)
+      end, { desc = 'If statements' })
       mapset("n", "glp", function()
         stf.targeted_jump({"import_from_statement" })
-      end)
+      end, { desc = 'Imports' })
       mapset("n", "glm", function()
         stf.targeted_jump({"match_statement" })
-      end)
+      end, { desc = 'Matchs' })
       mapset("n", "glt", function()
         stf.targeted_jump({ "try_statement", "with_statement" })
-      end)
+      end, { desc = 'Try-Withs' })
       mapset("n", "gll", function()
         stf.targeted_jump({ "for_statement", "while_statement" })
-      end)
+      end, { desc = 'Loops' })
       mapset("n", "glj", function()
         stf.targeted_jump({
           "function",
@@ -1185,26 +1168,15 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "match_statement",
           "import_from_statement",
         })
-      end)
-      require'which-key'.register({
-        v = 'Assignments',
-        f = 'Functions',
-        c = 'Classes',
-        i = 'If statements',
-        p = 'Imports',
-        m = 'Matchs',
-        t = 'Try-Withs',
-        l = 'Loops',
-        j = 'All',
-      }, { mode = 'n', prefix = 'gl' })
+      end, { desc = 'All' })
       -- filtered_jump --
       -- "default" means that you jump to the default_desired_types or your lastest jump types
       mapset("n", "<A-n>", function()
         stf.filtered_jump("default", true) --> true means jump forward
-      end)
+      end, { desc = 'Jump lastest type forward' })
       mapset("n", "<A-p>", function()
         stf.filtered_jump("default", false) --> false means jump backwards
-      end)
+      end, { desc = 'Jump lastest type backwards' })
 
       stf.setup({
         highlight_group = "STS_highlight",
@@ -1240,8 +1212,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     'mfussenegger/nvim-treehopper',
     dependencies = { 'nvim-treesitter' },
     keys = {
-      { 'm', ':<C-U>lua require("tsht").nodes()<CR>', mode = 'o' },
-      { 'm', ':lua require("tsht").nodes()<CR>', mode = 'v' },
+      { 'm', ':<C-U>lua require("tsht").nodes()<CR>', mode = 'o', desc = 'TS nodes' },
+      { 'm', function() require("tsht").nodes() end, mode = 'v', desc = 'TS nodes' },
     },
   },
   {
@@ -1303,7 +1275,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       }
       mapset('n', '<leader>i', function()
         vim.g.indent_blankline_enabled = not vim.g.indent_blankline_enabled
-      end)
+      end, { desc = 'Toggle indent blankline' })
     end
   },
   {
@@ -1952,12 +1924,14 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
 
       -- Mappings.
       -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-      local opts = { silent=true }
-      local mapset = vim.keymap.set
-      mapset('n', '<leader>e', vim.diagnostic.open_float, opts)
-      mapset('n', '[d', vim.diagnostic.goto_prev, opts)
-      mapset('n', ']d', vim.diagnostic.goto_next, opts)
-      mapset('n', '<leader>Ce', vim.diagnostic.setloclist, opts)
+      mapset('n', '<leader>e', vim.diagnostic.open_float,
+      { silent = true, desc = 'Open diagnostic' })
+      mapset('n', '[d', vim.diagnostic.goto_prev,
+      { silent = true, desc = 'Previous diagnostic' })
+      mapset('n', ']d', vim.diagnostic.goto_next,
+      { silent = true, desc = 'Next diagnostic' })
+      mapset('n', '<leader>Ce', vim.diagnostic.setloclist,
+      { silent = true, desc = 'Add diagnostics to location list' })
 
       -- Use an on_attach function to only map the following keys
       -- after the language server attaches to the current buffer
@@ -1967,72 +1941,64 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
 
         -- Mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
-        local opts = { silent=true, buffer=bufnr }
-        local mapset = vim.keymap.set
-        mapset('n', '<leader>lD', vim.lsp.buf.declaration, opts)
-        mapset('n', '<leader>ld', vim.lsp.buf.definition, opts)
-        mapset('n', '<leader>lK', vim.lsp.buf.hover, opts)
-        mapset('n', '<leader>li', vim.lsp.buf.implementation, opts)
-        mapset('n', '<leader>lk', vim.lsp.buf.signature_help, opts)
-        mapset('n', '<leader>lA', vim.lsp.buf.add_workspace_folder, opts)
-        mapset('n', '<leader>lR', vim.lsp.buf.remove_workspace_folder, opts)
+        mapset('n', '<leader>lD', vim.lsp.buf.declaration,
+        { silent = true, buffer = bufnr, desc = 'Lsp declaration' })
+        mapset('n', '<leader>ld', vim.lsp.buf.definition,
+        { silent = true, buffer = bufnr, desc = 'Lsp definition' })
+        mapset('n', '<leader>lK', vim.lsp.buf.hover,
+        { silent = true, buffer = bufnr, desc = 'Lsp hover' })
+        mapset('n', '<leader>li', vim.lsp.buf.implementation,
+        { silent = true, buffer = bufnr, desc = 'Lsp implementation' })
+        mapset('n', '<leader>lk', vim.lsp.buf.signature_help,
+        { silent = true, buffer = bufnr, desc = 'Lsp signature help' })
+        mapset('n', '<leader>lA', vim.lsp.buf.add_workspace_folder,
+        { silent = true, buffer = bufnr, desc = 'Lsp add workspace folder' })
+        mapset('n', '<leader>lR', vim.lsp.buf.remove_workspace_folder,
+        { silent = true, buffer = bufnr, desc = 'Lsp remove workspace folder' })
         mapset('n', '<leader>lL', function()
           print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        end, opts)
-        mapset('n', '<leader>lt', vim.lsp.buf.type_definition, opts)
-        mapset('n', '<leader>ln', vim.lsp.buf.rename, opts)
-        mapset('n', '<leader>la', vim.lsp.buf.code_action, opts)
-        mapset('n', '<leader>lr', vim.lsp.buf.references, opts)
+        end, { silent = true, buffer = bufnr, desc = 'Lsp list workspace folders' })
+        mapset('n', '<leader>lt', vim.lsp.buf.type_definition,
+        { silent = true, buffer = bufnr, desc = 'Lsp type definition' })
+        mapset('n', '<leader>ln', vim.lsp.buf.rename,
+        { silent = true, buffer = bufnr, desc = 'Lsp rename' })
+        mapset('n', '<leader>la', vim.lsp.buf.code_action,
+        { silent = true, buffer = bufnr, desc = 'Lsp code action' })
+        mapset('n', '<leader>lr', vim.lsp.buf.references,
+        { silent = true, buffer = bufnr, desc = 'Lsp references' })
         mapset({ 'n', 'v' }, '<leader>lf', function()
-          vim.lsp.buf.format { async = true } end, opts)
+          vim.lsp.buf.format { async = true }
+        end, { silent = true, buffer = bufnr, desc = 'Lsp format' })
 
         mapset('n', '<leader>lwD', function()
           vim.api.nvim_command('vsplit')
           vim.lsp.buf.declaration()
-        end, opts)
+        end, { silent = true, buffer = bufnr, desc = 'Lsp win declaration' })
         mapset('n', '<leader>lwd', function()
           vim.api.nvim_command('vsplit')
           vim.lsp.buf.definition()
-        end, opts)
+        end, { silent = true, buffer = bufnr, desc = 'Lsp win definition' })
         mapset('n', '<leader>lwi', function()
           vim.api.nvim_command('vsplit')
           vim.lsp.buf.implementation()
-        end, opts)
+        end, { silent = true, buffer = bufnr, desc = 'Lsp win implementation' })
         mapset('n', '<leader>lwt', function()
           vim.api.nvim_command('vsplit')
           vim.lsp.buf.type_definition()
-        end, opts)
+        end, { silent = true, buffer = bufnr, desc = 'Lsp win type definition' })
 
         -- require("lsp-inlayhints").on_attach(client, bufnr)
         require'which-key'.register({
           l = {
             name = 'Lsp',
-            D = 'declaration',
-            d = 'definition',
-            K = 'hover',
-            i = 'implementation',
-            k = 'signature help',
-            A = 'add workspace folder',
-            R = 'remove workspace folder',
-            L = 'list workspace folders',
-            t = 'type definition',
-            n = 'rename',
-            a = 'code action',
-            r = 'references',
-            f = 'format',
             w = {
               name = 'Other win',
-              D = 'declaration',
-              d = 'definition',
-              i = 'implementation',
-              t = 'type definition',
             }
           },
         }, { mode = 'n', prefix = '<leader>', buffer = bufnr })
         require'which-key'.register({
           l = {
             name = 'Lsp',
-            f = 'format',
           },
         }, { mode = 'v', prefix = '<leader>', buffer = bufnr })
         end
@@ -2262,44 +2228,27 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       --   },
       -- }
 
-      local opts = { silent=true }
       local mapset = vim.keymap.set
-      mapset('n', '<leader>db', dap.toggle_breakpoint, opts)
-      mapset('n', '<leader>dc', dap.continue, opts)
-      mapset('n', '<leader>dn', dap.step_over, opts)
-      mapset('n', '<leader>dp', dap.step_back, opts)
-      mapset('n', '<leader>do', dap.step_out, opts)
-      mapset('n', '<leader>di', dap.step_into, opts)
-      mapset('n', '<leader>dr', dap.repl.toggle, opts)
-      mapset('n', '<leader>dl', dap.list_breakpoints, opts)
-      mapset('n', '<leader>dd', dap.clear_breakpoints, opts)
-      mapset('n', '<leader>dR', dap.run_last, opts)
+      mapset('n', '<leader>db', dap.toggle_breakpoint, { silent = true, desc = 'Toggle breakpoint' })
+      mapset('n', '<leader>dc', dap.continue, { silent = true, desc = 'Continue' })
+      mapset('n', '<leader>dn', dap.step_over, { silent = true, desc = 'Step over' })
+      mapset('n', '<leader>dp', dap.step_back, { silent = true, desc = 'Step back' })
+      mapset('n', '<leader>do', dap.step_out, { silent = true, desc = 'Step out' })
+      mapset('n', '<leader>di', dap.step_into, { silent = true, desc = 'Step into' })
+      mapset('n', '<leader>dr', dap.repl.toggle, { silent = true, desc = 'Toggle REPL' })
+      mapset('n', '<leader>dl', dap.list_breakpoints, { silent = true, desc = 'List breakpoints' })
+      mapset('n', '<leader>dd', dap.clear_breakpoints, { silent = true, desc = 'Clear breakpoints' })
+      mapset('n', '<leader>dR', dap.run_last, { silent = true, desc = 'Run last' })
       mapset('n', '<leader>dB', function()
         dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
-      end, opts)
+      end, { silent = true, desc = 'Set breakpoint condition' })
       mapset('n', '<leader>dL', function()
         dap.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
-      end, opts)
-      mapset('n', '<leader>dQ', dap.terminate, opts)
+      end, { silent = true, desc = 'Set log point message' })
+      mapset('n', '<leader>dQ', dap.terminate, { silent = true, desc = 'Terminate' })
 
       require'which-key'.register({
-        d = {
-          name = 'Dap',
-          B = 'Breakpoint condition',
-          b = 'Toggle breakpoint',
-          c = 'Continue',
-          d = 'Clear breakpoints',
-          i = 'Step into',
-          l = 'List breakpoints',
-          L = 'Log point message',
-          m = 'Hydra menu',
-          n = 'Step over',
-          o = 'Step out',
-          p = 'Step back',
-          Q = 'Terminate',
-          r = 'Repl toggle',
-          R = 'Run last',
-        },
+        d = { name = 'Dap' },
       }, { mode = 'n', prefix = '<leader>' })
     end
   },
@@ -2327,11 +2276,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       if vim.fn.executable('pytest') == 1 then
         dap_python.test_runner = 'pytest'
       end
-      local opts = { noremap=true, silent=true }
       local mapset = vim.keymap.set
-      mapset('n', '<leader>dF', '<cmd>lua require"dap-python".test_method()<CR>', opts)
-      mapset('n', '<leader>dC', '<cmd>lua require"dap-python".test_class()<CR>', opts)
-      mapset('v', '<leader>dS', '<ESC>:lua require"dap-python".debug_selection()<CR>', opts)
+      mapset('n', '<leader>dF', '<cmd>lua require"dap-python".test_method()<CR>',
+      { noremap = true, silent = true, desc = 'DAP test method' })
+      mapset('n', '<leader>dC', '<cmd>lua require"dap-python".test_class()<CR>',
+      { noremap = true, silent = true, desc = 'DAP test class' })
+      mapset('v', '<leader>dS', '<ESC>:lua require"dap-python".debug_selection()<CR>',
+      { noremap = true, silent = true, desc = 'DAP debug selection' })
     end
   },
   {

@@ -531,10 +531,11 @@ end
 -- Keymap bindings
 mapset('', '<leader>V',
   '<cmd>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<cr>',
-  noremap)
-mapset('t', '<Esc><Esc>', '<C-\\><C-n>', noremap)
-mapset('t', '<C-q>', '<C-\\><C-n><C-w><C-w>', noremap)
-mapset('x', 'zx', "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>", noremap)
+  { desc = 'Toggle virtual edit' })
+mapset('t', '<Esc><Esc>', '<C-\\><C-n>')
+mapset('t', '<C-q>', '<C-\\><C-n><C-w><C-w>')
+mapset('x', 'zx', "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>",
+{ desc = 'Fold except region' })
 mapset('x', '\\p', '"_dP')
 mapset('n', '\\C', '"_C')
 mapset({ 'n', 'x' }, '\\c', '"_c')
@@ -545,61 +546,62 @@ mapset({ 'n', 'x' }, '\\x', '"_x')
 -- added in vim version 0.8.0
 -- map('x', '<leader>*', '"0y/<C-R>0<CR>', noremap)
 -- map('x', '<leader>#', '"0y?<C-R>0<CR>', noremap)
-mapset('n', 'zdc', ':%g/^[ \t]*class /normal! zc<CR>', noremap)
-mapset('n', 'zdf', ':%g/^[ \t]*\\(function\\|def\\) /normal! zc<CR>', noremap)
-mapset('n', '<leader><Return>', 'i<CR><C-\\><C-n>', noremap)
-mapset('n', '<C-W>*', win_double_width)
-mapset('n', '<C-W>/', win_half_width)
-mapset('n', '<C-W>0', '<CMD>copen<CR>', noremap)
-mapset('n', '<C-W>1', function() set_curr_win(1) end)
-mapset('n', '<C-W>2', function() set_curr_win(2) end)
-mapset('n', '<C-W>3', function() set_curr_win(3) end)
-mapset('n', '<C-W>4', function() set_curr_win(4) end)
-mapset('n', '<C-W>5', function() set_curr_win(5) end)
-mapset('n', '<C-W>6', function() set_curr_win(6) end)
-mapset('n', '<C-W>7', function() set_curr_win(7) end)
-mapset('n', '<C-W>8', function() set_curr_win(8) end)
-mapset('n', '<C-W>9', function() set_curr_win(9) end)
+mapset('n', 'zdc', ':%g/^[ \t]*class /normal! zc<CR>')
+mapset('n', 'zdf', ':%g/^[ \t]*\\(function\\|def\\) /normal! zc<CR>')
+mapset('n', '<leader><Return>', 'i<CR><C-\\><C-n>')
+mapset('n', '<C-W>*', win_double_width, { desc = 'Double width win' })
+mapset('n', '<C-W>/', win_half_width, { desc = 'Half width win' })
+mapset('n', '<C-W>0', '<CMD>copen<CR>', { desc = 'Goto quickfix' })
+mapset('n', '<C-W>1', function() set_curr_win(1) end, { desc = 'Goto win 1' })
+mapset('n', '<C-W>2', function() set_curr_win(2) end, { desc = 'Goto win 2' })
+mapset('n', '<C-W>3', function() set_curr_win(3) end, { desc = 'Goto win 3' })
+mapset('n', '<C-W>4', function() set_curr_win(4) end, { desc = 'Goto win 4' })
+mapset('n', '<C-W>5', function() set_curr_win(5) end, { desc = 'Goto win 5' })
+mapset('n', '<C-W>6', function() set_curr_win(6) end, { desc = 'Goto win 6' })
+mapset('n', '<C-W>7', function() set_curr_win(7) end, { desc = 'Goto win 7' })
+mapset('n', '<C-W>8', function() set_curr_win(8) end, { desc = 'Goto win 8' })
+mapset('n', '<C-W>9', function() set_curr_win(9) end, { desc = 'Goto win 9' })
 mapset('n', '<C-W>e', function()
   o.signcolumn = o.signcolumn == 'number' and 'auto:1' or 'number'
-end)
-mapset('n', '<C-W>w', win_fit_width_to_content)
-mapset('n', '<C-W>W', win_fit_filetype_width)
-mapset('n', '<leader>CC', '<CMD>lclose<CR>', noremap)
-mapset('n', '<leader>Cc', '<CMD>cclose<CR>', noremap)
-mapset('n', '<leader>CO', '<CMD>lopen<CR>', noremap)
-mapset('n', '<leader>Co', '<CMD>copen<CR>', noremap)
-mapset('n', '<leader>CF', '<CMD>lfirst<CR>', noremap)
-mapset('n', '<leader>Cf', '<CMD>cfirst<CR>', noremap)
-mapset('n', '<leader>CN', '<CMD>lnext<CR>', noremap)
-mapset('n', '<leader>Cn', '<CMD>cnext<CR>', noremap)
-mapset('n', '<leader>CP', '<CMD>lprevious<CR>', noremap)
-mapset('n', '<leader>Cp', '<CMD>cprevious<CR>', noremap)
-mapset('n', '<leader>CL', '<CMD>llast<CR>', noremap)
-mapset('n', '<leader>Cl', '<CMD>clast<CR>', noremap)
+end, { desc = 'Toggle sign column' })
+mapset('n', '<C-W>w', win_fit_width_to_content, { desc = 'Fit width to content' })
+mapset('n', '<C-W>W', win_fit_filetype_width, { desc = 'Width by filetype' })
+mapset('n', '<leader>CC', '<CMD>lclose<CR>', { desc = 'Close location list' })
+mapset('n', '<leader>Cc', '<CMD>cclose<CR>', { desc = 'Close quickfix' })
+mapset('n', '<leader>CO', '<CMD>lopen<CR>', { desc = 'Open location list' })
+mapset('n', '<leader>Co', '<CMD>copen<CR>', { desc = 'Open quickfix' })
+mapset('n', '<leader>CF', '<CMD>lfirst<CR>', { desc = 'First location list' })
+mapset('n', '<leader>Cf', '<CMD>cfirst<CR>', { desc = 'First quickfix' })
+mapset('n', '<leader>CN', '<CMD>lnext<CR>', { desc = 'Next location list' })
+mapset('n', '<leader>Cn', '<CMD>cnext<CR>', { desc = 'Next quickfix' })
+mapset('n', '<leader>CP', '<CMD>lprevious<CR>', { desc = 'Previous location list' })
+mapset('n', '<leader>Cp', '<CMD>cprevious<CR>', { desc = 'Previous quickfix' })
+mapset('n', '<leader>CL', '<CMD>llast<CR>', { desc = 'Last location list' })
+mapset('n', '<leader>Cl', '<CMD>clast<CR>', { desc = 'Last quickfix' })
 mapset('n', '<A-y>',
   ':registers "0123456789abcdefghijklmnopqrstuvwxyz*+.<CR>',
   noremap_silent)
-mapset('n', '<leader>Wc', ':lcd %:h', noremap)
-mapset('n', '<leader>We', ':e <C-R>=expand("%:p:h") . "/" <CR>', noremap)
-mapset('n', '<leader>Ww', ':w <C-R>=expand("%:p:h") . "/" <CR>', noremap)
-mapset('n', '<leader>Ws', ':sp <C-R>=expand("%:p:h") . "/" <CR>', noremap)
-mapset('n', '<leader>Wv', ':vs <C-R>=expand("%:p:h") . "/" <CR>', noremap)
+mapset('n', '<leader>Wc', ':lcd %:h', { desc = 'Local cd file folder' })
+mapset('n', '<leader>We', ':e <C-R>=expand("%:p:h") . "/" <CR>', { desc = 'Edit from file folder' })
+mapset('n', '<leader>Ww', ':w <C-R>=expand("%:p:h") . "/" <CR>', { desc = 'Write to file folder' })
+mapset('n', '<leader>Ws', ':sp <C-R>=expand("%:p:h") . "/" <CR>', { desc = 'Split from file folder' })
+mapset('n', '<leader>Wv', ':vs <C-R>=expand("%:p:h") . "/" <CR>', { desc = 'VSplit from file folder' })
 mapset('n', '<leader>Wt', ':terminal <C-R>=expand("%:p:h") . "/" <CR>',
-  noremap)
-mapset('n', '<leader>Yfn', ':let @+=expand("%")<CR>', noremap)
-mapset('n', '<leader>Yfp', ':let @+=expand("%:p")<CR>', noremap)
-mapset('n', '<leader>Yfd', ':let @+=expand("%:p:h")<CR>', noremap)
-mapset('n', '<leader>Pp', ':put =execute(\\"\\")<Left><Left><Left>', noremap)
+{ desc = 'Terminal from file folder' })
+mapset('n', '<leader>Yfn', ':let @+=expand("%")<CR>', { desc = 'Yank file name' })
+mapset('n', '<leader>Yfp', ':let @+=expand("%:p")<CR>', { desc = 'Yank file path' })
+mapset('n', '<leader>Yfd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank file directory' })
+mapset('n', '<leader>Pp', ':put =execute(\\"\\")<Left><Left><Left>', { desc = 'Put command' })
 mapset(
-  'n', '<leader>Pv', ':vnew<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap
+  'n', '<leader>Pv', ':vnew<CR>:put =execute(\\"\\")<Left><Left><Left>',
+  { desc = 'Put command vnew win'}
 )
 mapset(
-  'n', '<leader>Ps', ':new<CR>:put =execute(\\"\\")<Left><Left><Left>', noremap
+  'n', '<leader>Ps', ':new<CR>:put =execute(\\"\\")<Left><Left><Left>',
+  { desc = 'Put command new win'}
 )
 mapset('n', '<C-l>',
-  ':hi Normal ctermbg=NONE guibg=NONE|nohlsearch|diffupdate<CR><C-L>',
-  noremap)
+  ':hi Normal ctermbg=NONE guibg=NONE|nohlsearch|diffupdate<CR><C-L>')
 mapset('n', '<leader>S:',
   ':mkview! ~/.config/nvim/session/_view.vim<CR>:bn|bd#',
   noremap)
@@ -669,11 +671,11 @@ mapset('i', '<C-k>', '<C-o>D', noremap_silent)
 -- mapset('i', '<C-H>', '<Left><C-o>dvb', noremap_silent)
 mapset('i', '<A-BS>', '<Left><C-o>dvb', noremap_silent)
 -- <C-u> already exists
-mapset('c', '<A-p>', '<C-p>', noremap)
-mapset('c', '<A-n>', '<C-n>', noremap)
-mapset('c', '<A-b>', '<C-f>b<C-c>', noremap)
-mapset('c', '<A-f>', '<C-f>e<C-c><Right>', noremap)
-mapset('c', '<C-b>', '<Left>', noremap)
+mapset('c', '<A-p>', '<C-p>')
+mapset('c', '<A-n>', '<C-n>')
+mapset('c', '<A-b>', '<C-f>b<C-c>')
+mapset('c', '<A-f>', '<C-f>e<C-c><Right>')
+mapset('c', '<C-b>', '<Left>')
 mapset('c', '<C-f>', function()
   -- 'getcmdpos()>strlen(getcmdline())?&cedit:"\\<Lt>Right>"'
   if vim.fn.getcmdpos() > vim.fn.getcmdline():len() then
@@ -682,8 +684,8 @@ mapset('c', '<C-f>', function()
     return '<Right>'
   end
 end, noremap_expr)
-mapset('c', '<C-x><C-a>', '<C-a>', noremap)
-mapset('c', '<C-a>', '<Home>', noremap)
+mapset('c', '<C-x><C-a>', '<C-a>')
+mapset('c', '<C-a>', '<Home>')
 -- <C-e> already exists
 -- mapset('c', '<C-e>', '<End>', noremap_silent)
 mapset('c', '<C-d>', function()
@@ -694,8 +696,8 @@ mapset('c', '<C-d>', function()
     return '<Del>'
   end
 end, noremap_expr)
-mapset('c', '<A-d>', '<C-f>dw<C-c>', noremap)
-mapset('c', '<C-k>', '<C-f>D<C-c><Right>', noremap)
+mapset('c', '<A-d>', '<C-f>dw<C-c>')
+mapset('c', '<C-k>', '<C-f>D<C-c><Right>')
 mapset('c', '<A-BS>', function()
   if vim.fn.getcmdpos() > vim.fn.getcmdline():len() then
     return '<C-f>dvb<C-c><Right>'
