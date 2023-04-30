@@ -549,27 +549,55 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     cmd = 'SimpleAlign',
   },
   {
-    'sbdchd/neoformat',
-    cmd = 'Neoformat',
-    config = function()
-      vim.g.neoformat_only_msg_on_error = 1
-    end
-    -- <XOR>
-    -- 'mhartington/formatter.nvim',
-    -- cmd = { 'Format', 'FormatWrite' },
+    -- 'sbdchd/neoformat',
+    -- cmd = 'Neoformat',
     -- config = function()
-    --   local filetypes = require'formatter.filetypes'
-    --   require'formatter'.setup {
-    --     logging = true,
-    --     log_level = vim.log.levels.ERROR,
-    --     filetype = {
-    --       rust = filetypes.rust.rustfmt,
-    --       python = filetypes.python.yapf,
-    --       php = filetypes.php.phpcbf,
-    --       json = filetypes.json.jq,
-    --     }
-    --   }
+    --   vim.g.neoformat_only_msg_on_error = 1
     -- end
+    -- <XOR>
+    'mhartington/formatter.nvim',
+    cmd = { 'Format', 'FormatWrite' },
+    config = function()
+      local filetypes = require'formatter.filetypes'
+      require'formatter'.setup {
+        logging = true,
+        log_level = vim.log.levels.ERROR,
+        filetype = {
+          c = filetypes.c.clangformat,
+          cmake = filetypes.cmake.cmakeformat,
+          cpp = filetypes.cpp.clangformat,
+          cs = filetypes.cs.clangformat,
+          css = filetypes.css.eslint_d,
+          dart = filetypes.dart.dartfmt,
+          elixir = filetypes.elixir.mixformat,
+          fish = filetypes.fish.fishindent,
+          go = filetypes.go.gofmt,
+          graphql = filetypes.graphql.prettier,
+          haskell = filetypes.haskell.stylish_haskell,
+          html = filetypes.html.prettier,
+          java = filetypes.java.clangformat,
+          javascript = filetypes.javascript.eslint_d,
+          javascriptreact = filetypes.javascriptreact.eslint_d,
+          json = filetypes.json.jq,
+          kotlin = filetypes.kotlin.ktlint,
+          latex = filetypes.latex.latexindent,
+          lua = filetypes.lua.stylua,
+          markdown = filetypes.markdown.prettier,
+          php = filetypes.php.phpcbf,
+          python = filetypes.python.yapf,
+          rust = filetypes.rust.rustfmt,
+          sh = filetypes.sh.shfmt,
+          sql = filetypes.sql.pgformat,
+          svelte = filetypes.svelte.prettier,
+          terraform = filetypes.terraform.terraformfmt,
+          toml = filetypes.toml.taplo,
+          typescript = filetypes.typescript.eslint_d,
+          typescriptreact = filetypes.typescriptreact.eslint_d,
+          yaml = filetypes.yaml.pyaml,
+          zig = filetypes.zig.zigfmt,
+        }
+      }
+    end
   },
   {
     'kylechui/nvim-surround',
