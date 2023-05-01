@@ -2510,16 +2510,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           align = "center",
         },
         hidden = {
-          "<silent>", "<cmd>", "<Cmd>", "<CR>", "<cr>", "call", "lua",
-          "require", "nvim%-", "vim%.", "treesitter%.textobjects%.",
-          "'lsp_interop'%.", "lsp%.buf%.",
-          "'select'%.select_textobject",
-          "'swap'%.", "'move'%.", '%("orgmode"%)%.action',
-          "keybind norg core%.norg%.qol%.todo_items%.todo%.",
-          "keybind norg core%.norg%.manoeuvre%.", "org_mappings%.",
-          "keybind norg core%.norg%.", "keybind norg core%.",
-          '%.utils%.buffer"%)',
-          '"%)$', "^:", "^ ", '^%("',
+          "<silent>", "<cmd>", "<Cmd>", "<CR>", "^:", "^ ", "^call ", "^lua ",
         },
       }
       which_key.register({
