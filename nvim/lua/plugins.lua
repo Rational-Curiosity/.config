@@ -2186,9 +2186,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       end
 
       -- global handler
-      require('ufo').setup({
+      local ufo = require('ufo')
+      ufo.setup({
         fold_virt_text_handler = handler,
         provider_selector = function(bufnr, filetype, buftype)
+          if filetype == 'org' then
+            return ''
+          end
           return {'treesitter', 'indent'}
         end
       })
@@ -2196,13 +2200,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       -- buffer scope handler
       -- will override global handler if it is existed
       local bufnr = vim.api.nvim_get_current_buf()
-      require('ufo').setFoldVirtTextHandler(bufnr, handler)
+      ufo.setFoldVirtTextHandler(bufnr, handler)
 
       local mapset = vim.keymap.set
-      mapset('n', 'zR', require('ufo').openAllFolds)
-      mapset('n', 'zM', require('ufo').closeAllFolds)
-      mapset('n', 'zr', require('ufo').openFoldsExceptKinds)
-      mapset('n', 'zm', require('ufo').closeFoldsWith)
+      mapset('n', 'zR', ufo.openAllFolds)
+      mapset('n', 'zM', ufo.closeAllFolds)
+      mapset('n', 'zr', ufo.openFoldsExceptKinds)
+      mapset('n', 'zm', ufo.closeFoldsWith)
     end
   },
   {
