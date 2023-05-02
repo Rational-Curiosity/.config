@@ -50,6 +50,11 @@ if status --is-interactive
     abbr -a ..10 'cd ../../../../../../../../../..'
     abbr -a ............ 'cd ../../../../../../../../../../..'
     abbr -a ..11 'cd ../../../../../../../../../../..'
+    if type -q exa
+        abbr -a l exa
+    else
+        abbr -a l ls
+    end
 
     bind \cy fish_clipboard_paste
     # bind \cH backward-kill-word
