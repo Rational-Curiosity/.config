@@ -329,14 +329,18 @@ api.nvim_create_autocmd({ "CmdlineEnter" }, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
-    o.cmdheight = 1
+    if o.cmdheight == 0 then
+      o.cmdheight = 1
+    end
   end
 })
 api.nvim_create_autocmd({ "CmdlineLeave" }, {
   group = "initAutoGroup",
   pattern = {"*"},
   callback = function()
-    o.cmdheight = 0
+    if o.cmdheight == 1 then
+      o.cmdheight = 0
+    end
   end
 })
 do

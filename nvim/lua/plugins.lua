@@ -3,10 +3,32 @@ local silent = { silent = true }
 local noremap_silent = { noremap = true, silent = true }
 local mapset = vim.keymap.set
 local ft_prog_lsp = {
-  'python', 'php', 'json', 'json5', 'jsonc', 'jsonnet', 'sh',
-  'js', 'ts', 'jsx', 'tsx',
-  'javascript', 'javascriptreact', 'typescript', 'typescriptreact',
-  'rust', 'c', 'cpp', 'h', 'hpp', 'java',
+  'c',
+  'cpp',
+  'h',
+  'hpp',
+  'html',
+  'java',
+  'javascript',
+  'javascript.jsx',
+  'javascriptreact',
+  'js',
+  'json',
+  'json5',
+  'jsonc',
+  'jsonnet',
+  'jsx',
+  'objc',
+  'objcpp',
+  'php',
+  'python',
+  'rust',
+  'sh',
+  'ts',
+  'tsx',
+  'typescript',
+  'typescript.tsx',
+  'typescriptreact',
 }
 local ft_prog = { 'lua', 'smarty', unpack(ft_prog_lsp) }
 return {
@@ -17,9 +39,12 @@ return {
   {
     'ggandor/leap.nvim',
     keys = {
-      { '<A-f>', '<Plug>(leap-forward-to)', mode = { 'n', 'x', 'o' }, desc = 'Leap forward' },
-      { '<A-b>', '<Plug>(leap-backward-to)', mode = { 'n', 'x', 'o' }, desc = 'Leap backward' },
-      { '<A-w>', '<Plug>(leap-cross-window)', mode = { 'n', 'x', 'o' }, desc = 'Leap cross window' },
+      { '<A-f>', '<Plug>(leap-forward-to)', mode = { 'n', 'x', 'o' },
+      desc = 'Leap forward' },
+      { '<A-b>', '<Plug>(leap-backward-to)', mode = { 'n', 'x', 'o' },
+      desc = 'Leap backward' },
+      { '<A-w>', '<Plug>(leap-cross-window)', mode = { 'n', 'x', 'o' },
+      desc = 'Leap cross window' },
     },
     config = function()
       local leap = require'leap'
@@ -395,9 +420,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           tasks = {
             -- theme = "dropdown",
             output = {
-              style = "float",
+              style = 'float',
+              layout = 'bottom',
+              scale = 0.8,
             },
-            data_dir = false,
+            data_dir = vim.fn.stdpath('data') .. '/tasks',
           },
         },
         defaults = {
@@ -1321,6 +1348,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         org_priority_lowest = 'O',
         org_ellipsis = '▼',
         org_indent_mode = 'noindent',
+        org_log_into_drawer = 'LOGSTATE',
       }
     end
   },
@@ -1877,6 +1905,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     },
     ft = ft_prog_lsp,
     config = function()
+      require'fidget'.setup {}
       local diagnostic_config = {
         virtual_text = {
           spacing = 0,
@@ -1933,75 +1962,78 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       mapset('n', '<leader>Ce', vim.diagnostic.setloclist,
       { silent = true, desc = 'Add diagnostics to location list' })
 
-      -- Use an on_attach function to only map the following keys
+      -- Use LspAttach autocommand to only map the following keys
       -- after the language server attaches to the current buffer
-      local on_attach = function(client, bufnr)
-        -- Enable completion triggered by <c-x><c-o>
-        vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+        callback = function(ev)
+          -- Enable completion triggered by <c-x><c-o>
+          vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-        -- Mappings.
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
-        mapset('n', '<leader>lD', vim.lsp.buf.declaration,
-        { silent = true, buffer = bufnr, desc = 'Lsp declaration' })
-        mapset('n', '<leader>ld', vim.lsp.buf.definition,
-        { silent = true, buffer = bufnr, desc = 'Lsp definition' })
-        mapset('n', '<leader>lK', vim.lsp.buf.hover,
-        { silent = true, buffer = bufnr, desc = 'Lsp hover' })
-        mapset('n', '<leader>li', vim.lsp.buf.implementation,
-        { silent = true, buffer = bufnr, desc = 'Lsp implementation' })
-        mapset('n', '<leader>lk', vim.lsp.buf.signature_help,
-        { silent = true, buffer = bufnr, desc = 'Lsp signature help' })
-        mapset('n', '<leader>lA', vim.lsp.buf.add_workspace_folder,
-        { silent = true, buffer = bufnr, desc = 'Lsp add workspace folder' })
-        mapset('n', '<leader>lR', vim.lsp.buf.remove_workspace_folder,
-        { silent = true, buffer = bufnr, desc = 'Lsp remove workspace folder' })
-        mapset('n', '<leader>lL', function()
-          print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        end, { silent = true, buffer = bufnr, desc = 'Lsp list workspace folders' })
-        mapset('n', '<leader>lt', vim.lsp.buf.type_definition,
-        { silent = true, buffer = bufnr, desc = 'Lsp type definition' })
-        mapset('n', '<leader>ln', vim.lsp.buf.rename,
-        { silent = true, buffer = bufnr, desc = 'Lsp rename' })
-        mapset('n', '<leader>la', vim.lsp.buf.code_action,
-        { silent = true, buffer = bufnr, desc = 'Lsp code action' })
-        mapset('n', '<leader>lr', vim.lsp.buf.references,
-        { silent = true, buffer = bufnr, desc = 'Lsp references' })
-        mapset({ 'n', 'v' }, '<leader>lf', function()
-          vim.lsp.buf.format { async = true }
-        end, { silent = true, buffer = bufnr, desc = 'Lsp format' })
+          -- Buffer local mappings.
+          -- See `:help vim.lsp.*` for documentation on any of the below functions 
+          mapset('n', '<leader>lD', vim.lsp.buf.declaration,
+          { silent = true, buffer = ev.buf, desc = 'Lsp declaration' })
+          mapset('n', '<leader>ld', vim.lsp.buf.definition,
+          { silent = true, buffer = ev.buf, desc = 'Lsp definition' })
+          mapset('n', '<leader>lK', vim.lsp.buf.hover,
+          { silent = true, buffer = ev.buf, desc = 'Lsp hover' })
+          mapset('n', '<leader>li', vim.lsp.buf.implementation,
+          { silent = true, buffer = ev.buf, desc = 'Lsp implementation' })
+          mapset('n', '<leader>lk', vim.lsp.buf.signature_help,
+          { silent = true, buffer = ev.buf, desc = 'Lsp signature help' })
+          mapset('n', '<leader>lA', vim.lsp.buf.add_workspace_folder,
+          { silent = true, buffer = ev.buf, desc = 'Lsp add workspace folder' })
+          mapset('n', '<leader>lR', vim.lsp.buf.remove_workspace_folder,
+          { silent = true, buffer = ev.buf, desc = 'Lsp remove workspace folder' })
+          mapset('n', '<leader>lL', function()
+            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+          end, { silent = true, buffer = ev.buf, desc = 'Lsp list workspace folders' })
+          mapset('n', '<leader>lt', vim.lsp.buf.type_definition,
+          { silent = true, buffer = ev.buf, desc = 'Lsp type definition' })
+          mapset('n', '<leader>ln', vim.lsp.buf.rename,
+          { silent = true, buffer = ev.buf, desc = 'Lsp rename' })
+          mapset('n', '<leader>la', vim.lsp.buf.code_action,
+          { silent = true, buffer = ev.buf, desc = 'Lsp code action' })
+          mapset('n', '<leader>lr', vim.lsp.buf.references,
+          { silent = true, buffer = ev.buf, desc = 'Lsp references' })
+          mapset({ 'n', 'v' }, '<leader>lf', function()
+            vim.lsp.buf.format { async = true }
+          end, { silent = true, buffer = ev.buf, desc = 'Lsp format' })
 
-        mapset('n', '<leader>lwD', function()
-          vim.api.nvim_command('vsplit')
-          vim.lsp.buf.declaration()
-        end, { silent = true, buffer = bufnr, desc = 'Lsp win declaration' })
-        mapset('n', '<leader>lwd', function()
-          vim.api.nvim_command('vsplit')
-          vim.lsp.buf.definition()
-        end, { silent = true, buffer = bufnr, desc = 'Lsp win definition' })
-        mapset('n', '<leader>lwi', function()
-          vim.api.nvim_command('vsplit')
-          vim.lsp.buf.implementation()
-        end, { silent = true, buffer = bufnr, desc = 'Lsp win implementation' })
-        mapset('n', '<leader>lwt', function()
-          vim.api.nvim_command('vsplit')
-          vim.lsp.buf.type_definition()
-        end, { silent = true, buffer = bufnr, desc = 'Lsp win type definition' })
+          mapset('n', '<leader>lwD', function()
+            vim.api.nvim_command('vsplit')
+            vim.lsp.buf.declaration()
+          end, { silent = true, buffer = ev.buf, desc = 'Lsp win declaration' })
+          mapset('n', '<leader>lwd', function()
+            vim.api.nvim_command('vsplit')
+            vim.lsp.buf.definition()
+          end, { silent = true, buffer = ev.buf, desc = 'Lsp win definition' })
+          mapset('n', '<leader>lwi', function()
+            vim.api.nvim_command('vsplit')
+            vim.lsp.buf.implementation()
+          end, { silent = true, buffer = ev.buf, desc = 'Lsp win implementation' })
+          mapset('n', '<leader>lwt', function()
+            vim.api.nvim_command('vsplit')
+            vim.lsp.buf.type_definition()
+          end, { silent = true, buffer = ev.buf, desc = 'Lsp win type definition' })
 
-        -- require("lsp-inlayhints").on_attach(client, bufnr)
-        require'which-key'.register({
-          l = {
-            name = 'Lsp',
-            w = {
-              name = 'Other win',
-            }
-          },
-        }, { mode = 'n', prefix = '<leader>', buffer = bufnr })
-        require'which-key'.register({
-          l = {
-            name = 'Lsp',
-          },
-        }, { mode = 'v', prefix = '<leader>', buffer = bufnr })
-        end
+          -- require("lsp-inlayhints").on_attach(client, ev.buf)
+          require'which-key'.register({
+            l = {
+              name = 'Lsp',
+              w = {
+                name = 'Other win',
+              }
+            },
+          }, { mode = 'n', prefix = '<leader>', buffer = ev.buf })
+          require'which-key'.register({
+            l = {
+              name = 'Lsp',
+            },
+          }, { mode = 'v', prefix = '<leader>', buffer = ev.buf })
+        end,
+      })
 
       local capabilities = require'cmp_nvim_lsp'.default_capabilities(
         vim.lsp.protocol.make_client_capabilities()
@@ -2013,16 +2045,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         'pyright', 'intelephense', 'html', 'jsonls', 'ccls', 'bashls',
       }) do
         lspconfig[lsp].setup {
-          autostart = true,
-          on_attach = on_attach,
           capabilities = capabilities,
           flags = {
             debounce_text_changes = 1000,
-          }
+          },
         }
       end
       -- lspconfig.tsserver.setup {
-      --   on_attach = on_attach,
       --   capabilities = capabilities,
       --   flags = {
       --     debounce_text_changes = 1000,
@@ -2053,8 +2082,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       --   }
       -- }
       lspconfig.rust_analyzer.setup {
-        autostart = true,
-        on_attach = on_attach,
         capabilities = capabilities,
         flags = {
           debounce_text_changes = 1000,
@@ -2088,10 +2115,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
       }
       lspconfig.java_language_server.setup {
-        autostart = true,
         cmd = { vim.env.HOME ..
         '/tmp/java-language-server/dist/lang_server_linux.sh' },
-        on_attach = on_attach,
         capabilities = capabilities,
         flags = {
           debounce_text_changes = 1000,
@@ -2099,7 +2124,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       }
       local util = require'lspconfig.util'
       lspconfig.vtsls.setup {
-        autostart = true,
         single_file_support = false,
         root_dir = function(fname)
           return not util.root_pattern('deno.json', 'deno.jsonc')(fname)
@@ -2107,16 +2131,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           or util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
           or util.root_pattern('.')(fname))
         end,
-        on_attach = on_attach,
         capabilities = capabilities,
         flags = {
           debounce_text_changes = 1000,
         },
       }
       lspconfig.denols.setup {
-        autostart = true,
         root_dir = util.root_pattern('deno.json', 'deno.jsonc'),
-        on_attach = on_attach,
         capabilities = capabilities,
         flags = {
           debounce_text_changes = 1000,
@@ -2143,13 +2164,12 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineHint', { undercurl = true })
       --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineInfo', { undercurl = true })
       --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true })
-    end
-  },
-  {
-    'j-hui/fidget.nvim',
-    dependencies = { 'nvim-lspconfig' },
-    config = function()
-      require'fidget'.setup {}
+
+      -- First startup
+      local matching_configs = util.get_config_by_ft(vim.bo.filetype)
+      for _, config in ipairs(matching_configs) do
+        config.launch()
+      end
     end
   },
   {
