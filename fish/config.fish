@@ -56,9 +56,33 @@ if status --is-interactive
         abbr -a l ls
     end
 
+    fish_vi_key_bindings
+
+    bind -M insert \ck kill-line
+
+    bind -M insert \ca beginning-of-line
+    bind -M insert \ce end-of-line
+    bind -M insert \ch backward-delete-char
+    bind -M insert \cp up-or-search
+    bind -M insert \cn down-or-search
+    bind -M insert \cf forward-char
+    bind -M insert \cb backward-char
+    bind -M insert \ct transpose-chars
+    bind -M insert \cg cancel
+    bind -M insert \c_ undo
+    bind -M insert \cz undo
+
+    bind -M insert \cr history-pager
+    bind -M insert \e\x7f backward-kill-word
+    bind -M insert \e\b backward-kill-word
+    bind -M insert \eb prevd-or-backward-word
+    bind -M insert \ef nextd-or-forward-word
+
     bind \cy fish_clipboard_paste
+    bind -M insert \cy fish_clipboard_paste
     # bind \cH backward-kill-word
     bind \ez 'commandline -r fg; commandline -f execute'
+    bind -M insert \ez 'commandline -r fg; commandline -f execute'
 
     if not set -q DELTA_COLUMNS
         set -xg DELTA_COLUMNS 169
@@ -117,7 +141,7 @@ if status --is-interactive
         set -a banners 'timeout -k 1s 0.75s flashfetch'
     end
     if type -q unsplash-feh
-        set -a banners 'unsplash-feh &'
+        set -a banners 'unsplash-feh &; disown'
     end
     if test -d ~/tmp/shell-color-scripts
         set -a banners 'eval (random choice ~/tmp/shell-color-scripts/colorscripts/*)'
