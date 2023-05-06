@@ -16,6 +16,7 @@ short = " $title.str(max_w:20) |"
 [[block]]
 block = "external_ip"
 format = "$ip.str(max_w:15,rot_interval:0.4)"
+interval = 600
 use_ipv4 = true
 [block.theme_overrides]
 idle_bg = "#19FF70"
