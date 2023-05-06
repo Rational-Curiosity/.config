@@ -103,8 +103,8 @@ format = "[ $path ]($style)"
 # similar to mapped_locations in Oh My Posh:
 [directory.substitutions]
 "~/Prog/gigas" = ""
-"~/Prog" = ""
-"~/Documents" = ""
+"~/Prog" = "󰌌"
+"~/Documents" = "󰈙"
 "~/Downloads" = ""
 "~/Music" = ""
 "~/Pictures" = ""

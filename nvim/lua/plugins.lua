@@ -1647,7 +1647,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                 end
               end,
               update_in_insert = false,
-              symbols = { error = '', warn = '', info = '', hint = '♲' },
+              symbols = { error = '', warn = '', info = '', hint = '' },
               padding = 0 },
             -- {spellstatus},
             { require('lazy.status').updates,
