@@ -1240,7 +1240,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     dependencies = { 'nvim-treesitter' },
     keys = {
       { 'm', ':<C-U>lua require("tsht").nodes()<CR>', mode = 'o', desc = 'TS nodes' },
-      { 'm', function() require("tsht").nodes() end, mode = 'v', desc = 'TS nodes' },
+      { 'm', ':lua require("tsht").nodes()<CR>', mode = 'x', desc = 'TS nodes' },
     },
   },
   {
