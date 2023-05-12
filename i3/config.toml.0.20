@@ -1,0 +1,109 @@
+[theme]
+name = "dracula"
+[theme.overrides]
+separator = ""
+
+[icons]
+name = "material-nf"
+
+[[block]]
+block = "net"
+icons_format = "{icon}"
+format = "{signal_strength} {speed_down;K*b} {graph_down:5;K*_b#90} {speed_up;K*b} {graph_up:5;K*_b#90}"
+interval = 5
+[block.theme_overrides]
+idle_bg = "#2AF598"
+idle_fg = "#101010"
+
+[[block]]
+block = "networkmanager"
+icons_format = "{icon}"
+interface_name_exclude = ["br\\-[0-9a-f]{12}", "docker\\d+"]
+interface_name_include = []
+
+[[block]]
+block = "memory"
+icons_format = "{icon}"
+format_mem = "{mem_used}/{mem_total}({mem_used_percents})"
+display_type = "memory"
+icons = true
+clickable = false
+interval = 5
+warning_mem = 80
+critical_mem = 95
+[block.theme_overrides]
+idle_bg = "#22E4AC"
+idle_fg = "#101010"
+
+[[block]]
+block = "memory"
+icons_format = "{icon}"
+format_swap = "{swap_used}/{swap_total}({swap_used_percents})"
+display_type = "swap"
+icons = true
+clickable = false
+interval = 5
+warning_swap = 80
+critical_swap = 95
+[block.theme_overrides]
+idle_bg = "#1BD7BB"
+idle_fg = "#101010"
+
+[[block]]
+block = "cpu"
+icons_format = "{icon}"
+interval = 1
+[block.theme_overrides]
+idle_bg = "#14C9CB"
+idle_fg = "#101010"
+
+[[block]]
+block = "temperature"
+icons_format = "{icon}"
+collapsed = false
+interval = 10
+format = "{min}≤{average}≤{max}"
+
+[[block]]
+block = "disk_space"
+icons_format = "{icon}"
+path = "/"
+alias = "/"
+info_type = "available"
+format = "{used}/{total}"
+unit = "GB"
+interval = 20
+warning = 20.0
+alert = 10.0
+[block.theme_overrides]
+idle_bg = "#0FBED8"
+idle_fg = "#101010"
+
+[[block]]
+block = "docker"
+icons_format = "{icon}"
+interval = 10
+format = "{running}/{total}"
+[block.theme_overrides]
+idle_bg = "#08B3E5"
+idle_fg = "#101010"
+
+[[block]]
+block = "sound"
+icons_format = "{icon}"
+on_click = "pavucontrol"
+
+[[block]]
+block = "time"
+icons_format = "{icon}"
+interval = 5
+format = "%b/%a %m/%d %R"
+[block.theme_overrides]
+idle_bg = "#123456"
+idle_fg = "#abcdef"
+
+[[block]]
+block = "battery"
+interval = 10
+driver = "upower"
+format = "{percentage} {time}"

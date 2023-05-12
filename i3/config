@@ -14,7 +14,8 @@ default_border pixel 2
 default_floating_border pixel 2
 
 # sudo apt install xfonts-terminus
-font xft:Hack Nerd Font Mono 9
+set $font Hack Nerd Font Mono
+font xft:$font 9
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
@@ -57,6 +58,8 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle &
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle &
 
+bindsym $mod+Control+Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +1% &
+bindsym $mod+Control+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1% &
 bindsym $mod+Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% &
 bindsym $mod+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% &
 bindsym $mod+Shift+Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +20% &
@@ -66,9 +69,8 @@ bindsym $mod+Shift+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK
 floating_modifier $mod
 
 # start a terminal
-set $font Hack Nerd Font Mono:size=$(font-size)
-bindsym $mod+Return exec st -f "$font" tmux
-bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font" tmux;resize set width 50 ppt
+bindsym $mod+Return exec st -f "$font:size=$(font-size)" tmux
+bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font:size=$(font-size)" tmux;resize set width 50 ppt
 # bindsym $mod+Return exec wezterm &
 # bindsym $mod+Shift+Return $root;layout splith;exec wezterm &;resize set width 50 ppt
 # bindsym $mod+Return exec alacritty msg create-window || alacritty &
@@ -94,7 +96,7 @@ bindsym $mod+Control+r exec --no-startup-id rofi-commands &
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # change focus
-bindsym $mod+o exec --no-startup-id i3-easyfocus --all --font terminus-32 \
+bindsym $mod+o exec --no-startup-id i3-easyfocus --all --font lucidasans-18 \
  --color-unfocused-bg 000000 --color-unfocused-fg 00FF00 \
  --color-focused-bg 555555 --color-focused-fg AAAAAA
 
@@ -186,7 +188,7 @@ mode $edit_mode {
   bindsym Up move up 10 ppt
   bindsym Right move right 10 ppt
 
-  bindsym Return exec st -f "$font" tmux
+  bindsym Return exec st -f "$font:size=$(font-size)" tmux
   # bindsym Return exec alacritty msg create-window || alacritty &
 
   bindsym $mod+m mode "default"
@@ -290,7 +292,7 @@ for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
 bar {
   position top
   mode hide
-  font xft:Hack Nerd Font Mono, Icons 9
+  font xft:$font, Icons 9
   colors {
     background #00000080
     separator #666666
@@ -309,8 +311,8 @@ bar {
 
 exec_always --no-startup-id "case $(tmux ls|sed -nE 's/^(scratchpad: )[^)]+\) ?(\(attached\))?$/\1\2/p') in
  'scratchpad: (attached)') :;;
- 'scratchpad: ') st -f \"$font\" -c Scratchpad tmux a -t scratchpad;;
- *) st -f \"$font\" -c Scratchpad tmux new -s scratchpad;;
+ 'scratchpad: ') st -f \"$font:size=$(font-size)\" -c Scratchpad tmux a -t scratchpad;;
+ *) st -f \"$font:size=$(font-size)\" -c Scratchpad tmux new -s scratchpad;;
 esac &"
 # exec_always --no-startup-id "wezterm cli --no-auto-start --class Scratchpad list-clients\
 #  || wezterm start --class Scratchpad &"
