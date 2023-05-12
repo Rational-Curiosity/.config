@@ -30,7 +30,7 @@ local ft_prog_lsp = {
   'typescript.tsx',
   'typescriptreact',
 }
-local ft_prog = { 'lua', 'smarty', unpack(ft_prog_lsp) }
+local ft_prog = { 'fish', 'lua', 'smarty', unpack(ft_prog_lsp) }
 return {
   {
     'mbbill/undotree',
@@ -480,22 +480,22 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           return {
             {
               name = 'Docker Compose gigas CORE up',
-              cmd = 'docker-compose --ansi never up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider',
+              cmd = 'docker compose --ansi never up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider',
               lock = true,
             },
             {
               name = 'Docker Compose gigas CORE stop',
-              cmd = 'docker-compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider',
+              cmd = 'docker compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider',
               lock = true,
             },
             {
               name = 'Docker Compose gigas KVM up',
-              cmd = 'docker-compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
+              cmd = 'docker compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
               lock = true,
             },
             {
               name = 'Docker Compose gigas KVM stop',
-              cmd = 'docker-compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
+              cmd = 'docker compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
               lock = true,
             },
           }
@@ -2179,7 +2179,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     config = function()
       local handler = function(virtText, lnum, endLnum, width, truncate)
         local newVirtText = {}
-        local suffix = ('   %d '):format(endLnum - lnum)
+        local suffix = ('  󰁂 %d '):format(endLnum - lnum)
         local sufWidth = vim.fn.strdisplaywidth(suffix)
         local targetWidth = width - sufWidth
         local curWidth = 0
@@ -2366,44 +2366,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       end
     end
   },
-  -- {
-  --   'lpoto/actions.nvim',
-  --   keys = { { '<leader>fa', function() require'actions.telescope'.available_actions() end } },
-  --   config = function()
-  --     require'actions'.setup {
-  --       actions = {
-  --         ['Docker Compose gigas CORE up'] = function()
-  --           return {
-  --             steps = {
-  --               'docker-compose up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider'
-  --             }
-  --           }
-  --         end,
-  --         ['Docker Compose gigas CORE stop'] = function()
-  --           return {
-  --             steps = {
-  --               'docker-compose stop db_maria db_mysql db_redis rabbitmq websockifier id-provider'
-  --             }
-  --           }
-  --         end,
-  --         ['Docker Compose gigas KVM up'] = function()
-  --           return {
-  --             steps = {
-  --               'docker-compose up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm'
-  --             }
-  --           }
-  --         end,
-  --         ['Docker Compose gigas KVM stop'] = function()
-  --           return {
-  --             steps = {
-  --               'docker-compose stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm'
-  --             }
-  --           }
-  --         end,
-  --       },
-  --     }
-  --   end
-  -- },
   {
     'skanehira/denops-docker.vim',
     dependencies = { 'vim-denops/denops.vim' },
@@ -2431,7 +2393,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       vim.cmd([[
         augroup docker-custom-command
         autocmd!
-        autocmd FileType docker-containers nnoremap <buffer> <silent> K <CMD>help docker-default-key-mappings<CR>5j022<C-w>_zt|
+        autocmd FileType docker-containers nnoremap <buffer> <silent> K <CMD>help docker-default-key-mappings<CR>5j023<C-w>_zt|
           \nmap <buffer> R <Nop>|
           \nnoremap <buffer> <silent> Rc :<C-u>call docker#command("docker-compose up -d db_maria db_mysql rabbitmq db_redis websockifier")<CR>|
           \nnoremap <buffer> <silent> Rk :<C-u>call docker#command("docker-compose up -d keycloak-provider-hostbill apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill router")<CR>|
@@ -2442,7 +2404,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'miversen33/netman.nvim',
-    event = 'VeryLazy',
+    cmd = { 'NmloadProvider', 'Nmlogs', 'Nmdelete', 'Nmread', 'Nmwrite' },
     config = function()
       require'netman'
     end
