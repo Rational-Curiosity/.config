@@ -1906,22 +1906,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     ft = ft_prog_lsp,
     config = function()
       require'fidget'.setup {}
-      local diagnostic_config = {
-        virtual_text = {
-          spacing = 0,
-          prefix = '▪',
-          format = function(diagnostic)
-            return diagnostic.message:match(
-              '^[%s\u{a0}]*(.-)[%s\u{a0}]*$'
-            ):gsub('[%s\u{a0}][%s\u{a0}][%s\u{a0}]+', '  ')
-          end,
-        },
-        float = { source = true },
-        signs = true,
-        underline = true,
-        update_in_insert = false,
-      }
-      vim.diagnostic.config(diagnostic_config)
 
       for type, icon in pairs({ Error = '', Warn = '', Hint = '', Info = '' }) do
         local hl = 'DiagnosticSign' .. type
@@ -1950,6 +1934,27 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       --     labels_separator = ' ',
       --   }
       -- }
+
+      -- Handlers
+      local diagnostic_config = {
+        virtual_text = {
+          spacing = 0,
+          prefix = '▪',
+          format = function(diagnostic)
+            return diagnostic.message:match(
+              '^[%s\u{a0}]*(.-)[%s\u{a0}]*$'
+            ):gsub('[%s\u{a0}][%s\u{a0}][%s\u{a0}]+', '  ')
+          end,
+        },
+        float = { source = true },
+        signs = true,
+        underline = true,
+        update_in_insert = false,
+      }
+      vim.diagnostic.config(diagnostic_config)
+      vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+        vim.lsp.diagnostic.on_publish_diagnostics, diagnostic_config
+      )
 
       -- Mappings.
       -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -2153,11 +2158,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           },
         },
       }
-
-      -- Handlers
-      vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics, diagnostic_config
-      )
 
       -- Highlights
       --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true })
