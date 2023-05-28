@@ -480,23 +480,23 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           return {
             {
               name = 'Docker Compose gigas CORE up',
-              cmd = 'docker compose --ansi never up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider',
-              lock = true,
+              cmd =
+'docker compose --ansi never up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider',
             },
             {
               name = 'Docker Compose gigas CORE stop',
-              cmd = 'docker compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider',
-              lock = true,
+              cmd =
+'docker compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider',
             },
             {
               name = 'Docker Compose gigas KVM up',
-              cmd = 'docker compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
-              lock = true,
+              cmd =
+'docker compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router',
             },
             {
               name = 'Docker Compose gigas KVM stop',
-              cmd = 'docker compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mercury router uploader-kvm',
-              lock = true,
+              cmd =
+'docker compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router',
             },
           }
         end,
@@ -2394,10 +2394,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       vim.cmd([[
         augroup docker-custom-command
         autocmd!
-        autocmd FileType docker-containers nnoremap <buffer> <silent> K <CMD>help docker-default-key-mappings<CR>5j023<C-w>_zt|
+        autocmd FileType docker-containers nnoremap <buffer> <silent> K <CMD>help docker-default-key-mappings<CR>5j023<C-w>_zt<C-w><C-p>|
           \nmap <buffer> R <Nop>|
-          \nnoremap <buffer> <silent> Rc :<C-u>call docker#command("docker-compose up -d db_maria db_mysql rabbitmq db_redis websockifier")<CR>|
-          \nnoremap <buffer> <silent> Rk :<C-u>call docker#command("docker-compose up -d keycloak-provider-hostbill apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill router")<CR>|
+          \nnoremap <buffer> <silent> Rc :<C-u>call docker#command("docker compose up -d db_maria db_mysql rabbitmq db_redis websockifier")<CR>|
+          \nnoremap <buffer> <silent> Rk :<C-u>call docker#command("docker compose up -d keycloak-provider-hostbill apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill router")<CR>|
           \lua require'which-key'.register({c='core',k='kvm'},{mode='n',prefix='R',buffer=0})
         augroup END
       ]])
