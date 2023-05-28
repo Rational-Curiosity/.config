@@ -638,18 +638,18 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'nat-418/boole.nvim',
-    keys = { '<C-a>', '<C-x>' },
+    keys = { '<C-.>', '<C-,>' },
     config = function()
       require'boole'.setup {
         mappings = {
-          increment = '<C-a>',
-          decrement = '<C-x>',
+          increment = '<C-.>',
+          decrement = '<C-,>',
         },
         additions = {
           { "trace", "debug", "info", "warning", "warn", "error", "fatal" },
           { "&&", "||" },
           { "and", "or" },
-          { "private", "public" },
+          { "private", "protected", "public" },
           { "var", "const", "let" },
         },
       }
