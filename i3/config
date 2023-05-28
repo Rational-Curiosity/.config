@@ -69,8 +69,8 @@ bindsym $mod+Shift+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec st -f "$font:size=$(font-size)" tmux
-bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font:size=$(font-size)" tmux;resize set width 50 ppt
+bindsym $mod+Return exec st -f "$font:size=$(font-size $font)" tmux
+bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font:size=$(font-size $font)" tmux;resize set width 50 ppt
 # bindsym $mod+Return exec wezterm &
 # bindsym $mod+Shift+Return $root;layout splith;exec wezterm &;resize set width 50 ppt
 # bindsym $mod+Return exec alacritty msg create-window || alacritty &
@@ -107,7 +107,13 @@ bindsym $mod+k focus up
 bindsym $mod+l focus right
 bindsym $mod+Tab fullscreen disable; focus next sibling; fullscreen enable
 bindsym $mod+Shift+Tab fullscreen disable; focus prev sibling; fullscreen enable
-bindsym $mod+period exec rofi -m -1 -i -disable-history -sorting-method fzf -show window -window-format \\"<span foreground='#f193f9'>{c}</span> <span foreground='#bcfd59'>{w}</span> {t}\\" -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3 -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n
+bindsym $mod+period exec rofi -m -1 -i -disable-history -sorting-method fzf \
+ -show window -window-format\
+ \\"<span foreground='#f193f9'>{c}</span> <span foreground='#bcfd59'>{w}</span> {t}\\"\
+ -kb-select-1 ctrl+1 -kb-select-2 ctrl+2 -kb-select-3 ctrl+3\
+ -kb-select-4 ctrl+4 -kb-select-5 ctrl+5 -kb-select-6 ctrl+6\
+ -kb-select-7 ctrl+7 -kb-select-8 ctrl+8 -kb-select-9 ctrl+9\
+ -kb-select-10 ctrl+0 -kb-page-prev alt+p -kb-page-next alt+n
 
 # movement
 bindsym $mod+g mark tmp_mv_src;$root;layout splith;mark tmp_mv_dst\
@@ -188,7 +194,7 @@ mode $edit_mode {
   bindsym Up move up 10 ppt
   bindsym Right move right 10 ppt
 
-  bindsym Return exec st -f "$font:size=$(font-size)" tmux
+  bindsym Return exec st -f "$font:size=$(font-size $font)" tmux
   # bindsym Return exec alacritty msg create-window || alacritty &
 
   bindsym $mod+m mode "default"
@@ -280,7 +286,7 @@ bindsym $mod+Mod1+Escape exit
 # Scratchpad
 bindsym $mod+Control+Return [class="Scratchpad"] scratchpad show;[class="Scratchpad"] resize set 90 ppt 90 ppt;[class="Scratchpad"] move position center
 
-for_window [class="Yad|TilingFloat|Gnome-calculator"] floating enable
+for_window [class="Yad|TilingFloat|Florence|Gnome-calculator"] floating enable
 for_window [window_role="pop-up"] floating enable
 for_window [class="Google-chrome|Chromium|Firefox-esr|Navigator|Gnome-calculator"] exec --no-startup-id\
  transset --id $(printf '%d' $($focused)) 0.9
@@ -311,8 +317,8 @@ bar {
 
 exec_always --no-startup-id "case $(tmux ls|sed -nE 's/^(scratchpad: )[^)]+\) ?(\(attached\))?$/\1\2/p') in
  'scratchpad: (attached)') :;;
- 'scratchpad: ') st -f \"$font:size=$(font-size)\" -c Scratchpad tmux a -t scratchpad;;
- *) st -f \"$font:size=$(font-size)\" -c Scratchpad tmux new -s scratchpad;;
+ 'scratchpad: ') st -f \"$font:size=$(font-size $font)\" -c Scratchpad tmux a -t scratchpad;;
+ *) st -f \"$font:size=$(font-size $font)\" -c Scratchpad tmux new -s scratchpad;;
 esac &"
 # exec_always --no-startup-id "wezterm cli --no-auto-start --class Scratchpad list-clients\
 #  || wezterm start --class Scratchpad &"
