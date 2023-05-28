@@ -934,6 +934,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           -- Using this option may slow down your editor, and you may see some duplicate highlights.
           -- Instead of true it can also be a list of languages
         },
+        indent = { enable = true },
         refactor = {
           highlight_definitions = {
             enable = false,
