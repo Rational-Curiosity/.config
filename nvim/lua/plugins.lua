@@ -1573,6 +1573,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local diag_space = 0
 
       local pos_bar = { '🭶', '🭷', '🭸', '🭹', '🭺', '🭻' }
+      local filename_symbols = {
+        modified = '󰏫', readonly = '', unnamed = '', newfile = '',
+      }
       require"lualine".setup {
         options = {
           theme = 'tokyonight', -- powerline
@@ -1657,9 +1660,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           },
           lualine_c = {
             { 'filename', path = 1, shorting_target = 0, padding = 0,
-              symbols = {
-                modified = '󰏫', readonly = '', unnamed = '', newfile = '',
-              },
+              symbols = filename_symbols,
               fmt = function(s)
                 if vim.bo.buftype == "" then
                   return abbrev_path(
@@ -1750,7 +1751,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           lualine_a = {},
           lualine_b = {},
           lualine_c = { { 'filename', path=1, shorting_target=0,
-                          symbols = { modified = '✎', readonly = '⛒' } } },
+                          symbols = filename_symbols } },
           lualine_x = { 'location' },
           lualine_y = {},
           lualine_z = {}
