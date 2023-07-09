@@ -37,19 +37,73 @@ return {
     cmd = { 'UndotreeHide', 'UndotreeShow', 'UndotreeFocus', 'UndotreeToggle' },
   },
   {
-    'ggandor/leap.nvim',
-    keys = {
-      { '<A-f>', '<Plug>(leap-forward-to)', mode = { 'n', 'x', 'o' },
-      desc = 'Leap forward' },
-      { '<A-b>', '<Plug>(leap-backward-to)', mode = { 'n', 'x', 'o' },
-      desc = 'Leap backward' },
-      { '<A-w>', '<Plug>(leap-cross-window)', mode = { 'n', 'x', 'o' },
-      desc = 'Leap cross window' },
-    },
+    'tzachar/highlight-undo.nvim',
+    keys = { 'u', '<C-r>' },
     config = function()
-      local leap = require'leap'
-      leap.opts.max_phase_one_targets = 0
+      require('highlight-undo').setup({
+        duration = 700,
+      })
     end
+  },
+  {
+    -- 'ggandor/leap.nvim',
+    -- keys = {
+    --   { '<A-f>', '<Plug>(leap-forward-to)', mode = { 'n', 'x', 'o' },
+    --   desc = 'Leap forward' },
+    --   { '<A-b>', '<Plug>(leap-backward-to)', mode = { 'n', 'x', 'o' },
+    --   desc = 'Leap backward' },
+    --   { '<A-w>', '<Plug>(leap-cross-window)', mode = { 'n', 'x', 'o' },
+    --   desc = 'Leap cross window' },
+    -- },
+    -- config = function()
+    --   local leap = require'leap'
+    --   leap.opts.max_phase_one_targets = 0
+    -- end
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    opts = {},
+    keys = {
+      {
+        "<A-f>",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "<A-t>",
+        mode = { "n", "o", "x" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "<A-r>",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
+      {
+        "<A-s>",
+        mode = { "o", "x" },
+        function()
+          require("flash").treesitter_search()
+        end,
+        desc = "Flash Treesitter Search",
+      },
+      {
+        "<c-s>",
+        mode = { "c" },
+        function()
+          require("flash").toggle()
+        end,
+        desc = "Toggle Flash Search",
+      },
+    },
   },
   {
     'anuvyklack/hydra.nvim',
@@ -477,26 +531,39 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local tasks = require'telescope'.extensions.tasks
       tasks.generators.custom.add {
         generator = function(buf)
+          local compose_file = vim.env.HOME .. '/Prog/gigas/gigas_devenv/docker-compose.yml'
           return {
             {
               name = 'Docker Compose gigas CORE up',
               cmd =
 'docker compose --ansi never up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider',
+              env = {
+                COMPOSE_FILE = compose_file,
+              },
             },
             {
               name = 'Docker Compose gigas CORE stop',
               cmd =
 'docker compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider',
+              env = {
+                COMPOSE_FILE = compose_file,
+              },
             },
             {
               name = 'Docker Compose gigas KVM up',
               cmd =
 'docker compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router',
+              env = {
+                COMPOSE_FILE = compose_file,
+              },
             },
             {
               name = 'Docker Compose gigas KVM stop',
               cmd =
 'docker compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router',
+              env = {
+                COMPOSE_FILE = compose_file,
+              },
             },
           }
         end,
@@ -1572,9 +1639,12 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local diff_space = 0
       local diag_space = 0
 
-      local pos_bar = { '🭶', '🭷', '🭸', '🭹', '🭺', '🭻' }
+      local pos_bar = { '▀', '🭶', '🭷', '🭸', '🭹', '🭺', '🭻', '▄' }
       local filename_symbols = {
         modified = '󰏫', readonly = '', unnamed = '', newfile = '',
+      }
+      local codeium_status = {
+        [' ON'] = '', OFF = '',
       }
       require"lualine".setup {
         options = {
@@ -1710,7 +1780,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                 return table.concat(status, ' ')
               end, padding = { left = 1, right = 0 } },
             { function()
-                return vim.fn['codeium#GetStatusString']()
+                local status = vim.fn['codeium#GetStatusString']()
+                return codeium_status[status] or status
               end,
               cond = function()
                 return vim.g.codeium_disable_bindings == 1
@@ -1741,7 +1812,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                   return pos_bar[1]
                 else
                   return pos_bar[
-                    math.floor((line - 1)/(lines - 1)*(#pos_bar - 2)) + 2
+                    math.floor((#pos_bar - 2)*(line - 1)/(lines - 1)) + 2
                   ]
                 end
               end, padding = 0 }
@@ -1777,6 +1848,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     -- end
     -- <XOR>
     'altermo/ultimate-autopair.nvim',
+    build = 'git checkout doc/tags',
     event = { 'InsertEnter', 'CmdlineEnter' },
     config = function()
       require'ultimate-autopair'.setup {}
@@ -1978,7 +2050,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
           -- Buffer local mappings.
-          -- See `:help vim.lsp.*` for documentation on any of the below functions 
+          -- See `:help vim.lsp.*` for documentation on any of the below functions
           mapset('n', '<leader>lD', vim.lsp.buf.declaration,
           { silent = true, buffer = ev.buf, desc = 'Lsp declaration' })
           mapset('n', '<leader>ld', vim.lsp.buf.definition,

@@ -22,7 +22,7 @@ o.updatetime = 2000
 o.cmdheight = 0
 o.showmode = false
 o.fileencoding = 'utf-8'
-o.redrawtime = 750
+o.redrawtime = 150
 o.synmaxcol = 400
 
 -- opt.lazyredraw = true  -- It is only meant to be set temporarily
@@ -107,7 +107,7 @@ vim.cmd([[
   " SNIPPETS
   " press <Tab> to expand or jump in a snippet. These can also be mapped separately
   " via <Plug>luasnip-expand-snippet and <Plug>luasnip-jump-next.
-  imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
+  imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
   " -1 for jumping backwards.
   inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
 
@@ -141,15 +141,19 @@ vim.cmd([[
   cabbrev <expr> Mess getcmdpos() == 5 && getcmdtype() == ':' ? 'Messages' : 'Mess'
   cabbrev <expr> lp getcmdpos() == 3 && getcmdtype() == ':' ? 'lua print' : 'lp'
   cabbrev <expr> lpi getcmdpos() == 4 && getcmdtype() == ':' ? 'lua print(vim.inspect' : 'lpi'
+  cabbrev <expr> dn getcmdpos() == 3 && getcmdtype() == ':' ? 'DiagNext' : 'dn'
+  cabbrev <expr> dp getcmdpos() == 3 && getcmdtype() == ':' ? 'DiagPrev' : 'dp'
   cabbrev <expr> term getcmdpos() == 5 && getcmdtype() == ':' ? 'Term' : 'term'
 
   " Commands
   command! Cd exec 'cd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
   command! Lcd exec 'lcd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
   command! SetStatusline lua vim.go.statusline = "%{%v:lua.require'lualine'.statusline()%}"
-  command! -nargs=? Q mksession! ~/.config/nvim/session/_last_<args>.vim|qall
-  command! -nargs=? S mksession! ~/.config/nvim/session/_last_<args>.vim
-  command! -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
+  command! DiagNext lua vim.diagnostic.goto_next()
+  command! DiagPrev lua vim.diagnostic.goto_prev()
+  command! -complete=custom,LastSavedSession -nargs=? Q mksession! ~/.config/nvim/session/_last_<args>.vim|qall
+  command! -complete=custom,LastSavedSession -nargs=? S mksession! ~/.config/nvim/session/_last_<args>.vim
+  command! -complete=custom,LastSavedSession -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
   command! -nargs=* Term set shell=fish|exe "term ".<q-args>|set shell=sh
   command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
   command! -count=10 -nargs=* HTerm botright <count>split|exe "Term ".<q-args>|setlocal wfh|exe "normal \<c-w>="
@@ -176,6 +180,11 @@ vim.cmd([[
     \file MessagesOutput|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
 
   " Functions
+  function LastSavedSession(A,L,P)
+    return substitute(
+      \ globpath("~/.config/nvim/session", "_last_"..a:A.."*.vim"),
+      \ "[^\n]*/_last_\\([^\n]*\\)\\.vim", "\\=submatch(1)", "g")
+  endfunction
   function Getcwdhead()
     return luaeval("vim.fn.getcwd():gsub('.*/', '')")
   endfunction
@@ -454,15 +463,18 @@ do
 end
 
 -- Notifications
--- do
---   local orig_notify_once = vim.notify_once
---   vim.notify_once = function(msg, level, opts)
---     if msg:sub(1, 47) == 'vim.treesitter.get_node_at_pos() is deprecated,' then
---       return
---     end
---     orig_notify_once(msg, level, opts)
---   end
--- end
+do
+  local orig_notify_once = vim.notify_once
+  vim.notify_once = function(msg, level, opts)
+    local messages = { 'fidget.nvim will soon be rewritten. ' }
+    for _, message in ipairs(messages) do
+      if msg:sub(1, #message) == message then
+        return
+      end
+    end
+    orig_notify_once(msg, level, opts)
+  end
+end
 
 -- Global functions
 function _G.getcwdhead()
