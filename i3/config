@@ -10,8 +10,9 @@ client.focused  #4c7899 #285577 #ffffff #fd095d   #ed095d
 
 gaps inner 2
 gaps outer 3
-default_border pixel 2
-default_floating_border pixel 2
+set $border_size 2
+default_border pixel $border_size
+default_floating_border pixel $border_size
 
 # sudo apt install xfonts-terminus
 set $font Hack Nerd Font Mono
@@ -223,6 +224,12 @@ bindsym $mod+Shift+space floating toggle
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
+bindsym $mod+Control+q move position 1 px 1 px
+bindsym $mod+Control+e move position 90 ppt 1 px
+bindsym $mod+Control+s move position center
+bindsym $mod+Control+z move position 1 px 90 ppt
+bindsym $mod+Control+c move position 90 ppt 90 ppt
+
 # focus the parent container
 bindsym $mod+u focus parent
 
@@ -284,14 +291,27 @@ bindsym $mod+Mod1+c restart
 #bindsym $mod+Mod1+Escape exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 bindsym $mod+Mod1+Escape exit
 # Scratchpad
-bindsym $mod+Control+Return [class="Scratchpad"] scratchpad show;[class="Scratchpad"] resize set 90 ppt 90 ppt;[class="Scratchpad"] move position center
+bindsym $mod+Control+Return [class="^Scratchpad$"] scratchpad show;[class="^Scratchpad$"] resize set 90 ppt 90 ppt;[class="^Scratchpad$"] move position center
 
-for_window [class="Yad|TilingFloat|Florence|Gnome-calculator"] floating enable
-for_window [window_role="pop-up"] floating enable
-for_window [class="Google-chrome|Chromium|Firefox-esr|Navigator|Gnome-calculator"] exec --no-startup-id\
+for_window [class="^(Yad|TilingFloat|Florence|Gnome-calculator)"] floating enable
+for_window [window_role="^pop-up$"] floating enable
+for_window [class="^(Google-chrome|Chromium|Firefox-esr|Navigator|Gnome-calculator)"] exec --no-startup-id\
  transset --id $(printf '%d' $($focused)) 0.9
-for_window [class="Scratchpad"] move scratchpad
+for_window [class="^Evince"] border pixel $border_size
 for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
+for_window [class="^Scratchpad$"] move scratchpad
+assign [instance=":1$"] 1
+assign [instance=":2$"] 2
+assign [instance=":3$"] 3
+assign [instance=":4$"] 4
+assign [instance=":5$"] 5
+assign [instance=":6$"] 6
+assign [instance=":7$"] 7
+assign [instance=":8$"] 8
+assign [instance=":9$"] 9
+assign [instance=":10$"] 10
+assign [instance=":11$"] 11
+assign [instance=":12$"] 12
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
