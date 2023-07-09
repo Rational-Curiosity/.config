@@ -69,7 +69,7 @@ index 91ab8ca..fe27f4b 100644
 +// Active style
 +#define UNDERCURL_STYLE UNDERCURL_SPIKY
 diff --git a/st.c b/st.c
-index 134e724..3f309a0 100644
+index 623376e..097308a 100644
 --- a/st.c
 +++ b/st.c
 @@ -33,6 +33,7 @@
