@@ -95,7 +95,7 @@ truncation_length = 3
 fish_style_pwd_dir_length = 2
 truncate_to_repo = false
 truncation_symbol = "…/"
-repo_root_style = "bold underline bg:#DA627D fg:#B0FFE0"
+repo_root_style = "bold bg:#DA627D fg:#B0FFE0"
 repo_root_format = "[ $before_root_path]($style)[$repo_root]($repo_root_style)[$path ]($style)[$read_only]($read_only_style)"
 style = "bg:#DA627D fg:#E0FFE0"
 format = "[ $path ]($style)"
@@ -108,6 +108,7 @@ format = "[ $path ]($style)"
 "~/Downloads" = ""
 "~/Music" = ""
 "~/Pictures" = ""
+"~/tmp" = "󰒡"
 # Keep in mind that the order matters. For example:
 # "Important Documents" = "  "
 # will not be replaced, because "Documents" was already substituted before.
