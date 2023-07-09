@@ -21,14 +21,21 @@ case 'gigas*'
 end
 
 if status --is-interactive
-    abbr -a m math
-    abbr -a v nvim
+    abbr -a b bc -l
+    abbr -a d disown
     abbr -a ec 'emacsclient -c -n -a ""'
     abbr -a ecn 'emacsclient -nw -a ""'
-    abbr -a zd lazydocker
-    abbr -a zj zellij
+    abbr -a m math
     abbr -a se sudo -E
     abbr -a sv sudo -E nvim
+    abbr -a v nvim
+    abbr -a zd lazydocker
+    abbr -a zj zellij
+    if type -q exa
+        abbr -a l exa
+    else
+        abbr -a l ls
+    end
     abbr -a -- - 'cd -'
     abbr -a ... 'cd ../..'
     abbr -a ..2 'cd ../..'
@@ -50,11 +57,6 @@ if status --is-interactive
     abbr -a ..10 'cd ../../../../../../../../../..'
     abbr -a ............ 'cd ../../../../../../../../../../..'
     abbr -a ..11 'cd ../../../../../../../../../../..'
-    if type -q exa
-        abbr -a l exa
-    else
-        abbr -a l ls
-    end
 
     fish_vi_key_bindings
 
