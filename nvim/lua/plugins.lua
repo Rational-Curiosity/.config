@@ -61,7 +61,6 @@ return {
     -- end
     "folke/flash.nvim",
     event = "VeryLazy",
-    opts = {},
     keys = {
       {
         "<A-f>",
@@ -72,7 +71,7 @@ return {
         desc = "Flash",
       },
       {
-        "<A-t>",
+        "<A-b>",
         mode = { "n", "o", "x" },
         function()
           require("flash").treesitter()
@@ -96,12 +95,19 @@ return {
         desc = "Flash Treesitter Search",
       },
       {
-        "<c-s>",
+        "<C-s>",
         mode = { "c" },
         function()
           require("flash").toggle()
         end,
         desc = "Toggle Flash Search",
+      },
+    },
+    opts = {
+      modes = {
+        search = {
+          enabled = false,
+        },
       },
     },
   },
@@ -2390,7 +2396,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       {
         'microsoft/vscode-js-debug',
         -- commit = '9c9a3f3',
-        build = 'npm install --legacy-peer-deps && npm run compile; COD=$?; git checkout package-lock.json; (exit $COD)',
+        build = "sh -c 'npm install --legacy-peer-deps && npm run compile;COD=$?; git checkout package-lock.json; (exit $COD)'",
       },
     },
     ft = { 'javascript', 'typescript' },

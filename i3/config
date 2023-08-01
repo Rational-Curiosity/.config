@@ -83,6 +83,8 @@ bindsym $mod+Shift+i $root;layout splith;exec ec;resize set width 50 ppt
 
 bindsym $mod+Shift+b exec --no-startup-id feh --bg-scale --randomize ~/Pictures/wallpapers/*.jpg &
 bindsym $mod+Mod1+space exec --no-startup-id remap &
+bindsym $mod+Home exec --no-startup-id florence show &
+bindsym $mod+End exec --no-startup-id florence hide &
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -300,6 +302,7 @@ for_window [class="^(Google-chrome|Chromium|Firefox-esr|Navigator|Gnome-calculat
 for_window [class="^Evince"] border pixel $border_size
 for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
 for_window [class="^Scratchpad$"] move scratchpad
+for_window [instance=":\*$"] sticky enable
 assign [instance=":1$"] 1
 assign [instance=":2$"] 2
 assign [instance=":3$"] 3

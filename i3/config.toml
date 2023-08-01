@@ -33,7 +33,7 @@ error_interval = 1
 # format = "$icon ^icon_net_down $speed_down.eng(3,B,K) ^icon_net_up $speed_up.eng(3,B,K) {$signal_strength $ssid |}$ip"
 [block.format]
 full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid |}$ip"
-short = "$icon {$signal_strength $ssid |}$ip"
+short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid |}$ip"
 [[block.click]]
 button = "left"
 cmd = "dunstify -a i3status-rs \"Whats my ip?\" \"Public ip: $(dig +short myip.opendns.com @resolver1.opendns.com)\""
