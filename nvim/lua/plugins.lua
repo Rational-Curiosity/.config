@@ -666,6 +666,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         logging = true,
         log_level = vim.log.levels.ERROR,
         filetype = {
+          awk = filetypes.awk.prettier,
           c = filetypes.c.clangformat,
           cmake = filetypes.cmake.cmakeformat,
           cpp = filetypes.cpp.clangformat,
@@ -686,8 +687,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           latex = filetypes.latex.latexindent,
           lua = filetypes.lua.stylua,
           markdown = filetypes.markdown.prettier,
+          nix = filetypes.nix.nixfmt,
+          ocaml = filetypes.ocaml.ocamlformat,
           php = filetypes.php.phpcbf,
           python = filetypes.python.yapf,
+          ruby = filetypes.ruby.rubocop,
           rust = filetypes.rust.rustfmt,
           sh = filetypes.sh.shfmt,
           sql = filetypes.sql.pgformat,
@@ -696,6 +700,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           toml = filetypes.toml.taplo,
           typescript = filetypes.typescript.eslint_d,
           typescriptreact = filetypes.typescriptreact.eslint_d,
+          vue = filetypes.vue.prettier,
           yaml = filetypes.yaml.pyaml,
           zig = filetypes.zig.zigfmt,
         }
@@ -927,6 +932,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "diff",
           "dockerfile",
           "dot",
+          "dtd",
           "elixir",
           "elm",
           "erlang",
@@ -986,11 +992,14 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "scheme",
           "scss",
           "sql",
+          "ssh_config",
           "svelte",
+          "textproto",
           "toml",
           "tsx",
           "typescript",
           "vim",
+          "xml",
           "yaml",
           "yang",
           "zig",
@@ -1032,9 +1041,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             },
           },
         },
-        autotag = {
-          enable = true,
-        },
+        autotag = { enable = true },
         -- rainbow = {
         --   enable = true,
         --   disable = {'org'}, -- list of languages you want to disable the plugin for
@@ -1369,14 +1376,20 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     'lukas-reineke/indent-blankline.nvim',
     ft = ft_prog,
     config = function()
-      require'indent_blankline'.setup {
-        show_current_context = true,
-        show_trailing_blankline_indent = false,
-        show_end_of_line = true,
+      require'ibl'.setup {
+        indent = {
+          char = '▏',
+        },
+        whitespace = {
+          remove_blankline_trail = false,
+        },
+        scope = {
+          show_start = false,
+          show_end = false,
+        },
       }
-      mapset('n', '<leader>i', function()
-        vim.g.indent_blankline_enabled = not vim.g.indent_blankline_enabled
-      end, { desc = 'Toggle indent blankline' })
+      mapset('n', '<leader>i', ':IBLToggle<CR>',
+        { desc = 'Toggle indent blankline' })
     end
   },
   {
