@@ -283,6 +283,8 @@ bindsym $mod+Shift+exclamdown move container to workspace number $ws12
 
 bindsym $mod+n workspace next_on_output
 bindsym $mod+p workspace prev_on_output
+bindsym $mod+Shift+n move container to workspace next_on_output
+bindsym $mod+Shift+p move container to workspace prev_on_output
 
 bindsym $mod+Escape bar mode toggle
 # reload the configuration file

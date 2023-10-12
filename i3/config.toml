@@ -12,7 +12,7 @@ memory_swap = "󰾵"
 block = "focused_window"
 driver = "sway_ipc"
 [block.format]
-full = " $title.str(max_w:50) |"
+full = " $title.str(max_w:40) |"
 short = " $title.str(max_w:20) |"
 
 [[block]]
@@ -20,7 +20,7 @@ block = "external_ip"
 format = "$ip.str(max_w:15,rot_interval:0.4)"
 interval = 600
 use_ipv4 = true
-error_format = "$short_error_message.str(max_w:15)|X"
+error_format = "$short_error_message.str(max_w:15,rot_interval:0.4)|$full_error_message.str(max_w:15,rot_interval:0.4)"
 error_interval = 1
 [block.theme_overrides]
 idle_bg = "#19FF70"
@@ -31,9 +31,11 @@ block = "net"
 interval = 5
 error_interval = 1
 # format = "$icon ^icon_net_down $speed_down.eng(3,B,K) ^icon_net_up $speed_up.eng(3,B,K) {$signal_strength $ssid |}$ip"
+inactive_format = "$icon 󰲜"
+missing_format = "󰲜"
 [block.format]
-full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid |}$ip"
-short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid |}$ip"
+full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid.str(max_w:16,rot_interval:0.4) |}$ip"
+short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid.str(max_w:8,rot_interval:0.4) |}$ip"
 [[block.click]]
 button = "left"
 cmd = "dunstify -a i3status-rs \"Whats my ip?\" \"Public ip: $(dig +short myip.opendns.com @resolver1.opendns.com)\""
@@ -43,7 +45,7 @@ idle_fg = "#101010"
 
 [[block]]
 block = "memory"
-format = "$icon$mem_used.eng(w:1,u:B,prefix:M)/$mem_total.eng(w:1,u:B,prefix:M)"
+format = "$icon$mem_used.eng(w:1,u:B,prefix:Mi)/$mem_total.eng(w:1,u:B,prefix:Mi)"
 interval = 5
 warning_mem = 80
 critical_mem = 95
@@ -53,7 +55,7 @@ idle_fg = "#101010"
 
 [[block]]
 block = "memory"
-format = "$icon_swap$swap_used.eng(w:1,u:B,prefix:M)/$swap_total.eng(w:1,u:B,prefix:M)"
+format = "$icon_swap$swap_used.eng(w:1,u:B,prefix:Mi)/$swap_total.eng(w:1,u:B,prefix:Mi)"
 interval = 5
 warning_swap = 80
 critical_swap = 95
@@ -100,6 +102,8 @@ idle_fg = "#101010"
 [[block]]
 block = "sound"
 format = "$icon{$volume.eng(w:2)|}"
+error_format = "$short_error_message.str(max_w:15,rot_interval:0.4)|$full_error_message.str(max_w:15,rot_interval:0.4)"
+error_interval = 1
 [[block.click]]
 button = "left"
 cmd = "pavucontrol"
