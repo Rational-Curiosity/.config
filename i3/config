@@ -24,7 +24,8 @@ set $lock i3lock --nofork --color=000000
 exec --no-startup-id "pkill -x xss-lock && pidwait -x xss-lock; xss-lock --transfer-sleep-lock -- $lock &"
 exec --no-startup-id "pkill -x picom && pidwait -x picom; picom -b --config /dev/null --backend xrender"
 exec --no-startup-id "pkill -x nm-applet && pidwait -x nm-applet; nm-applet &"
-exec --no-startup-id "pkill -x parcellite && pidwait -x parcellite; parcellite &"
+# exec --no-startup-id "pkill -x parcellite && pidwait -x parcellite; parcellite &"
+exec --no-startup-id "pkill -x greenclip && pidwait -x greenclip; greenclip daemon &"
 exec_always --no-startup-id "pkill -x keynav && pidwait -x keynav; keynav"
 
 focus_follows_mouse no
@@ -50,6 +51,7 @@ bindsym $mod+Control+t exec --no-startup-id "TRA=$(seq 1 -0.05 0.7|rofi -m -1 -d
  [ -n \\"$TRA\\" ] && transset --id $(printf '%d' $($focused)) $TRA &"
 bindsym $mod+Control+b exec --no-startup-id "BRI=$(seq 1 -0.05 0.3|rofi -m -1 -dmenu $rofi_args);\
  [ -n \\"$BRI\\" ] && xrandr --listactivemonitors|tail +2|sed 's/.* //'|xargs -I {} xrandr --output {} --brightness $BRI &"
+bindsym $mod+c exec --no-startup-id "rofi -m -1 -modi 'clipboard:greenclip print' -show clipboard -run-command '{cmd}' $rofi_args &"
 
 # Use pactl to adjust volume in PulseAudio.
 # set $refresh_i3status killall -SIGUSR1 i3status
