@@ -143,9 +143,9 @@ if status --is-interactive
         if type -q flashfetch
             set -a banners 'timeout -k 1s 0.75s flashfetch'
         end
-        if type -q unsplash-feh
-            set -a banners 'unsplash-feh &; disown'
-        end
+        # if type -q unsplash-feh
+        #     set -a banners 'unsplash-feh &; disown'
+        # end
         if test -d ~/tmp/shell-color-scripts
             set -a banners 'eval (random choice ~/tmp/shell-color-scripts/colorscripts/*)'
         end
