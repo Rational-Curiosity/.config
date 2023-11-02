@@ -12,16 +12,16 @@ memory_swap = "󰾵"
 block = "focused_window"
 driver = "sway_ipc"
 [block.format]
-full = " $title.str(max_w:40) |"
-short = " $title.str(max_w:20) |"
+full = " $marks$title.str(max_w:40) |"
+short = " $marks$title.str(max_w:20) |"
 
 [[block]]
 block = "external_ip"
-format = "$ip.str(max_w:15,rot_interval:0.4)"
 interval = 600
 use_ipv4 = true
 error_format = "$short_error_message.str(max_w:15,rot_interval:0.4)|$full_error_message.str(max_w:15,rot_interval:0.4)"
 error_interval = 1
+format = "$ip.str(max_w:15,rot_interval:0.4)"
 [block.theme_overrides]
 idle_bg = "#19FF70"
 idle_fg = "#101010"
@@ -30,9 +30,9 @@ idle_fg = "#101010"
 block = "net"
 interval = 5
 error_interval = 1
-# format = "$icon ^icon_net_down $speed_down.eng(3,B,K) ^icon_net_up $speed_up.eng(3,B,K) {$signal_strength $ssid |}$ip"
 inactive_format = "$icon 󰲜"
 missing_format = "󰲜"
+# format = "$icon ^icon_net_down $speed_down.eng(3,B,K) ^icon_net_up $speed_up.eng(3,B,K) {$signal_strength $ssid |}$ip"
 [block.format]
 full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid.str(max_w:16,rot_interval:0.4) |}$ip"
 short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid.str(max_w:8,rot_interval:0.4) |}$ip"
@@ -45,20 +45,20 @@ idle_fg = "#101010"
 
 [[block]]
 block = "memory"
-format = "$icon$mem_used.eng(w:1,u:B,prefix:Mi)/$mem_total.eng(w:1,u:B,prefix:Mi)"
 interval = 5
 warning_mem = 80
 critical_mem = 95
+format = "$icon$mem_used.eng(w:1,u:B,prefix:Mi)/$mem_total.eng(w:1,u:B,prefix:Mi)"
 [block.theme_overrides]
 idle_bg = "#22E4AC"
 idle_fg = "#101010"
 
 [[block]]
 block = "memory"
-format = "$icon_swap$swap_used.eng(w:1,u:B,prefix:Mi)/$swap_total.eng(w:1,u:B,prefix:Mi)"
 interval = 5
 warning_swap = 80
 critical_swap = 95
+format = "$icon_swap$swap_used.eng(w:1,u:B,prefix:Mi)/$swap_total.eng(w:1,u:B,prefix:Mi)"
 [block.theme_overrides]
 idle_bg = "#1BD7BB"
 idle_fg = "#101010"
@@ -75,18 +75,23 @@ idle_fg = "#101010"
 block = "disk_space"
 path = "/"
 info_type = "available"
-format = "$icon$used.eng(w:2)/$total.eng(w:2)"
 interval = 20
 warning = 20.0
 alert = 10.0
+format = "$icon$used.eng(w:2)/$total.eng(w:2)"
+[[block.click]]
+button = "left"
+cmd = "thunar"
 [block.theme_overrides]
 idle_bg = "#0FB2D8"
 idle_fg = "#101010"
 
 [[block]]
 block = "docker"
-format = "$icon$running.eng(w:1)/$total.eng(w:1)"
 interval = 10
+[block.format]
+full = "$icon$running.eng(w:1)/$total.eng(w:1)\\|$images.eng(w:1)"
+short = "$icon$running.eng(w:1)/$total.eng(w:1)"
 [block.theme_overrides]
 idle_bg = "#089BE5"
 idle_fg = "#101010"
@@ -101,9 +106,9 @@ idle_fg = "#101010"
 
 [[block]]
 block = "sound"
-format = "$icon{$volume.eng(w:2)|}"
 error_format = "$short_error_message.str(max_w:15,rot_interval:0.4)|$full_error_message.str(max_w:15,rot_interval:0.4)"
 error_interval = 1
+format = "$icon{$volume.eng(w:2)|}"
 [[block.click]]
 button = "left"
 cmd = "pavucontrol"
@@ -121,12 +126,12 @@ idle_fg = "#abcdef"
 [[block]]
 block = "custom"
 interval = 10
-format = "$text.pango-str()"
 command = """ps -do args|sed -n "s|^/bin/sh $HOME/bin/daemon-gigas-vpn\\$||p;s|^./remap -C .*|󰞙|p"|tr -d '\n'"""
 merge_with_next = true
+format = "$text.pango-str()"
 
 [[block]]
 block = "battery"
 interval = 10
 driver = "upower"
-format = "$icon $percentage $time"
+format = "$icon$percentage $time"
