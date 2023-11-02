@@ -514,7 +514,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             }
           },
           preview = {
-            filesize_limit = 0.5,
+            filesize_limit = 2.5,
             timeout = 500,
           },
         },
@@ -1398,10 +1398,12 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     dependencies = "nvim-treesitter",
     config = function()
       local orgmode = require'orgmode'
+      local notes = vim.fn.expand('~/Prog/org/refile.org')
       orgmode.setup_ts_grammar()
       orgmode.setup {
-        org_agenda_files = {'~/var/Dropbox/Orgzly/*', '~/my-orgs/**/*'},
-        org_default_notes_file = '~/Dropbox/org/refile.org',
+        org_agenda_files = { '~/var/Dropbox/Orgzly/*', '~/my-orgs/**/*' },
+        org_default_notes_file = vim.fn.filereadable(notes) ~= 0
+          and notes or nil,
         org_todo_keywords = {
           "TODO(t)", "NEXT(n)", "STAR(s)",
           "UNDO(u)", "VERI(v)",
