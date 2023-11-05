@@ -375,6 +375,25 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       require('Comment').setup()
     end
   },
+  -- {
+  --   'stevearc/overseer.nvim',
+  --   cmd = { 'OverseerRun' },
+  --   config = function()
+  --     local overseer = require('overseer')
+  --     overseer.setup {}
+  --     overseer.register_template {
+  --       name = 'Test',
+  --       builder = function(params)
+  --         print(vim.inspect(params))
+  --         return {
+  --           cmd = { 'echo' },
+  --           args = { 'world' },
+  --           name = 'Echo',
+  --         }
+  --       end
+  --     }
+  --   end
+  -- },
   {
     'nvim-telescope/telescope.nvim',
     dependencies = {
@@ -1376,6 +1395,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     'lukas-reineke/indent-blankline.nvim',
     ft = ft_prog,
     config = function()
+      local hooks = require'ibl.hooks'
+      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+        vim.api.nvim_set_hl(0, 'IblScope', { fg = '#ffba00' })
+      end)
       require'ibl'.setup {
         indent = {
           char = '▏',
@@ -1384,6 +1407,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           remove_blankline_trail = false,
         },
         scope = {
+          highlight = 'IblScope',
           show_start = false,
           show_end = false,
         },
