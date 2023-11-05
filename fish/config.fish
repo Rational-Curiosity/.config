@@ -141,7 +141,7 @@ if status --is-interactive
     if test $COLUMNS -ge 90
         set -l banners
         if type -q flashfetch
-            set -a banners 'timeout -k 1s 0.75s flashfetch'
+            set -a banners 'timeout -k 1.25s 1.0s flashfetch'
         end
         # if type -q unsplash-feh
         #     set -a banners 'unsplash-feh &; disown'
