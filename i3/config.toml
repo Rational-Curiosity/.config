@@ -8,20 +8,21 @@ icons = "material-nf"
 [icons.overrides]
 memory_swap = "󰾵"
 
+# Separators: █
 [[block]]
 block = "focused_window"
 driver = "sway_ipc"
 [block.format]
-full = " $marks$title.str(max_w:40) |"
-short = " $marks$title.str(max_w:20) |"
+full = " $marks$title.str(max_w:28,rot_interval:0.2,rot_separator:'║') |"
+short = " $marks$title.str(max_w:18,rot_interval:0.2,rot_separator:'║') |"
 
 [[block]]
 block = "external_ip"
 interval = 600
 use_ipv4 = true
-error_format = "$short_error_message.str(max_w:15,rot_interval:0.4)|$full_error_message.str(max_w:15,rot_interval:0.4)"
+error_format = "$short_error_message.str(max_w:15,rot_interval:0.4,rot_separator:'║')|$full_error_message.str(max_w:15,rot_interval:0.4,rot_separator:'║')"
 error_interval = 1
-format = "$ip.str(max_w:15,rot_interval:0.4)"
+format = "$ip.str(max_w:15,rot_interval:0.4,rot_separator:'║')"
 [block.theme_overrides]
 idle_bg = "#19FF70"
 idle_fg = "#101010"
@@ -34,8 +35,8 @@ inactive_format = "$icon 󰲜"
 missing_format = "󰲜"
 # format = "$icon ^icon_net_down $speed_down.eng(3,B,K) ^icon_net_up $speed_up.eng(3,B,K) {$signal_strength $ssid |}$ip"
 [block.format]
-full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid.str(max_w:16,rot_interval:0.4) |}$ip"
-short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid.str(max_w:8,rot_interval:0.4) |}$ip"
+full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid.str(max_w:16,rot_interval:0.4,rot_separator:'║') |}$ip"
+short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid.str(max_w:8,rot_interval:0.4,rot_separator:'║') |}$ip"
 [[block.click]]
 button = "left"
 cmd = "dunstify -a i3status-rs \"Whats my ip?\" \"Public ip: $(dig +short myip.opendns.com @resolver1.opendns.com)\""
@@ -106,7 +107,7 @@ idle_fg = "#101010"
 
 [[block]]
 block = "sound"
-error_format = "$short_error_message.str(max_w:15,rot_interval:0.4)|$full_error_message.str(max_w:15,rot_interval:0.4)"
+error_format = "$short_error_message.str(max_w:15,rot_interval:0.4,rot_separator:'║')|$full_error_message.str(max_w:15,rot_interval:0.4,rot_separator:'║')"
 error_interval = 1
 format = "$icon{$volume.eng(w:2)|}"
 [[block.click]]
@@ -119,6 +120,9 @@ interval = 5
 [block.format]
 full = "$icon$timestamp.datetime(f:'%m\\%d %a %R', l:es_ES)"
 short = "$icon$timestamp.datetime(f:'%m\\%d %R', l:es_ES)"
+[[block.click]]
+button = "left"
+cmd = "gsimplecal"
 [block.theme_overrides]
 idle_bg = "#123456"
 idle_fg = "#abcdef"

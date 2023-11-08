@@ -83,7 +83,7 @@ $container\
 $shell\
 $character
 """
-command_timeout = 750
+command_timeout = 1000
 add_newline = false
 
 [status]
