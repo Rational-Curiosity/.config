@@ -47,7 +47,7 @@ set $rofi_args -mesg 'Submit input: C-j/C-RET'\
  -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p\
  -kb-page-next alt+n -kb-secondary-paste ctrl+y
 set $focused xprop -root _NET_ACTIVE_WINDOW|cut -d' ' -f5
-bindsym $mod+Control+t exec --no-startup-id "TRA=$(seq 1 -0.05 0.7|rofi -m -1 -dmenu $rofi_args);\
+bindsym $mod+Control+t exec --no-startup-id "TRA=$(seq 1 -0.05 0.6|rofi -m -1 -dmenu $rofi_args);\
  [ -n \\"$TRA\\" ] && transset --id $(printf '%d' $($focused)) $TRA &"
 bindsym $mod+Control+b exec --no-startup-id "BRI=$(seq 1 -0.05 0.3|rofi -m -1 -dmenu $rofi_args);\
  [ -n \\"$BRI\\" ] && xrandr --listactivemonitors|tail +2|sed 's/.* //'|xargs -I {} xrandr --output {} --brightness $BRI &"

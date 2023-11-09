@@ -894,6 +894,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
     dependencies = {
       { 'nvim-treesitter/nvim-treesitter-refactor' },
       { 'windwp/nvim-ts-autotag' },
@@ -1394,10 +1395,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   {
     'lukas-reineke/indent-blankline.nvim',
     ft = ft_prog,
+    dependencies = 'tokyonight.nvim',
     config = function()
       local hooks = require'ibl.hooks'
       hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-        vim.api.nvim_set_hl(0, 'IblScope', { fg = '#ffba00' })
+        vim.api.nvim_set_hl(0, 'IblIndent', { fg = '#3b4261', bg = 'none' })
+        vim.api.nvim_set_hl(0, 'IblWhitespace', { link = 'NonText' })
+        vim.api.nvim_set_hl(0, 'IblScope', { fg = '#ffba00', bg = 'none' })
       end)
       require'ibl'.setup {
         indent = {
