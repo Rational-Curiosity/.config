@@ -297,13 +297,19 @@ bindsym $mod+Mod1+c restart
 #bindsym $mod+Mod1+Escape exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 bindsym $mod+Mod1+Escape exit
 # Scratchpad
-bindsym $mod+Control+Return [class="^Scratchpad$"] scratchpad show;[class="^Scratchpad$"] resize set 90 ppt 90 ppt;[class="^Scratchpad$"] move position center
+bindsym $mod+Control+Return [class="^Scratchpad$"] scratchpad show;\
+ [class="^Scratchpad$"] resize set 90 ppt 90 ppt;\
+ [class="^Scratchpad$"] move position center
 
 for_window [class="^(Yad|TilingFloat|Florence|Gnome-calculator)"] floating enable
 for_window [window_role="^pop-up$"] floating enable
-for_window [class="^(Google-chrome|Chromium|Firefox-esr|Navigator|Gnome-calculator)"] exec --no-startup-id\
- transset --id $(printf '%d' $($focused)) 0.9
-for_window [class="^Evince"] border pixel $border_size
+for_window [class="^(Google-chrome\
+|Chromium\
+|Firefox-esr\
+|Navigator\
+|Gnome-calculator\
+|qBittorrent)"] exec --no-startup-id transset --id $(printf '%d' $($focused)) 0.9
+for_window [class="^(Evince|Totem)"] border pixel $border_size
 for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
 for_window [class="^Scratchpad$"] move scratchpad
 for_window [instance=":\*$"] sticky enable
@@ -342,7 +348,8 @@ bar {
   status_command i3status-rs ~/.config/i3/config.toml
 }
 
-exec_always --no-startup-id "case $(tmux ls|sed -nE 's/^(scratchpad: )[^)]+\) ?(\(attached\))?$/\1\2/p') in
+exec_always --no-startup-id \
+"case $(tmux ls|sed -nE 's/^(scratchpad: )[^)]+\) ?(\(attached\))?$/\1\2/p') in
  'scratchpad: (attached)') :;;
  'scratchpad: ') st -f \"$font:size=$(font-size $font)\" -c Scratchpad tmux a -t scratchpad;;
  *) st -f \"$font:size=$(font-size $font)\" -c Scratchpad tmux new -s scratchpad;;
