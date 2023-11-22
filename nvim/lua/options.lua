@@ -60,8 +60,8 @@ opt.clipboard:prepend('unnamedplus')
 o.ignorecase = true
 o.smartcase = true
 o.shell = 'sh'
-g.python3_host_prog = vim.fn.executable('/usr/local/bin/python3') == 1 and
-  '/usr/local/bin/python3' or '/usr/bin/python3'
+g.python3_host_prog = vim.fn.executable('/usr/local/bin/python3') == 1
+  and '/usr/local/bin/python3' or '/usr/bin/python3'
 g.netrw_scp_cmd = 'yad --separator= --form --field=Password:H|sshpass scp -q'
 g.loaded_ruby_provider = 0
 g.loaded_perl_provider = 0
@@ -178,6 +178,8 @@ vim.cmd([[
   command! -count=7 Messages if bufexists("MessagesOutput")|sil! bdelete MessagesOutput|endif|
     \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file MessagesOutput|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
+  command! ProfileStart profile start ~/nvim_profile.log|profile func *|profile file *
+  command! ProfileStop profile stop
 
   " Functions
   function LastSavedSession(A,L,P)
