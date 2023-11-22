@@ -1354,6 +1354,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           highlight = 'IblScope',
           show_start = false,
           show_end = false,
+          include = {
+            node_type = {
+              lua = { 'table_constructor' },
+            }
+          },
         },
       }
       mapset('n', '<leader>i', ':IBLToggle<CR>',
