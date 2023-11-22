@@ -668,7 +668,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'kylechui/nvim-surround',
-    keys = { 'ys', 'cs', 'ds', { 'S', mode = 'v' } },
+    keys = { 'ys', 'cs', 'ds', { 'S', mode = 'v' }, { '<C-g>s', mode = 'i' } },
     config = function()
       require'nvim-surround'.setup {}
     end
