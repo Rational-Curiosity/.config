@@ -3,7 +3,9 @@ local silent = { silent = true }
 local noremap_silent = { noremap = true, silent = true }
 local mapset = vim.keymap.set
 local ft_prog_lsp = {
+  'automake',
   'c',
+  'config',
   'cpp',
   'h',
   'hpp',
@@ -18,6 +20,7 @@ local ft_prog_lsp = {
   'jsonc',
   'jsonnet',
   'jsx',
+  'make',
   'objc',
   'objcpp',
   'php',
@@ -699,17 +702,17 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           haskell = filetypes.haskell.stylish_haskell,
           html = filetypes.html.prettier,
           java = filetypes.java.clangformat,
-          javascript = filetypes.javascript.eslint_d,
-          javascriptreact = filetypes.javascriptreact.eslint_d,
-          json = filetypes.json.jq,
+          javascript = filetypes.javascript.biome,
+          javascriptreact = filetypes.javascriptreact.biome,
+          json = filetypes.json.biome,
           kotlin = filetypes.kotlin.ktlint,
           latex = filetypes.latex.latexindent,
           lua = filetypes.lua.stylua,
           markdown = filetypes.markdown.prettier,
           nix = filetypes.nix.nixfmt,
           ocaml = filetypes.ocaml.ocamlformat,
-          php = filetypes.php.phpcbf,
-          python = filetypes.python.yapf,
+          php = filetypes.php.php_cs_fixer,
+          python = filetypes.python.ruff,
           ruby = filetypes.ruby.rubocop,
           rust = filetypes.rust.rustfmt,
           sh = filetypes.sh.shfmt,
@@ -717,8 +720,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           svelte = filetypes.svelte.prettier,
           terraform = filetypes.terraform.terraformfmt,
           toml = filetypes.toml.taplo,
-          typescript = filetypes.typescript.eslint_d,
-          typescriptreact = filetypes.typescriptreact.eslint_d,
+          typescript = filetypes.typescript.biome,
+          typescriptreact = filetypes.typescriptreact.biome,
           vue = filetypes.vue.prettier,
           yaml = filetypes.yaml.pyaml,
           zig = filetypes.zig.zigfmt,
@@ -2170,7 +2173,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
       for _, lsp in pairs({
-        'pyright', 'intelephense', 'html', 'jsonls', 'ccls', 'bashls',
+        'autotools_ls',
+        'bashls',
+        'biome',
+        'ccls',
+        'html',
+        'intelephense',
+        'pyright',
       }) do
         lspconfig[lsp].setup {
           capabilities = capabilities,
@@ -2251,19 +2260,19 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
       }
       local util = require'lspconfig.util'
-      lspconfig.vtsls.setup {
-        single_file_support = false,
-        root_dir = function(fname)
-          return not util.root_pattern('deno.json', 'deno.jsonc')(fname)
-          and (util.root_pattern('tsconfig.json')(fname)
-          or util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
-          or util.root_pattern('.')(fname))
-        end,
-        capabilities = capabilities,
-        flags = {
-          debounce_text_changes = 1000,
-        },
-      }
+      -- lspconfig.vtsls.setup {
+      --   single_file_support = false,
+      --   root_dir = function(fname)
+      --     return not util.root_pattern('deno.json', 'deno.jsonc')(fname)
+      --     and (util.root_pattern('tsconfig.json')(fname)
+      --     or util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
+      --     or util.root_pattern('.')(fname))
+      --   end,
+      --   capabilities = capabilities,
+      --   flags = {
+      --     debounce_text_changes = 1000,
+      --   },
+      -- }
       lspconfig.denols.setup {
         root_dir = util.root_pattern('deno.json', 'deno.jsonc'),
         capabilities = capabilities,
