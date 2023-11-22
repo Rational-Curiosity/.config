@@ -1640,6 +1640,43 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local codeium_status = {
         [' ON'] = '', OFF = '',
       }
+      local mode_map = {
+        ['n']    = 'N',  -- Normal
+        ['no']   = 'O',  -- Operator-pending
+        ['nov']  = 'O',  -- Operator-pending (forced charwise |o_v|)
+        ['noV']  = 'O',  -- Operator-pending (forced linewise |o_V|)
+        ['no�']  = 'O',  -- Operator-pending (forced blockwise |o_CTRL-V|)
+        ['niI']  = 'N',  -- Normal using |i_CTRL-O| in |Insert-mode|
+        ['niR']  = 'N',  -- Normal using |i_CTRL-O| in |Replace-mode|
+        ['niV']  = 'N',  -- Normal using |i_CTRL-O| in |Virtual-Replace-mode|
+        ['nt']   = 'N',  -- Normal in |terminal-emulator| (insert goes to Terminal mode)
+        ['ntT']  = 'N',  -- Normal using |t_CTRL-\_CTRL-O| in |Terminal-mode|
+        ['v']    = 'V',  -- Visual by character
+        ['vs']   = 'V',  -- Visual by character using |v_CTRL-O| in Select mode
+        ['V']    = 'v',  -- Visual by line
+        ['Vs']   = 'v',  -- Visual by line using |v_CTRL-O| in Select mode
+        ['�']    = 'w',  -- Visual blockwise
+        ['�s']   = 'w',  -- Visual blockwise using |v_CTRL-O| in Select mode
+        ['s']    = 's',  -- Select by character
+        ['S']    = 'S',  -- Select by line
+        ['�']    = 'W',  -- Select blockwise
+        ['i']    = 'I',  -- Insert
+        ['ic']   = 'I',  -- Insert mode completion |compl-generic|
+        ['ix']   = 'I',  -- Insert mode |i_CTRL-X| completion
+        ['R']    = 'R',  -- Replace |R|
+        ['Rc']   = 'R',  -- Replace mode completion |compl-generic|
+        ['Rx']   = 'R',  -- Replace mode |i_CTRL-X| completion
+        ['Rv']   = 'r',  -- Virtual Replace |gR|
+        ['Rvc']  = 'r',  -- Virtual Replace mode completion |compl-generic|
+        ['Rvx']  = 'r',  -- Virtual Replace mode |i_CTRL-X| completion
+        ['c']    = 'C',  -- Command-line editing
+        ['cv']   = 'e',  -- Vim Ex mode |gQ|
+        ['r']    = '↲',  -- Hit-enter prompt
+        ['rm']   = '…',  -- The -- more -- prompt
+        ['r?']   = '?',  -- A |:confirm| query of some sort
+        ['!']    = '$',  -- Shell or external command is executing
+        ['t']    = 'T',  -- Terminal mode: keys go to the job
+      }
       require"lualine".setup {
         options = {
           theme = 'tokyonight', -- powerline
@@ -1648,7 +1685,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
         sections = {
           lualine_a = {
-            { 'mode', fmt = function(s) return s:sub(1,3) end,
+            { function()
+                return mode_map[vim.api.nvim_get_mode().mode] or '_'
+              end,
+              color = { fg = '#000000', gui = 'bold' },
               padding = { left=0, right=0 } }
           },
           lualine_b = {
