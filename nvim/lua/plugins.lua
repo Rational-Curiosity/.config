@@ -2629,9 +2629,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         s = 'spelling suggestions',
       }, { mode = 'i', prefix = '<c-x>' })
       which_key.register({
+        H = 'Rearrange to vertical split',
+        J = 'Rearrange to horizontal split',
         y = { name = 'Yode' },
       }, { mode = 'n', prefix = '<c-w>' })
       which_key.register({
+        H = 'Rearrange to vertical split',
+        J = 'Rearrange to horizontal split',
         y = { name = 'Yode' },
       }, { mode = 'x', prefix = '<c-w>' })
     end
