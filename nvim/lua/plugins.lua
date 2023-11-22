@@ -1857,9 +1857,24 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     'L3MON4D3/LuaSnip',
-    dependencies = { 'friendly-snippets' },
+    build = 'make install_jsregexp',
+    dependencies = {
+      'rafamadriz/friendly-snippets',
+      'honza/vim-snippets',
+      'molleweide/LuaSnip-snippets.nvim',
+    },
     config = function()
+      local ls = require'luasnip'
+      ls.snippets = require('luasnip_snippets').load_snippets()
       require("luasnip.loaders.from_vscode").lazy_load()
+      require("luasnip.loaders.from_snipmate").lazy_load()
+      ls.add_snippets('python', {
+        ls.snippet('.stat', {
+          ls.text_node(
+            '.statement.compile(compile_kwargs={"literal_binds": True})'
+          )
+        })
+      })
     end
   },
   {
@@ -1873,7 +1888,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       { 'L3MON4D3/LuaSnip' },
       { 'nvim-lua/plenary.nvim' },
       { 'petertriho/cmp-git' },
-      { 'rafamadriz/friendly-snippets' },
       { 'ray-x/cmp-treesitter' },
       { 'saadparwaiz1/cmp_luasnip' },
     },
