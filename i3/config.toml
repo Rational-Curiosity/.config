@@ -13,8 +13,8 @@ memory_swap = "󰾵"
 block = "focused_window"
 driver = "sway_ipc"
 [block.format]
-full = " $marks$title.str(max_w:28,rot_interval:0.2,rot_separator:'║') |"
-short = " $marks$title.str(max_w:18,rot_interval:0.2,rot_separator:'║') |"
+full = " $marks$title.str(max_w:40,rot_interval:0.2,rot_separator:'║') |"
+short = " $marks$title.str(max_w:20,rot_interval:0.2,rot_separator:'║') |"
 
 [[block]]
 block = "external_ip"
@@ -36,7 +36,7 @@ missing_format = "󰲜"
 # format = "$icon ^icon_net_down $speed_down.eng(3,B,K) ^icon_net_up $speed_up.eng(3,B,K) {$signal_strength $ssid |}$ip"
 [block.format]
 full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid.str(max_w:16,rot_interval:0.4,rot_separator:'║') |}$ip"
-short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid.str(max_w:8,rot_interval:0.4,rot_separator:'║') |}$ip"
+short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid.str(max_w:14,rot_interval:0.4,rot_separator:'║') |}$ip"
 [[block.click]]
 button = "left"
 cmd = "dunstify -a i3status-rs \"Whats my ip?\" \"Public ip: $(dig +short myip.opendns.com @resolver1.opendns.com)\""
@@ -90,9 +90,7 @@ idle_fg = "#101010"
 [[block]]
 block = "docker"
 interval = 10
-[block.format]
-full = "$icon$running.eng(w:1)/$total.eng(w:1)\\|$images.eng(w:1)"
-short = "$icon$running.eng(w:1)/$total.eng(w:1)"
+format = "$icon$running.eng(w:1)/$total.eng(w:1)\\|$images.eng(w:1)"
 [block.theme_overrides]
 idle_bg = "#089BE5"
 idle_fg = "#101010"
@@ -119,7 +117,7 @@ block = "time"
 interval = 5
 [block.format]
 full = "$icon$timestamp.datetime(f:'%m\\%d %a %R', l:es_ES)"
-short = "$icon$timestamp.datetime(f:'%m\\%d %R', l:es_ES)"
+short = "$icon$timestamp.datetime(f:'%m\\%d %w %R', l:es_ES)"
 [[block.click]]
 button = "left"
 cmd = "gsimplecal"
