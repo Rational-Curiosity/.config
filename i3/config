@@ -21,7 +21,8 @@ font xft:$font 9
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
 set $lock i3lock --nofork --color=000000
-exec --no-startup-id "pkill -x xss-lock && pidwait -x xss-lock; xss-lock --transfer-sleep-lock -- $lock &"
+exec --no-startup-id "pkill -x xss-lock && pidwait -x xss-lock;\
+ xset s 300 30; xset dpms 360 360 360; xss-lock -l -n brightness -- $lock &"
 exec --no-startup-id "pkill -x picom && pidwait -x picom; picom -b --config /dev/null --backend xrender"
 exec --no-startup-id "pkill -x nm-applet && pidwait -x nm-applet; nm-applet &"
 # exec --no-startup-id "pkill -x parcellite && pidwait -x parcellite; parcellite &"
