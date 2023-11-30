@@ -180,6 +180,7 @@ vim.cmd([[
     \file MessagesOutput|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
   command! ProfileStart profile start ~/nvim_profile.log|profile func *|profile file *
   command! ProfileStop profile stop
+  command! -nargs=* CSystem cexpr system(<q-args>)|copen
 
   " Functions
   function LastSavedSession(A,L,P)
@@ -619,8 +620,8 @@ mapset('n', '<leader>Ws', ':sp <C-R>=expand("%:p:h") . "/" <CR>', { desc = 'Spli
 mapset('n', '<leader>Wv', ':vs <C-R>=expand("%:p:h") . "/" <CR>', { desc = 'VSplit from file folder' })
 mapset('n', '<leader>Wt', ':terminal <C-R>=expand("%:p:h") . "/" <CR>',
 { desc = 'Terminal from file folder' })
-mapset('n', '<leader>Yfn', ':let @+=expand("%")<CR>', { desc = 'Yank file name' })
-mapset('n', '<leader>Yfp', ':let @+=expand("%:p")<CR>', { desc = 'Yank file path' })
+mapset('n', '<leader>Yfn', ':let @+=expand("%")<CR>', { desc = 'Yank file relative name' })
+mapset('n', '<leader>Yfp', ':let @+=expand("%:p")<CR>', { desc = 'Yank file absolute path' })
 mapset('n', '<leader>Yfd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank file directory' })
 mapset('n', '<leader>Pp', ':put =execute(\\"\\")<Left><Left><Left>', { desc = 'Put command' })
 mapset(

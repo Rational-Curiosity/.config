@@ -61,7 +61,8 @@ bindsym $mod+Control+t exec --no-startup-id "TRA=$(seq 1 -0.05 0.6|rofi -m -1 -d
 bindsym $mod+Control+b exec --no-startup-id "BRI=$(seq 1 -0.05 0.3|rofi -m -1 -dmenu $rofi_args);\
  [ -n \\"$BRI\\" ] && brightness $BRI &"
 #? Select clipboard history:
-bindsym $mod+c exec --no-startup-id "rofi -m -1 -modi 'clipboard:greenclip print' -show clipboard -run-command '{cmd}' $rofi_args &"
+bindsym $mod+y exec --no-startup-id "rofi -m -1 -modi 'clipboard:greenclip print' -show clipboard -run-command '{cmd}' $rofi_args &"
+bindsym $mod+Control+y exec --no-startup-id "O=\\"$(dunstctl history|jq '.data|.[0]|.[].message.data'|rofi -m -1 -dmenu -theme-str 'element{children:[element-text];}listview{columns:1;}window{fullscreen:true;}' $rofi_args)\\";[ -n \\"$O\\" ]&&greenclip print \\"$(echo $O)\\""
 
 # Use pactl to adjust volume in PulseAudio.
 # set $refresh_i3status killall -SIGUSR1 i3status
@@ -81,8 +82,10 @@ bindsym $mod+Shift+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# start a terminal
+#? Terminal with tmux
 bindsym $mod+Return exec st -f "$font:size=$(font-size $font)" tmux
+#? Terminal with tmux restoring last session
+bindsym $mod+Mod1+Return exec st -f "$font:size=$(font-size $font)" tmux a
 bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font:size=$(font-size $font)" tmux;resize set width 50 ppt
 # bindsym $mod+Return exec wezterm &
 # bindsym $mod+Shift+Return $root;layout splith;exec wezterm &;resize set width 50 ppt
@@ -90,8 +93,8 @@ bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font:size=$(font-size
 # bindsym $mod+Shift+Return $root;layout splith;exec alacritty msg create-window || alacritty &;resize set width 50 ppt
 # bindsym $mod+Mod1+Return exec "alacritty msg create-window --class Alacritty,TilingFloat &"
 # start emacs
-bindsym $mod+i exec ec &
-bindsym $mod+Shift+i $root;layout splith;exec ec;resize set width 50 ppt
+bindsym $mod+i exec "emacsclient -c -n -a '' &"
+bindsym $mod+Shift+i $root;layout splith;exec "emacsclient -c -n -a '' &";resize set width 50 ppt
 
 #? Change background:
 bindsym $mod+Shift+b exec --no-startup-id "if command -v ~/bin/unsplash-feh 2>&1 >/dev/null;\
@@ -110,6 +113,9 @@ bindsym $mod+Shift+q kill
 bindsym $mod+r exec --no-startup-id "rofi -m -1 -show run $rofi_args &"
 bindsym $mod+Shift+r exec --no-startup-id "rofi -m -1 -show drun $rofi_args &"
 bindsym $mod+Control+r exec --no-startup-id rofi-commands &
+bindsym $mod+Mod1+r exec --no-startup-id "dunstify -a Command output: \\"$(rofi -m -1 -show run $rofi_args)\\""
+#? Display DBUS_SESSION_BUS_ADDRESS
+bindsym $mod+Mod1+d exec --no-startup-id "dunstify -a DBUS_SESSION_BUS_ADDRESS: $DBUS_SESSION_BUS_ADDRESS $(echo $DBUS_SESSION_BUS_ADDRESS)"
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.

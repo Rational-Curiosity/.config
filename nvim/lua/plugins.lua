@@ -32,6 +32,7 @@ local ft_prog_lsp = {
   'typescript',
   'typescript.tsx',
   'typescriptreact',
+  'typst',
 }
 local ft_prog = { 'fish', 'lua', 'smarty', unpack(ft_prog_lsp) }
 return {
@@ -1488,6 +1489,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     ft = { 'csv' },
   },
   {
+    'kaarmu/typst.vim',
+    ft = { 'typst' },
+    lazy = false,
+  },
+  {
     'MTDL9/vim-log-highlighting',
     ft = { 'log' },
   },
@@ -1858,7 +1864,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           lualine_c = { { 'filename', path=1, shorting_target=0,
                           symbols = filename_symbols } },
           lualine_x = { 'location' },
-          lualine_y = {},
+          lualine_y = { '%L' },
           lualine_z = {}
         },
         extensions = { },
@@ -1986,6 +1992,22 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       -- Set configuration for specific filetype.
       cmp.setup.filetype('gitcommit', {
         sources = cmp.config.sources({
+          -- feat: cuando se añade una nueva funcionalidad.
+          -- fix: cuando se arregla un error.
+          -- chore: tareas rutinarias que no sean específicas de una feature o
+          --   un error como por ejemplo añadir contenido al fichero .gitignore
+          --   o instalar una dependencia. test: si añadimos o arreglamos tests.
+          -- docs: cuando solo se modifica documentación.
+          -- build: cuando el cambio afecta al compilado del proyecto.
+          -- ci: el cambio afecta a ficheros de configuración y scripts
+          --   relacionados con la integración continua.
+          -- style: cambios de legibilidad o formateo de código que no afecta a
+          --   funcionalidad.
+          -- refactor: cambio de código que no corrige errores ni añade
+          --   funcionalidad, pero mejora el código.
+          -- perf: usado para mejoras de rendimiento.
+          -- revert: si el commit revierte un commit anterior. Debería
+          --   indicarse el hash del commit que se revierte.
           { name = 'conventionalcommits' },
           { name = 'git' }, -- You can specify the `cmp_git` source if you were installed it.
         }, {
@@ -2253,6 +2275,15 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         capabilities = capabilities,
         flags = {
           debounce_text_changes = 1000,
+        },
+      }
+      lspconfig.typst_lsp.setup {
+        capabilities = capabilities,
+        flags = {
+          debounce_text_changes = 1000,
+        },
+        settings = {
+          exportPdf = 'onType',
         },
       }
       local util = require'lspconfig.util'

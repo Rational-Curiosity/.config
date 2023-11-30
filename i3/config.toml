@@ -73,16 +73,9 @@ idle_bg = "#14C9CB"
 idle_fg = "#101010"
 
 [[block]]
-block = "disk_space"
-path = "/"
-info_type = "available"
-interval = 20
-warning = 20.0
-alert = 10.0
-format = "$icon$used.eng(w:2)/$total.eng(w:2)"
-[[block.click]]
-button = "left"
-cmd = "thunar"
+block = "temperature"
+interval = 10
+format = "$icon{$min≤$average≤$max|}"
 [block.theme_overrides]
 idle_bg = "#0FB2D8"
 idle_fg = "#101010"
@@ -96,11 +89,30 @@ idle_bg = "#089BE5"
 idle_fg = "#101010"
 
 [[block]]
-block = "temperature"
-interval = 10
-format = "$icon{$min≤$average≤$max|}"
+block = "disk_space"
+path = "/"
+info_type = "available"
+interval = 20
+warning = 20.0
+alert = 10.0
+format = "$icon$used.eng(w:2)/$total.eng(w:2)"
+[[block.click]]
+button = "left"
+cmd = "thunar"
 [block.theme_overrides]
 idle_bg = "#0384F1"
+idle_fg = "#101010"
+
+[[block]]
+block = "custom"
+interval = 20
+command = """lsblk -nro MOUNTPOINT,LABEL | sed -nE '/(^ | $|^$)/!{s/^[^ ]+ //;H};${g;s/^\\n//;s/\\n/|/g;s/\\\\x20/ /g;s/([a-zA-Z]{3})[a-zA-Z]+ */\\1…/g;p}'"""
+format = "$text.pango-str()"
+[[block.click]]
+button = "left"
+cmd = "unmedia"
+[block.theme_overrides]
+idle_bg = "#8a2be2"
 idle_fg = "#101010"
 
 [[block]]
