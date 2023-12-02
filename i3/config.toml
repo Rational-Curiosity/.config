@@ -99,14 +99,17 @@ format = "$icon$used.eng(w:2)/$total.eng(w:2)"
 [[block.click]]
 button = "left"
 cmd = "thunar"
+[[block.click]]
+button = "right"
+cmd = "media"
 [block.theme_overrides]
 idle_bg = "#0384F1"
 idle_fg = "#101010"
 
 [[block]]
 block = "custom"
-interval = 20
-command = """lsblk -nro MOUNTPOINT,LABEL | sed -nE '/(^ | $|^$)/!{s/^[^ ]+ //;H};${g;s/^\\n//;s/\\n/|/g;s/\\\\x20/ /g;s/([a-zA-Z]{3})[a-zA-Z]+ */\\1…/g;p}'"""
+interval = 15
+command = """lsblk -nro MOUNTPOINT,LABEL|sed -nE '/(^ | $|^$)/!{s/^[^ ]+ //;H};${g;s/^\\n//;s/\\n/|/g;s/\\\\x20/ /g;s/([a-zA-Z]{3})[a-zA-Z]+ */\\1…/g;p}'"""
 format = "$text.pango-str()"
 [[block.click]]
 button = "left"
@@ -140,7 +143,7 @@ idle_fg = "#abcdef"
 [[block]]
 block = "custom"
 interval = 10
-command = """ps -do args|sed -n "s|^/bin/sh $HOME/bin/daemon-gigas-vpn\\$||p;s|^./remap -C .*|󰞙|p"|tr -d '\n'"""
+command = """ps -do args|sed -n "s|^/bin/sh $HOME/bin/daemon-gigas-vpn\\$||;th;s|^./remap -C .*|󰞙|;th;bl;:h;H;:l;\\${g;s/\\n//g;p}""""
 merge_with_next = true
 format = "$text.pango-str()"
 
