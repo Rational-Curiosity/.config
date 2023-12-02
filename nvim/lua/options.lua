@@ -566,6 +566,45 @@ function _G.win_double_width()
   api.nvim_win_set_width(0, api.nvim_win_get_width(0) * 2)
 end
 
+function _G.switch(_value)
+  local _switch = {
+    _default_func = nil,
+    _functions = {},
+  }
+
+  _switch.case = function(value, func)
+    _switch._functions[value] = func
+    return _switch
+  end
+
+  _switch.default = function(func)
+    _switch._default_func = func
+    return _switch
+  end
+
+  _switch.call = function(value)
+    local func = _switch._functions[value or _value]
+    if func then
+      return func()
+    elseif _switch._default_func then
+      return _switch.default_func()
+    end
+  end
+
+  _switch.switch = function(value)
+    _switch.call(value)
+    return _switch
+  end
+
+  _switch.reset = function()
+    _switch._functions = {}
+    _switch._default_func = nil
+    return _switch
+  end
+
+  return _switch
+end
+
 -- Keymap bindings
 mapset('', '<leader>V',
   '<cmd>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<cr>',
