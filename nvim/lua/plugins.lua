@@ -50,6 +50,10 @@ return {
     end
   },
   {
+    'tpope/vim-repeat',
+    keys = { '.', 'u', 'U', '<C-r>' },
+  },
+  {
     -- 'ggandor/leap.nvim',
     -- keys = {
     --   { '<A-f>', '<Plug>(leap-forward-to)', mode = { 'n', 'x', 'o' },
@@ -592,10 +596,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     config = function()
       require'yode-nvim'.setup {}
     end
-  },
-  {
-    'tpope/vim-repeat',
-    keys = { '.', 'u', 'U', '<C-r>' },
   },
   {
     'mg979/vim-visual-multi',
@@ -1487,6 +1487,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   {
     'chrisbra/csv.vim',
     ft = { 'csv' },
+    init = function()
+      vim.g.csv_no_conceal = 1
+      vim.g.csv_bind_B = 1
+    end
   },
   {
     'kaarmu/typst.vim',

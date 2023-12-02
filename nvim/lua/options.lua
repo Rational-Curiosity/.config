@@ -66,10 +66,6 @@ g.netrw_scp_cmd = 'yad --separator= --form --field=Password:H|sshpass scp -q'
 g.loaded_ruby_provider = 0
 g.loaded_perl_provider = 0
 
--- CSV
-g.csv_no_conceal = 1
-g.csv_bind_B = 1
-
 -- UNDO
 o.undodir = fn.stdpath('config') .. '/undo'
 o.undofile = true
