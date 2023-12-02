@@ -132,14 +132,20 @@ vim.cmd([[
   cabbrev <expr> VS getcmdpos() == 3 && getcmdtype() == ':' ? 'vs '.expand('%:p:h') : 'VS'
   cabbrev <expr> SP getcmdpos() == 3 && getcmdtype() == ':' ? 'sp '.expand('%:p:h') : 'SP'
   cabbrev <expr> vh getcmdpos() == 3 && getcmdtype() == ':' ? 'vert help' : 'vh'
-  cabbrev <expr> bdn getcmdtype() == ':' ? 'bn<bar>bd#' : 'bdn'
-  cabbrev <expr> bdp getcmdtype() == ':' ? 'bp<bar>bd#' : 'bdp'
+  cabbrev <expr> bdn getcmdpos() == 4 && getcmdtype() == ':' ? 'bn<bar>bd#' : 'bdn'
+  cabbrev <expr> bdp getcmdpos() == 4 && getcmdtype() == ':' ? 'bp<bar>bd#' : 'bdp'
   cabbrev <expr> Mess getcmdpos() == 5 && getcmdtype() == ':' ? 'Messages' : 'Mess'
   cabbrev <expr> lp getcmdpos() == 3 && getcmdtype() == ':' ? 'lua print' : 'lp'
   cabbrev <expr> lpi getcmdpos() == 4 && getcmdtype() == ':' ? 'lua print(vim.inspect' : 'lpi'
   cabbrev <expr> dn getcmdpos() == 3 && getcmdtype() == ':' ? 'DiagNext' : 'dn'
   cabbrev <expr> dp getcmdpos() == 3 && getcmdtype() == ':' ? 'DiagPrev' : 'dp'
+  cabbrev <expr> te getcmdpos() == 3 && getcmdtype() == ':' ? 'Term' : 'te'
+  cabbrev <expr> ter getcmdpos() == 4 && getcmdtype() == ':' ? 'Term' : 'ter'
   cabbrev <expr> term getcmdpos() == 5 && getcmdtype() == ':' ? 'Term' : 'term'
+  cabbrev <expr> termi getcmdpos() == 6 && getcmdtype() == ':' ? 'Term' : 'termi'
+  cabbrev <expr> termin getcmdpos() == 7 && getcmdtype() == ':' ? 'Term' : 'termin'
+  cabbrev <expr> termina getcmdpos() == 8 && getcmdtype() == ':' ? 'Term' : 'termina'
+  cabbrev <expr> terminal getcmdpos() == 9 && getcmdtype() == ':' ? 'Term' : 'terminal'
 
   " Commands
   command! Cd exec 'cd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
@@ -176,7 +182,7 @@ vim.cmd([[
     \file MessagesOutput|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
   command! ProfileStart profile start ~/nvim_profile.log|profile func *|profile file *
   command! ProfileStop profile stop
-  command! -nargs=* CSystem cexpr system(<q-args>)|copen
+  command! -complete=shellcmd -nargs=* CSystem cexpr system(<q-args>)|copen
 
   " Functions
   function LastSavedSession(A,L,P)
