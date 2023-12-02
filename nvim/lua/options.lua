@@ -3,6 +3,7 @@ local api = vim.api
 local opt = vim.opt
 local o = vim.o
 local bo = vim.bo
+local wo = vim.wo
 local g = vim.g
 local noremap_silent = {noremap = true, silent = true}
 local noremap_expr = {noremap = true, expr = true}
@@ -28,7 +29,7 @@ o.synmaxcol = 400
 -- opt.lazyredraw = true  -- It is only meant to be set temporarily
 o.encoding = 'utf-8'
 o.tabstop = 4
-o.shiftwidth = 4
+o.shiftwidth = 0
 o.softtabstop = 2
 o.expandtab = true
 o.list = true
@@ -194,45 +195,61 @@ vim.cmd([[
     return luaeval("vim.fn.getcwd():gsub('.*/', '')")
   endfunction
 ]])
-api.nvim_create_autocmd({ "FileType" }, {
-  group = "initAutoGroup",
-  pattern = {"*"},
-  callback = function(ev)
-    if bo.filetype == 'sh' then
-      vim.opt_local.spell = true
-      vim.cmd[[
-  setlocal iskeyword+=$ iskeyword+={ iskeyword+=}
-  nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n
-  nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
-      ]]
-    elseif bo.filetype == 'php' or bo.filetype == 'htmldjango' then
-      vim.opt_local.spell = true
-      vim.cmd[[
-  setlocal iskeyword+=$
-  nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n
-  nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
-      ]]
-    elseif bo.filetype == 'qf' then
-      vim.keymap.set('n', '<A-CR>', '<CR>:cclose<cr>', {
-        buffer = ev.buf,
-        noremap = true,
-        silent = true,
-      })
-      vim.keymap.set(
-        'n', '<leader><CR>',
-        ':let swbTMP=&switchbuf|set switchbuf=vsplit<cr><CR>:let &switchbuf=swbTMP|unlet swbTMP<cr>', {
-        buffer = ev.buf,
-        noremap = true,
-        silent = true,
-      })
-    elseif bo.filetype == '' or bo.filetype == 'log' then
-      vim.opt_local.spell = false
-    else
-      vim.opt_local.spell = true
+do
+  local tabstop2_ft = {
+    c = true,
+    cpp = true,
+    css = true,
+    html = true,
+    javascript = true,
+    javascriptreact = true,
+    json = true,
+    lua = true,
+    rust = true,
+    typescript = true,
+    typescriptreact = true,
+  }
+  api.nvim_create_autocmd({ "FileType" }, {
+    group = "initAutoGroup",
+    pattern = {"*"},
+    callback = function(ev)
+      if bo.filetype == 'sh' then
+        vim.opt_local.spell = true
+        vim.cmd[[
+setlocal iskeyword+=$ iskeyword+={ iskeyword+=}
+nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n
+nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
+        ]]
+      elseif tabstop2_ft[bo.filetype] then
+        o.tabstop = 2
+      elseif bo.filetype == 'php' or bo.filetype == 'htmldjango' then
+        vim.opt_local.spell = true
+        vim.cmd[[
+setlocal iskeyword+=$
+nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n
+nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
+        ]]
+      elseif bo.filetype == 'qf' then
+        vim.keymap.set('n', '<A-CR>', '<CR>:cclose<cr>', {
+          buffer = ev.buf,
+          noremap = true,
+          silent = true,
+        })
+        vim.keymap.set(
+          'n', '<leader><CR>',
+          ':let swbTMP=&switchbuf|set switchbuf=vsplit<cr><CR>:let &switchbuf=swbTMP|unlet swbTMP<cr>', {
+          buffer = ev.buf,
+          noremap = true,
+          silent = true,
+        })
+      elseif bo.filetype == '' or bo.filetype == 'log' then
+        vim.opt_local.spell = false
+      else
+        vim.opt_local.spell = true
+      end
     end
-  end
-})
-local wo = vim.wo
+  })
+end
 api.nvim_create_autocmd({ "TermEnter" }, {
   group = "initAutoGroup",
   pattern = {"*"},
