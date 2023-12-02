@@ -288,6 +288,29 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     cmd = { 'VBox' },
   },
   {
+    'cshuaimin/ssr.nvim',
+    keys = { { '<leader>sR', function()
+      require("ssr").open()
+    end, mode = 'n', desc = 'Structural search and replace' } },
+    config = function()
+      require("ssr").setup({
+        border = "rounded",
+        min_width = 50,
+        min_height = 5,
+        max_width = 120,
+        max_height = 25,
+        adjust_window = true,
+        keymaps = {
+          close = "<esc>",
+          next_match = "n",
+          prev_match = "N",
+          replace_confirm = "<cr>",
+          replace_all = "<leader><cr>",
+        },
+      })
+    end
+  },
+  {
     'NeogitOrg/neogit',
     dependencies = {
       { 'nvim-lua/plenary.nvim' },
@@ -1933,6 +1956,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       { 'davidsierradz/cmp-conventionalcommits' },
       { 'hrsh7th/cmp-buffer' },
       { 'hrsh7th/cmp-cmdline' },
+      { 'dmitmel/cmp-cmdline-history' },
       { 'hrsh7th/cmp-path' },
       { 'hrsh7th/cmp-nvim-lsp-signature-help' },
       { 'L3MON4D3/LuaSnip' },
@@ -2024,7 +2048,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       cmp.setup.cmdline({'/', '?'}, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
-          { name = 'buffer' }
+          { name = 'buffer' },
         }
       })
 
@@ -2032,9 +2056,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       cmp.setup.cmdline(':', {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
-          { name = 'path' }
+          { name = 'path' },
         }, {
-          { name = 'cmdline' }
+          { name = 'cmdline' },
+          { name = 'cmdline_history' },
         })
       })
       -- nvim-autopairs
@@ -2313,7 +2338,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       }
 
       -- Linters
-      lspconfig.eslint.setup {}
       lspconfig.ruff_lsp.setup {
         init_options = {
           settings = {
