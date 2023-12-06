@@ -870,8 +870,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     dependencies = {
       { 'nvim-treesitter/nvim-treesitter-refactor' },
       { 'windwp/nvim-ts-autotag' },
-    --   { 'p00f/nvim-ts-rainbow', opt = true },
-    --   { 'nvim-treesitter/playground', opt = true },
+    --   { 'p00f/nvim-ts-rainbow', lazy = true },
+    --   { 'nvim-treesitter/playground', lazy = true },
       { 'tokyonight.nvim' },
     },
     event = 'VeryLazy',
@@ -2235,6 +2235,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         'html',
         'intelephense',
         'pyright',
+        'tsserver',
       }) do
         lspconfig[lsp].setup {
           capabilities = capabilities,
@@ -2324,19 +2325,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
       }
       local util = require'lspconfig.util'
-      -- lspconfig.vtsls.setup {
-      --   single_file_support = false,
-      --   root_dir = function(fname)
-      --     return not util.root_pattern('deno.json', 'deno.jsonc')(fname)
-      --     and (util.root_pattern('tsconfig.json')(fname)
-      --     or util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
-      --     or util.root_pattern('.')(fname))
-      --   end,
-      --   capabilities = capabilities,
-      --   flags = {
-      --     debounce_text_changes = 1000,
-      --   },
-      -- }
       lspconfig.denols.setup {
         root_dir = util.root_pattern('deno.json', 'deno.jsonc'),
         capabilities = capabilities,
