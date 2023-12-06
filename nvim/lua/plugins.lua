@@ -373,7 +373,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         build = 'make',
       },
       { 'debugloop/telescope-undo.nvim' },
-      { 'johmsalas/text-case.nvim' },
+      { 'johmsalas/text-case.nvim', opts = {} },
       { 'lpoto/telescope-tasks.nvim' },
     },
     keys = {
