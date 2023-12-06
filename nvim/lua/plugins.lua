@@ -68,7 +68,6 @@ return {
     --   leap.opts.max_phase_one_targets = 0
     -- end
     "folke/flash.nvim",
-    event = "VeryLazy",
     keys = {
       {
         "<A-f>",
