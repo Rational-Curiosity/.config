@@ -143,7 +143,7 @@ idle_fg = "#abcdef"
 [[block]]
 block = "custom"
 interval = 10
-command = """ps -do args|sed -n "s|^/bin/sh $HOME/bin/daemon-gigas-vpn\\$||;th;s|^./remap -C .*|󰞙|;th;bl;:h;H;:l;\\${g;s/\\n//g;p}""""
+command = """ps -do args|sed -nE "s|^/bin/sh $HOME/bin/daemon-gigas-vpn\\$||;th;s|^\\./target/release/remap.*|󰞙|;th;bl;:h;H;:l;\\${g;s/\\n//g;p}""""
 merge_with_next = true
 format = "$text.pango-str()"
 
