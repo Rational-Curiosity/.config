@@ -21,7 +21,6 @@ if not status --is-interactive
     exit
 end
 
-abbr -a b bc -l
 abbr -a d disown
 abbr -a ec 'emacsclient -c -n -a ""'
 abbr -a ecn 'emacsclient -nw -a ""'
@@ -29,9 +28,13 @@ abbr -a m math
 abbr -a se sudo -E
 abbr -a sv sudo -E nvim
 abbr -a v nvim
-abbr -a y fzf
 abbr -a zd lazydocker
 abbr -a zj zellij
+if type -q eva
+    abbr -a c eva
+else
+    abbr -a c bc -l
+end
 if type -q exa
     abbr -a l exa
 else
@@ -91,6 +94,8 @@ set fish_greeting
 set -xg fish_prompt_pwd_dir_length 2
 set -xg fish_prompt_pwd_full_dirs 3
 set -xg FZF_DEFAULT_OPTS --cycle
+set -xg SKIM_DEFAULT_COMMAND "fd --type f --color never -H -E .git -E '[._]*cache*' -E .log"
+set -xg SKIM_DEFAULT_OPTIONS "-m --bind 'alt-a:page-up,alt-e:page-down,alt-p:preview-up,alt-n:preview-down,alt-v:preview-page-up,ctrl-v:preview-page-down,ctrl-k:kill-line' --preview='bat --color always {}||exa -l {}'"
 
 if not set -q DELTA_COLUMNS
     set -xg DELTA_COLUMNS 169
