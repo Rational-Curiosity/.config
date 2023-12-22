@@ -2169,9 +2169,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         ["niV"] = "N", -- Normal using |i_CTRL-O| in |Virtual-Replace-mode|
         ["nt"] = "N", -- Normal in |terminal-emulator| (insert goes to Terminal mode)
         ["ntT"] = "N", -- Normal using |t_CTRL-\_CTRL-O| in |Terminal-mode|
-        ["v"] = "☰", -- Visual by character
+        ["v"] = "☱", -- Visual by character
         ["vs"] = "☲", -- Visual by character using |v_CTRL-O| in Select mode
-        ["V"] = "☱", -- Visual by line
+        ["V"] = "☰", -- Visual by line
         ["Vs"] = "☴", -- Visual by line using |v_CTRL-O| in Select mode
         [""] = "☳", -- Visual blockwise
         ["s"] = "☶", -- Visual blockwise using |v_CTRL-O| in Select mode
@@ -2219,7 +2219,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                   branch_space = 0
                   return s
                 end
-                local space = math.floor((vim.fn.winwidth(0) - fix_space) * 0.2)
+                local space = math.floor((vim.fn.winwidth(0) - fix_space) * 0.17)
                 local s_len = s:len()
                 if s_len > space then
                   branch_space = space + 3
@@ -3340,6 +3340,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     cmd = { "Codeium" },
     config = function()
       vim.g.codeium_disable_bindings = 1
+      vim.g.codeium_filetypes = { TelescopePrompt = false }
       vim.keymap.set("i", "<A-h>", vim.fn["codeium#CycleOrComplete"])
       vim.keymap.set(
         "i",
