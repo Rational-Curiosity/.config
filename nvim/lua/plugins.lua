@@ -2149,7 +2149,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         len_without_hl_memoize[s] = result
         return result
       end
-      local fix_space = 19
+      local fix_space = 16
       local env_space = 0
       local branch_space = 0
       local diff_space = 0
@@ -2229,7 +2229,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                   branch_space = 0
                   return s
                 end
-                local space = math.floor((vim.fn.winwidth(0) - fix_space) * 0.17)
+                local space =
+                  math.floor((vim.fn.winwidth(0) - fix_space) * 0.17)
                 local s_len = s:len()
                 if s_len > space then
                   branch_space = space + 3
