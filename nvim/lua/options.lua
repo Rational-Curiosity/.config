@@ -628,6 +628,22 @@ function _G.switch(_value)
   return _switch
 end
 
+function _G.find_ancestor(filename)
+  local path = vim.fn.getcwd()
+  while path ~= '/' do
+    local filepath = path .. '/' .. filename
+    if vim.fn.filereadable(filepath) ~= 0 then
+      return filepath
+    end
+    path = vim.fn.fnamemodify(path, ":h")
+  end
+  local filepath = path .. filename
+  if vim.fn.filereadable(filepath) ~= 0 then
+    return filepath
+  end
+  return nil
+end
+
 -- Keymap bindings
 mapset(
   "",
