@@ -2747,38 +2747,23 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             vim.lsp.buf.signature_help,
             { silent = true, buffer = ev.buf, desc = "Lsp signature help" }
           )
-          mapset(
-            "n",
-            "<leader>lA",
-            vim.lsp.buf.add_workspace_folder,
-            {
-              silent = true,
-              buffer = ev.buf,
-              desc = "Lsp add workspace folder",
-            }
-          )
-          mapset(
-            "n",
-            "<leader>lR",
-            vim.lsp.buf.remove_workspace_folder,
-            {
-              silent = true,
-              buffer = ev.buf,
-              desc = "Lsp remove workspace folder",
-            }
-          )
-          mapset(
-            "n",
-            "<leader>lL",
-            function()
-              print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-            end,
-            {
-              silent = true,
-              buffer = ev.buf,
-              desc = "Lsp list workspace folders",
-            }
-          )
+          mapset("n", "<leader>lA", vim.lsp.buf.add_workspace_folder, {
+            silent = true,
+            buffer = ev.buf,
+            desc = "Lsp add workspace folder",
+          })
+          mapset("n", "<leader>lR", vim.lsp.buf.remove_workspace_folder, {
+            silent = true,
+            buffer = ev.buf,
+            desc = "Lsp remove workspace folder",
+          })
+          mapset("n", "<leader>lL", function()
+            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+          end, {
+            silent = true,
+            buffer = ev.buf,
+            desc = "Lsp list workspace folders",
+          })
           mapset(
             "n",
             "<leader>lt",
