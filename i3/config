@@ -88,7 +88,7 @@ floating_modifier $mod
 bindsym $mod+Return exec st -f "$font:size=$(font-size $font)" tmux
 #? Terminal with tmux restoring last session
 bindsym $mod+Mod1+Return exec st -f "$font:size=$(font-size $font)" tmux a
-bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font:size=$(font-size $font)" tmux;resize set width 50 ppt
+bindsym $mod+Shift+Return layout splitv;$root;layout splith;exec st -f "$font:size=$(font-size $font)" tmux;resize set width 50 ppt
 # bindsym $mod+Return exec wezterm &
 # bindsym $mod+Shift+Return $root;layout splith;exec wezterm &;resize set width 50 ppt
 # bindsym $mod+Return exec alacritty msg create-window || alacritty &
@@ -96,7 +96,8 @@ bindsym $mod+Shift+Return $root;layout splith;exec st -f "$font:size=$(font-size
 # bindsym $mod+Mod1+Return exec "alacritty msg create-window --class Alacritty,TilingFloat &"
 # start emacs
 bindsym $mod+i exec "emacsclient -c -n -a '' &"
-bindsym $mod+Shift+i $root;layout splith;exec "emacsclient -c -n -a '' &";resize set width 50 ppt
+bindsym $mod+Shift+i layout splitv;$root;layout splith;exec "emacsclient -c -n -a '' &";resize set width 50 ppt
+bindsym $mod+Shift+o layout splitv;$root;layout splith;open;resize set width 50 ppt
 
 #? Change background:
 bindsym $mod+Shift+b exec --no-startup-id "if command -v ~/bin/unsplash-feh 2>&1 >/dev/null;\
@@ -250,7 +251,10 @@ bindsym $mod+f fullscreen toggle
 #? Toggle border:
 bindsym $mod+t border toggle
 
-# change container layout (stacked, tabbed, toggle split)
+# Change container layout
+#  layout default|tabbed|stacking|splitv|splith
+#  layout toggle [split|all]
+#  layout toggle [split|tabbed|stacking|splitv|splith] [split|tabbed|stacking|splitv|splith]...
 bindsym $mod+q layout stacking
 bindsym $mod+w layout tabbed
 #? Transpose containers:
