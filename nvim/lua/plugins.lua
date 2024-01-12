@@ -878,6 +878,14 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     cmd = { "Format", "FormatWrite" },
     config = function()
       local filetypes = require("formatter.filetypes")
+      local js_formatter = 'biome'
+      if find_ancestor('.eslintrc.json') then
+        if vim.fn.executable('prettier-eslint') ~= 0 then
+          js_formatter = 'prettiereslint'
+        elseif vim.fn.executable('eslint_d') ~= 0 then
+          js_formatter = 'eslint_d'
+        end
+      end
       require("formatter").setup({
         logging = true,
         log_level = vim.log.levels.ERROR,
@@ -896,8 +904,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           haskell = filetypes.haskell.stylish_haskell,
           html = filetypes.html.prettier,
           java = filetypes.java.clangformat,
-          javascript = filetypes.javascript.biome,
-          javascriptreact = filetypes.javascriptreact.biome,
+          javascript = filetypes.javascript[js_formatter],
+          javascriptreact = filetypes.javascriptreact[js_formatter],
           json = filetypes.json.biome,
           kotlin = filetypes.kotlin.ktlint,
           latex = filetypes.latex.latexindent,
@@ -914,8 +922,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           svelte = filetypes.svelte.prettier,
           terraform = filetypes.terraform.terraformfmt,
           toml = filetypes.toml.taplo,
-          typescript = filetypes.typescript.biome,
-          typescriptreact = filetypes.typescriptreact.biome,
+          typescript = filetypes.typescript[js_formatter],
+          typescriptreact = filetypes.typescriptreact[js_formatter],
           vue = filetypes.vue.prettier,
           yaml = filetypes.yaml.pyaml,
           zig = filetypes.zig.zigfmt,
