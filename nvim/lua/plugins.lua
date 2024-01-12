@@ -48,6 +48,7 @@ local ft_prog_lsp = {
   "typst",
 }
 local ft_prog = { "fish", "lua", "smarty", unpack(ft_prog_lsp) }
+
 return {
   {
     "mbbill/undotree",
@@ -2163,8 +2164,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local diff_space = 0
       local diag_space = 0
 
-      local pos_bar =
-        { "▀", "🭶", "🭷", "🭸", "🭹", "🭺", "🭻", "▄" }
       local filename_symbols = {
         modified = "󰏫",
         readonly = "",
@@ -2174,6 +2173,17 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local codeium_status = {
         [" ON"] = "",
         OFF = "",
+      }
+      local codeium_component = {
+        function()
+          local status = vim.fn["codeium#GetStatusString"]()
+          return codeium_status[status] or status
+        end,
+        cond = function()
+          return vim.g.codeium_disable_bindings == 1
+        end,
+        color = { fg = "#3b4261" },
+        padding = 0,
       }
       local mode_map = {
         -- neovim/runtime/doc/builtin.txt
@@ -2213,6 +2223,51 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         ["!"] = "$", -- Shell or external command is executing
         ["t"] = "❯", -- Terminal mode: keys go to the job
       }
+      local mode_component = {
+        function()
+          return mode_map[vim.api.nvim_get_mode().mode] or "_"
+        end,
+        color = { fg = "#000000", gui = "bold" },
+        padding = { left = 0, right = 0 },
+      }
+      local search_rec_component = {
+        function()
+          local status = {}
+          if vim.v.hlsearch ~= 0 then
+            local search = vim.fn.searchcount()
+            if search.total > 0 then
+              table.insert(status, search.current .. "/" .. search.total)
+            end
+          end
+          local register = vim.fn.reg_recording()
+          if register ~= "" then
+            table.insert(status, "rec@" .. register)
+          end
+          return table.concat(status, " ")
+        end,
+        padding = { left = 1, right = 0 },
+      }
+      local pos_bar =
+        { "▀", "🭶", "🭷", "🭸", "🭹", "🭺", "🭻", "▄" }
+      local location_bar_component = {
+        function()
+          local line = vim.api.nvim_win_get_cursor(0)[1]
+          local lines = vim.api.nvim_buf_line_count(0)
+          if line == lines then
+            return pos_bar[#pos_bar]
+          elseif line == 1 then
+            return pos_bar[1]
+          else
+            return pos_bar[math.floor(
+              (#pos_bar - 2) * (line - 1) / (lines - 1)
+            ) + 2]
+          end
+        end,
+        padding = 0,
+      }
+      local function quickfix_doc()
+        return '<A-CR>: Select & close  <leader><CR>: Split & select'
+      end
       require("lualine").setup({
         options = {
           theme = "tokyonight", -- powerline
@@ -2221,13 +2276,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
         sections = {
           lualine_a = {
-            {
-              function()
-                return mode_map[vim.api.nvim_get_mode().mode] or "_"
-              end,
-              color = { fg = "#000000", gui = "bold" },
-              padding = { left = 0, right = 0 },
-            },
+            mode_component,
           },
           lualine_b = {
             {
@@ -2371,35 +2420,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             --   display_components = {{'title', 'percentage', 'message'}, 'lsp_client_name', 'spinner'},
             --   spinner_symbols = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' }},
             -- { 'nvim_treesitter#statusline', max_length = 20 },
-            {
-              function()
-                local status = {}
-                if vim.v.hlsearch ~= 0 then
-                  local search = vim.fn.searchcount()
-                  if search.total > 0 then
-                    table.insert(status, search.current .. "/" .. search.total)
-                  end
-                end
-                local register = vim.fn.reg_recording()
-                if register ~= "" then
-                  table.insert(status, "rec@" .. register)
-                end
-                return table.concat(status, " ")
-              end,
-              padding = { left = 1, right = 0 },
-            },
-            {
-              function()
-                local status = vim.fn["codeium#GetStatusString"]()
-                return codeium_status[status] or status
-              end,
-              cond = function()
-                return vim.g.codeium_disable_bindings == 1
-              end,
-              color = { fg = "#3b4261" },
-              padding = 0,
-            },
-            -- {'tabnine'},
+            search_rec_component,
+            codeium_component,
           },
           lualine_y = {
             {
@@ -2417,22 +2439,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           },
           lualine_z = {
             { "location", padding = 0 },
-            {
-              function()
-                local line = vim.api.nvim_win_get_cursor(0)[1]
-                local lines = vim.api.nvim_buf_line_count(0)
-                if line == lines then
-                  return pos_bar[#pos_bar]
-                elseif line == 1 then
-                  return pos_bar[1]
-                else
-                  return pos_bar[math.floor(
-                    (#pos_bar - 2) * (line - 1) / (lines - 1)
-                  ) + 2]
-                end
-              end,
-              padding = 0,
-            },
+            location_bar_component,
           },
         },
         inactive_sections = {
@@ -2450,7 +2457,30 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           lualine_y = { "%L" },
           lualine_z = {},
         },
-        extensions = {},
+        extensions = {
+          {
+            filetypes = { 'qf' },
+            sections = {
+              lualine_a = { mode_component },
+              lualine_b = { quickfix_doc },
+              lualine_c = {},
+              lualine_x = { search_rec_component },
+              lualine_y = {},
+              lualine_z = {
+                { "location", padding = 0 },
+                location_bar_component,
+              },
+            },
+            inactive_sections = {
+              lualine_a = {},
+              lualine_b = {},
+              lualine_c = { quickfix_doc },
+              lualine_x = { "location" },
+              lualine_y = { "%L" },
+              lualine_z = {},
+            },
+          }
+        },
       })
     end,
   },
