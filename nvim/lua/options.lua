@@ -628,8 +628,16 @@ function _G.switch(_value)
   return _switch
 end
 
-function _G.find_ancestor(filename)
-  local path = vim.fn.getcwd()
+function _G.find_ancestor(filename, path)
+  if path then
+    if path:sub(1, 1) == '~' then
+      path = vim.fn.expand(path)
+    elseif path:sub(1, 1) ~= '/' then
+      path = vim.fn.fnamemodify(path, ':p')
+    end
+  else
+    path = vim.fn.getcwd()
+  end
   while path ~= '/' do
     local filepath = path .. '/' .. filename
     if vim.fn.filereadable(filepath) ~= 0 then
