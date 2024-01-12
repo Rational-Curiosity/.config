@@ -1,25 +1,25 @@
 local M = {}
 local increases_at_cursor = {
-  -- {
-  --   pattern = [[\l]],
-  --   fun = function(match, steps)
-  --     local a = string.byte('a')
-  --     local z = string.byte('z')
-  --     return string.char(
-  --       (string.byte(match) + steps - a) % (z - a + 1) + a
-  --     )
-  --   end,
-  -- },
-  -- {
-  --   pattern = [[\u]],
-  --   fun = function(match, steps)
-  --     local a = string.byte('A')
-  --     local z = string.byte('Z')
-  --     return string.char(
-  --       (string.byte(match) + steps - a) % (z - a + 1) + a
-  --     )
-  --   end,
-  -- },
+  {
+    pattern = [[\l]],
+    fun = function(match, steps)
+      local a = string.byte('a')
+      local z = string.byte('z')
+      return string.char(
+        (string.byte(match) + steps - a) % (z - a + 1) + a
+      )
+    end,
+  },
+  {
+    pattern = [[\u]],
+    fun = function(match, steps)
+      local a = string.byte('A')
+      local z = string.byte('Z')
+      return string.char(
+        (string.byte(match) + steps - a) % (z - a + 1) + a
+      )
+    end,
+  },
   {
     pattern = [[\d\{4}-\d\{2}-\d\{2}]],
     range = 10,
@@ -50,12 +50,12 @@ end
 
 function M.increase_at_cursor(step)
   local step = (step or 1) * (vim.v.count == 0 and 1 or vim.v.count)
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  line = line - 1
+  local line_, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local line = line_ - 1
   for _, increase in ipairs(increases_at_cursor) do
     local start
     if increase.range == nil then
-      start = vim.fn.searchpos(increase.pattern, 'nb', line)[2] - 1
+      start = vim.fn.searchpos(increase.pattern, 'nb', line_)[2] - 1
     else
       start = col - increase.range + 1
     end
@@ -65,7 +65,7 @@ function M.increase_at_cursor(step)
       beg = start + beg
       fin = start + fin
       if beg <= col and col < fin then
-        local match = string.sub(vim.fn.getline(line + 1), beg + 1, fin)
+        local match = string.sub(vim.fn.getline(line_), beg + 1, fin)
         local replace = increase.fun(match, step)
         if replace ~= nil then
           vim.api.nvim_buf_set_text(0, line, beg, line, fin, { replace })
