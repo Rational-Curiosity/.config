@@ -406,36 +406,79 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       require("Comment").setup()
     end,
   },
-  -- {
-  --   'stevearc/overseer.nvim',
-  --   cmd = { 'OverseerRun' },
-  --   config = function()
-  --     local overseer = require('overseer')
-  --     overseer.setup {}
-  --     overseer.register_template {
-  --       name = 'Test',
-  --       builder = function(params)
-  --         print(vim.inspect(params))
-  --         return {
-  --           cmd = { 'echo' },
-  --           args = { 'world' },
-  --           name = 'Echo',
-  --         }
-  --       end
-  --     }
-  --   end
-  -- },
+  {
+    'stevearc/overseer.nvim',
+    dependencies = { 'telescope.nvim' },
+    cmd = { 'OverseerRun', 'OverseerToggle' },
+    keys = {
+      {
+        "<leader>ft", "<cmd>OverseerRun<cr>", desc = "Telescope overseer"
+      },
+    },
+    config = function()
+      local compose_file = vim.env.HOME
+        .. "/Prog/gigas/gigas_devenv/docker-compose.yml"
+      local overseer = require('overseer')
+      overseer.setup({
+          -- {
+          --   name = "Docker Compose gigas CORE stop",
+          --   cmd = "docker compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider",
+          --   env = {
+          --     COMPOSE_FILE = compose_file,
+          --   },
+          -- },
+          -- {
+          --   name = "Docker Compose gigas KVM up",
+          --   cmd = "docker compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router",
+          --   env = {
+          --     COMPOSE_FILE = compose_file,
+          --   },
+          -- },
+          -- {
+          --   name = "Docker Compose gigas KVM stop",
+          --   cmd = "docker compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router",
+          --   env = {
+          --     COMPOSE_FILE = compose_file,
+          --   },
+          -- },
+      })
+      overseer.register_template({
+        name = "Docker Compose gigas CORE up",
+        builder = function(params)
+          return {
+            cmd = "docker",
+            args = {
+              "compose",
+              "--ansi",
+              "never",
+              "up",
+              "-d",
+              "db_maria",
+              "db_mysql",
+              "db_redis",
+              "rabbitmq",
+              "websockifier",
+              "id-provider",
+            },
+            env = {
+              COMPOSE_FILE = compose_file,
+            },
+          }
+        end,
+      })
+    end
+  },
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
       { "nvim-lua/plenary.nvim" },
+      { "nvim-telescope/telescope-ui-select.nvim" },
       {
         "nvim-telescope/telescope-fzf-native.nvim",
         build = "make",
       },
       { "debugloop/telescope-undo.nvim" },
       { "johmsalas/text-case.nvim", opts = {} },
-      { "lpoto/telescope-tasks.nvim" },
     },
     keys = {
       {
@@ -581,11 +624,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         "<cmd>Telescope treesitter<cr>",
         desc = "Telescope treesitter",
       },
-      {
-        "<leader>ft",
-        "<cmd>Telescope tasks initial_mode=insert<cr>",
-        desc = "Telescope tasks",
-      },
       { "<leader>fu", "<cmd>Telescope undo<cr>", desc = "Telescope undo" },
       -- { '<leader>f.', function()
       --   -- '"0y:Telescope grep_string search=<c-r>0<cr>'
@@ -600,7 +638,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     },
     cmd = "Telescope",
     config = function()
-      local action_layout = require("telescope.actions.layout")
       local rg_filetype_args = {
         ["c"] = "-tcpp",
         ["htmldjango"] = "-thtml",
@@ -669,8 +706,12 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       end
 
       local telescope = require("telescope")
+      local action_layout = require("telescope.actions.layout")
       telescope.setup({
         extensions = {
+          ["ui-select"] = {
+            require("telescope.themes").get_dropdown({})
+          },
           fzf = {
             fuzzy = true, -- false will only do exact matching
             override_generic_sorter = true, -- override the generic sorter
@@ -693,15 +734,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
                 ["<cr>"] = require("telescope-undo.actions").restore,
               },
             },
-          },
-          tasks = {
-            -- theme = "dropdown",
-            output = {
-              style = "float",
-              layout = "bottom",
-              scale = 0.8,
-            },
-            data_dir = vim.fn.stdpath("data") .. "/tasks",
           },
         },
         defaults = {
@@ -750,50 +782,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           },
         },
       })
+      telescope.load_extension("ui-select")
       telescope.load_extension("fzf")
       telescope.load_extension("undo")
       telescope.load_extension("textcase")
-      telescope.load_extension("tasks")
-      local tasks = require("telescope").extensions.tasks
-      tasks.generators.custom.add({
-        generator = function(buf)
-          local compose_file = vim.env.HOME
-            .. "/Prog/gigas/gigas_devenv/docker-compose.yml"
-          return {
-            {
-              name = "Docker Compose gigas CORE up",
-              cmd = "docker compose --ansi never up -d db_maria db_mysql db_redis rabbitmq websockifier id-provider",
-              env = {
-                COMPOSE_FILE = compose_file,
-              },
-            },
-            {
-              name = "Docker Compose gigas CORE stop",
-              cmd = "docker compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider",
-              env = {
-                COMPOSE_FILE = compose_file,
-              },
-            },
-            {
-              name = "Docker Compose gigas KVM up",
-              cmd = "docker compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router",
-              env = {
-                COMPOSE_FILE = compose_file,
-              },
-            },
-            {
-              name = "Docker Compose gigas KVM stop",
-              cmd = "docker compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router",
-              env = {
-                COMPOSE_FILE = compose_file,
-              },
-            },
-          }
-        end,
-        opts = {
-          name = "Docker Compose",
-        },
-      })
 
       --     local previewers = require'telescope.previewers'
       -- --    local Job = require'plenary.job'
@@ -876,15 +868,23 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     -- end
     -- <XOR>
     "mhartington/formatter.nvim",
-    cmd = { "Format", "FormatWrite" },
+    cmd = { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" },
     config = function()
       local filetypes = require("formatter.filetypes")
-      local js_formatter = 'biome'
-      if find_ancestor('.eslintrc.json') then
-        if vim.fn.executable('prettier-eslint') ~= 0 then
-          js_formatter = 'prettiereslint'
-        elseif vim.fn.executable('eslint_d') ~= 0 then
-          js_formatter = 'eslint_d'
+      local js_fmt = "biome"
+      if vim.fn.executable("prettier-eslint") ~= 0 then
+        js_fmt = "prettiereslint"
+      elseif vim.fn.executable("eslint_d") ~= 0 then
+        js_fmt = "eslint_d"
+      end
+      local function js_selector(filetype)
+        local formatters = filetypes[filetype]
+        if js_fmt == "biome" then
+          return formatters[js_fmt]
+        end
+        return function()
+          return formatters[find_ancestor(".eslintrc.json")
+          and js_fmt or "biome"]()
         end
       end
       require("formatter").setup({
@@ -905,8 +905,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           haskell = filetypes.haskell.stylish_haskell,
           html = filetypes.html.prettier,
           java = filetypes.java.clangformat,
-          javascript = filetypes.javascript[js_formatter],
-          javascriptreact = filetypes.javascriptreact[js_formatter],
+          javascript = js_selector("javascript"),
+          javascriptreact = js_selector("javascriptreact"),
           json = filetypes.json.biome,
           kotlin = filetypes.kotlin.ktlint,
           latex = filetypes.latex.latexindent,
@@ -923,8 +923,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           svelte = filetypes.svelte.prettier,
           terraform = filetypes.terraform.terraformfmt,
           toml = filetypes.toml.taplo,
-          typescript = filetypes.typescript[js_formatter],
-          typescriptreact = filetypes.typescriptreact[js_formatter],
+          typescript = js_selector("typescript"),
+          typescriptreact = js_selector("typescriptreact"),
           vue = filetypes.vue.prettier,
           yaml = filetypes.yaml.pyaml,
           zig = filetypes.zig.zigfmt,
@@ -1796,8 +1796,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       peek.setup({
         auto_load = false,
       })
-      vim.api.nvim_create_user_command("PeekOpen", peek.open, {})
-      vim.api.nvim_create_user_command("PeekClose", peek.close, {})
+      vim.api.nvim_create_user_command("PeekOpen", peek.open, { bar = true })
+      vim.api.nvim_create_user_command("PeekClose", peek.close, { bar = true })
       vim.api.nvim_create_user_command("PeekReopen", function()
         peek.close()
         vim.wait(3000, function()
@@ -1806,7 +1806,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             return true
           end
         end, 500)
-      end, {})
+      end, { bar = true })
     end,
   },
   {
@@ -2258,15 +2258,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           elseif line == 1 then
             return pos_bar[1]
           else
-            return pos_bar[math.floor(
-              (#pos_bar - 2) * (line - 1) / (lines - 1)
-            ) + 2]
+            return pos_bar[math.floor((#pos_bar - 2) * (line - 1) / (lines - 1)) + 2]
           end
         end,
         padding = 0,
       }
       local function quickfix_doc()
-        return '<A-CR>: Select & close  <leader><CR>: Split & select'
+        return "<A-CR>: Select & close  <leader><CR>: Split & select"
       end
       require("lualine").setup({
         options = {
@@ -2459,7 +2457,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         },
         extensions = {
           {
-            filetypes = { 'qf' },
+            filetypes = { "qf" },
             sections = {
               lualine_a = { mode_component },
               lualine_b = { quickfix_doc },
@@ -2479,7 +2477,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
               lualine_y = { "%L" },
               lualine_z = {},
             },
-          }
+          },
         },
       })
     end,
@@ -2657,6 +2655,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   {
     "neovim/nvim-lspconfig",
     dependencies = {
+      { 'telescope.nvim' },
       { "hrsh7th/cmp-nvim-lsp" },
       -- { 'lvimuser/lsp-inlayhints.nvim' },
       -- { 'ray-x/lsp_signature.nvim' },
@@ -2886,124 +2885,78 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       local capabilities = require("cmp_nvim_lsp").default_capabilities(
         vim.lsp.protocol.make_client_capabilities()
       )
+      local util = require("lspconfig.util")
 
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
-      for _, lsp in pairs({
-        "autotools_ls",
-        "bashls",
-        "biome",
-        "ccls",
-        "html",
-        "intelephense",
-        "pyright",
-        "tsserver",
-      }) do
-        lspconfig[lsp].setup({
-          capabilities = capabilities,
-          flags = {
-            debounce_text_changes = 1000,
-          },
-        })
-      end
-      -- lspconfig.tsserver.setup {
-      --   capabilities = capabilities,
-      --   flags = {
-      --     debounce_text_changes = 1000,
-      --   },
-      --   settings = {
-      --     typescript = {
-      --       inlayHints = {
-      --         includeInlayParameterNameHints = 'all',
-      --         includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-      --         includeInlayFunctionParameterTypeHints = true,
-      --         includeInlayVariableTypeHints = true,
-      --         includeInlayPropertyDeclarationTypeHints = true,
-      --         includeInlayFunctionLikeReturnTypeHints = true,
-      --         includeInlayEnumMemberValueHints = true,
-      --       }
-      --     },
-      --     javascript = {
-      --       inlayHints = {
-      --         includeInlayParameterNameHints = 'all',
-      --         includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-      --         includeInlayFunctionParameterTypeHints = true,
-      --         includeInlayVariableTypeHints = true,
-      --         includeInlayPropertyDeclarationTypeHints = true,
-      --         includeInlayFunctionLikeReturnTypeHints = true,
-      --         includeInlayEnumMemberValueHints = true,
-      --       }
-      --     }
-      --   }
-      -- }
-      lspconfig.rust_analyzer.setup({
+      local base_config = {
         capabilities = capabilities,
         flags = {
           debounce_text_changes = 1000,
         },
-        settings = {
-          ["rust-analyzer"] = {
-            diagnostics = {
-              enable = true,
+      }
+      for lsp, config in pairs({
+        autotools_ls = base_config,
+        bashls = base_config,
+        biome = base_config,
+        ccls = base_config,
+        denols = append(base_config, {
+          root_dir = util.root_pattern("deno.json", "deno.jsonc"),
+        }),
+        html = base_config,
+        intelephense = base_config,
+        java_language_server = append(base_config, {
+          cmd = {
+            vim.env.HOME
+              .. "/tmp/java-language-server/dist/lang_server_linux.sh",
+          },
+        }),
+        pyright = base_config,
+        ruff_lsp = {
+          init_options = {
+            settings = {
+              args = { "--line-length", "79" },
             },
-            imports = {
-              granularity = {
-                group = "module",
-              },
-              prefix = "self",
-            },
-            cargo = {
-              buildScripts = {
+          },
+        },
+        rust_analyzer = append(base_config, {
+          settings = {
+            ["rust-analyzer"] = {
+              diagnostics = {
                 enable = true,
               },
-            },
-            procMacro = {
-              enable = true,
-            },
-            check = {
-              command = "clippy",
-            },
-            checkOnSave = {
-              command = "clippy",
+              imports = {
+                granularity = {
+                  group = "module",
+                },
+                prefix = "self",
+              },
+              cargo = {
+                buildScripts = {
+                  enable = true,
+                },
+              },
+              procMacro = {
+                enable = true,
+              },
+              check = {
+                command = "clippy",
+              },
+              checkOnSave = {
+                command = "clippy",
+              },
             },
           },
-        },
-      })
-      lspconfig.java_language_server.setup({
-        cmd = {
-          vim.env.HOME .. "/tmp/java-language-server/dist/lang_server_linux.sh",
-        },
-        capabilities = capabilities,
-        flags = {
-          debounce_text_changes = 1000,
-        },
-      })
-      lspconfig.typst_lsp.setup({
-        capabilities = capabilities,
-        flags = {
-          debounce_text_changes = 1000,
-        },
-        settings = {
-          exportPdf = "onType",
-        },
-      })
-      local util = require("lspconfig.util")
-      lspconfig.denols.setup({
-        root_dir = util.root_pattern("deno.json", "deno.jsonc"),
-        capabilities = capabilities,
-        flags = {
-          debounce_text_changes = 1000,
-        },
-      })
-
-      -- Linters
-      lspconfig.ruff_lsp.setup({
-        init_options = {
+        }),
+        tsserver = base_config,
+        typst_lsp = append(base_config, {
           settings = {
-            args = { "--line-length", "79" },
+            exportPdf = "onType",
           },
-        },
-      })
+        }),
+      }) do
+        lspconfig[lsp].setup(config)
+      end
 
       -- Highlights
       --vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true })
@@ -3016,6 +2969,37 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       for _, config in ipairs(matching_configs) do
         config.launch()
       end
+    end,
+  },
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter",
+      "nvim-neotest/neotest-python",
+      "nvim-neotest/neotest-jest",
+      "olimorris/neotest-phpunit",
+    },
+    cmd = { "Neotest", "NeotestDebug", "NeotestFile" },
+    config = function()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-python")({
+            dap = { justMyCode = false },
+          }),
+          require("neotest-jest")({
+            jestCommand = "npm test --",
+          }),
+          require("neotest-phpunit"),
+        },
+      })
+      vim.api.nvim_create_user_command("NeotestFile", function()
+        require("neotest").run.run(vim.fn.expand("%"))
+      end, { bar = true, desc = "Debug the nearest test" })
+      vim.api.nvim_create_user_command("NeotestDebug", function()
+        require("neotest").run.run({ strategy = "dap" })
+      end, { bar = true, desc = "Debug the nearest test" })
     end,
   },
   {
