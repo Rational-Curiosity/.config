@@ -18,6 +18,8 @@ default_floating_border pixel $border_size
 set $font Hack Nerd Font Mono
 font xft:$font 9
 
+set $focused_ws i3-msg -t get_workspaces | jq '.[] | select(.focused).num'
+
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
 set $lock i3lock --nofork --color=000000
@@ -53,13 +55,14 @@ set $rofi_args -mesg 'Submit input: C-j/C-RET'\
  -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8\
  -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p\
  -kb-page-next alt+n -kb-secondary-paste ctrl+y
-set $focused xprop -root _NET_ACTIVE_WINDOW|cut -d' ' -f5
+set $focused_win xprop -root _NET_ACTIVE_WINDOW|cut -d' ' -f5
 #? Select transparency:
-bindsym $mod+Control+t exec --no-startup-id "TRA=$(seq 1 -0.05 0.6|rofi -m -1 -dmenu $rofi_args);\
- [ -n \\"$TRA\\" ] && transset --id $(printf '%d' $($focused)) $TRA &"
+bindsym $mod+Control+t exec --no-startup-id "export LC_ALL=C;TRA=$(seq 1 -0.05 0.6\
+ |rofi -m -1 -dmenu $rofi_args);[ -n \\"$TRA\\" ]\
+ && transset --id $(printf '%d' $($focused_win)) $TRA &"
 #? Select brightness:
-bindsym $mod+Control+b exec --no-startup-id "BRI=$(seq 1 -0.05 0.3|rofi -m -1 -dmenu $rofi_args);\
- [ -n \\"$BRI\\" ] && brightness $BRI &"
+bindsym $mod+Control+b exec --no-startup-id "export LC_ALL=C;BRI=$(seq 1 -0.05 0.3\
+ |rofi -m -1 -dmenu $rofi_args);[ -n \\"$BRI\\" ] && brightness $BRI &"
 #? Select clipboard history:
 bindsym $mod+y exec --no-startup-id "rofi -m -1 -multi-select -modi 'clipboard:greenclip print' -show clipboard -run-command '{cmd}' $rofi_args &"
 bindsym $mod+Mod1+y exec --no-startup-id "O=\\"$(dunstctl history|jq '.data|.[0]|.[].message.data'\
@@ -347,11 +350,15 @@ for_window [class="^(Google-chrome\
 |Firefox-esr\
 |Navigator\
 |Gnome-calculator\
-|qBittorrent)"] exec --no-startup-id transset --id $(printf '%d' $($focused)) 0.9
+|qBittorrent)"] exec --no-startup-id "export LC_ALL=C;transset --id $(printf '%d' $($focused_win)) 0.9"
 for_window [class="^(Evince|Totem)"] border pixel $border_size
 for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
 for_window [class="^Scratchpad$"] move scratchpad
 for_window [instance=":\*$"] sticky enable
+for_window [instance=":\+$"] exec --no-startup-id "W=$($focused_ws);i3-msg move container to workspace number $((W + 1))"
+for_window [instance=":-$"] exec --no-startup-id "W=$($focused_ws);i3-msg move container to workspace number $((W - 1))"
+for_window [instance=":n$"] move container to workspace next_on_output
+for_window [instance=":p$"] move container to workspace prev_on_output
 assign [instance=":1$"] 1
 assign [instance=":2$"] 2
 assign [instance=":3$"] 3
