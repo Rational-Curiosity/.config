@@ -24,6 +24,7 @@ end
 abbr -a d disown
 abbr -a ec 'emacsclient -c -n -a ""'
 abbr -a ecn 'emacsclient -nw -a ""'
+abbr -a l ls
 abbr -a m math
 abbr -a se sudo -E
 abbr -a sv sudo -E nvim
@@ -34,11 +35,6 @@ if type -q eva
     abbr -a c eva
 else
     abbr -a c bc -l
-end
-if type -q exa
-    abbr -a l exa
-else
-    abbr -a l ls
 end
 abbr -a -- - 'cd -'
 abbr -a ... 'cd ../..'
@@ -149,8 +145,22 @@ end
 zoxide init fish | source
 starship init fish | source
 
+function weather
+    set -x LC_ALL C
+    set -l CITY "$(curl -s -m 0.8 ipinfo.io|jq -nrM 'try (input|.city) catch "Madrid"')"
+    switch $CITY
+    case 'Aranda de Duero'
+        set CITY Ponferrada
+    end
+    curl -s -m 0.8 "wttr.in/$CITY"\
+        |sed -E 's/\x1b\[([0-9;]+);5m([^\x1b]+)\x1b\[([0-9;]+);25m/\x1b\[\1m\2\x1b\[\3m/g'
+end
+
 if test $COLUMNS -ge 90
     set -l banners
+    if ping -q -c 1 -W 0.5 wttr.in &>/dev/null
+        set -a banners 'weather'
+    end
     if type -q flashfetch
         set -a banners 'timeout -k 1.25s 1.0s flashfetch'
     end
