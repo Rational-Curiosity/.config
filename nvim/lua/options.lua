@@ -38,8 +38,8 @@ opt.listchars = {
   eol = "↲",
   nbsp = "␣",
   trail = "•",
-  extends = "⟩",
-  precedes = "⟨",
+  extends = "⮞",
+  precedes = "⮜",
 }
 o.cursorline = true
 o.wrap = false
@@ -630,16 +630,16 @@ end
 
 function _G.find_ancestor(filename, path)
   if path then
-    if path:sub(1, 1) == '~' then
+    if path:sub(1, 1) == "~" then
       path = vim.fn.expand(path)
-    elseif path:sub(1, 1) ~= '/' then
-      path = vim.fn.fnamemodify(path, ':p')
+    elseif path:sub(1, 1) ~= "/" then
+      path = vim.fn.fnamemodify(path, ":p")
     end
   else
     path = vim.fn.getcwd()
   end
-  while path ~= '/' do
-    local filepath = path .. '/' .. filename
+  while path ~= "/" do
+    local filepath = path .. "/" .. filename
     if vim.fn.filereadable(filepath) ~= 0 then
       return filepath
     end
@@ -650,6 +650,15 @@ function _G.find_ancestor(filename, path)
     return filepath
   end
   return nil
+end
+
+function _G.append(from, to)
+  for k, v in pairs(from) do
+    if to[k] == nil then
+      to[k] = v
+    end
+  end
+  return to
 end
 
 -- Keymap bindings
@@ -737,6 +746,12 @@ end, { desc = "Goto win 9" })
 mapset("n", "<C-W>e", function()
   o.signcolumn = o.signcolumn == "number" and "auto:1" or "number"
 end, { desc = "Toggle sign column" })
+mapset("n", "<C-W>E", function()
+  local signcolumn = o.signcolumn == "number" and "auto:1" or "number"
+  for _, win in pairs(api.nvim_list_wins()) do
+    api.nvim_win_set_option(win, "signcolumn", signcolumn)
+  end
+end, { desc = "Toggle sign column all windows" })
 mapset(
   "n",
   "<C-W>w",
