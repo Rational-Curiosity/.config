@@ -106,7 +106,6 @@ vim.cmd([[
     "autocmd BufWritePost plugins.lua source | PackerCompile
     " Terminal config
     autocmd TermOpen term://* setlocal scrollback=100000 nospell|startinsert
-    autocmd BufWinEnter,WinEnter term://* startinsert
   augroup end
 
   " SNIPPETS
@@ -246,6 +245,15 @@ nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><
     end,
   })
 end
+api.nvim_create_autocmd({ "BufWinEnter" ,"WinEnter" }, {
+  group = "initAutoGroup",
+  pattern = { "term://*" },
+  callback = function()
+    if fn.jobwait({bo.channel}, 0)[1] == -1 then
+      vim.cmd('startinsert')
+    end
+  end,
+})
 api.nvim_create_autocmd({ "TermEnter" }, {
   group = "initAutoGroup",
   pattern = { "*" },
