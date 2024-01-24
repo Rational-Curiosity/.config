@@ -416,32 +416,28 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       },
     },
     config = function()
-      local compose_file = vim.env.HOME
-        .. "/Prog/gigas/gigas_devenv/docker-compose.yml"
       local overseer = require('overseer')
       overseer.setup({
-          -- {
-          --   name = "Docker Compose gigas CORE stop",
-          --   cmd = "docker compose --ansi never stop db_maria db_mysql db_redis rabbitmq websockifier id-provider",
-          --   env = {
-          --     COMPOSE_FILE = compose_file,
-          --   },
-          -- },
-          -- {
-          --   name = "Docker Compose gigas KVM up",
-          --   cmd = "docker compose --ansi never up -d apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router",
-          --   env = {
-          --     COMPOSE_FILE = compose_file,
-          --   },
-          -- },
-          -- {
-          --   name = "Docker Compose gigas KVM stop",
-          --   cmd = "docker compose --ansi never stop apiproxy api-kvm executor-kvm kudeiro-kvm controlpanel gopanel hapi hostbill mapp router",
-          --   env = {
-          --     COMPOSE_FILE = compose_file,
-          --   },
-          -- },
+        component_aliases = {
+          default = {
+            { "display_duration", detail_level = 2 },
+            "on_output_summarize",
+            "on_exit_set_status",
+            "on_complete_notify",
+            { "on_complete_dispose", timeout = 600 },
+          },
+        },
       })
+      local compose_file = vim.env.HOME
+        .. "/Prog/gigas/gigas_devenv/docker-compose.yml"
+      local containers_core = {
+        "db_maria",
+        "db_mysql",
+        "db_redis",
+        "rabbitmq",
+        "websockifier",
+        "id-provider",
+      }
       overseer.register_template({
         name = "Docker Compose gigas CORE up",
         builder = function(params)
@@ -453,12 +449,74 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
               "never",
               "up",
               "-d",
-              "db_maria",
-              "db_mysql",
-              "db_redis",
-              "rabbitmq",
-              "websockifier",
-              "id-provider",
+              umpack(containers_core),
+            },
+            env = {
+              COMPOSE_FILE = compose_file,
+            },
+          }
+        end,
+      })
+      overseer.register_template({
+        name = "Docker Compose gigas CORE stop",
+        builder = function(params)
+          return {
+            cmd = "docker",
+            args = {
+              "compose",
+              "--ansi",
+              "never",
+              "stop",
+              umpack(containers_core),
+            },
+            env = {
+              COMPOSE_FILE = compose_file,
+            },
+          }
+        end,
+      })
+      local containers_kvm = {
+        "apiproxy",
+        "api-kvm",
+        "executor-kvm",
+        "kudeiro-kvm",
+        "controlpanel",
+        "gopanel",
+        "hapi",
+        "hostbill",
+        "mapp",
+        "router",
+      }
+      overseer.register_template({
+        name = "Docker Compose gigas KVM up",
+        builder = function(params)
+          return {
+            cmd = "docker",
+            args = {
+              "compose",
+              "--ansi",
+              "never",
+              "up",
+              "-d",
+              umpack(containers_kvm),
+            },
+            env = {
+              COMPOSE_FILE = compose_file,
+            },
+          }
+        end,
+      })
+      overseer.register_template({
+        name = "Docker Compose gigas KVM stop",
+        builder = function(params)
+          return {
+            cmd = "docker",
+            args = {
+              "compose",
+              "--ansi",
+              "never",
+              "stop",
+              umpack(containers_kvm),
             },
             env = {
               COMPOSE_FILE = compose_file,
