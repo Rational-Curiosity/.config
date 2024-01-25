@@ -347,9 +347,10 @@ for_window [class="^(Yad|TilingFloat|Florence|Gnome-calculator)"] floating enabl
 for_window [window_role="^pop-up$"] floating enable
 for_window [class="^(Google-chrome\
 |Chromium\
-|Firefox-esr\
+|[Ff]irefox\
 |Navigator\
 |Gnome-calculator\
+|[Ee]vince
 |qBittorrent)"] exec --no-startup-id "export LC_ALL=C;transset --id $(printf '%d' $($focused_win)) 0.9"
 for_window [class="^(Evince|Totem)"] border pixel $border_size
 for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
