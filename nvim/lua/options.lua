@@ -273,8 +273,13 @@ api.nvim_create_autocmd({ "TermLeave" }, {
 api.nvim_create_autocmd({ "TermClose" }, {
   group = "initAutoGroup",
   pattern = { "*" },
-  callback = function()
+  callback = function(ev)
     api.nvim_command('stopinsert')
+    vim.keymap.set("n", "q", "<cmd>bdelete<cr>", {
+      buffer = ev.buf,
+      noremap = true,
+      silent = true,
+    })
   end,
 })
 api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
