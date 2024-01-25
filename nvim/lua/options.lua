@@ -250,7 +250,7 @@ api.nvim_create_autocmd({ "BufWinEnter" ,"WinEnter" }, {
   pattern = { "term://*" },
   callback = function()
     if fn.jobwait({bo.channel}, 0)[1] == -1 then
-      vim.cmd('startinsert')
+      api.nvim_command('startinsert')
     end
   end,
 })
@@ -268,6 +268,13 @@ api.nvim_create_autocmd({ "TermLeave" }, {
   callback = function()
     wo.number = true
     wo.relativenumber = true
+  end,
+})
+api.nvim_create_autocmd({ "TermClose" }, {
+  group = "initAutoGroup",
+  pattern = { "*" },
+  callback = function()
+    api.nvim_command('stopinsert')
   end,
 })
 api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
