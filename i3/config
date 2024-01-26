@@ -344,17 +344,18 @@ bindsym $mod+Control+Return [class="^Scratchpad$"] scratchpad show;\
  [class="^Scratchpad$"] move position center
 
 for_window [class="^(Yad|TilingFloat|Florence|Gnome-calculator)"] floating enable
-for_window [window_role="^pop-up$"] floating enable
-for_window [class="^(Google-chrome\
-|Chromium\
+for_window [class="^(Chromium\
+|Evince\
 |[Ff]irefox\
-|Navigator\
 |Gnome-calculator\
-|[Ee]vince
-|qBittorrent)"] exec --no-startup-id "export LC_ALL=C;transset --id $(printf '%d' $($focused_win)) 0.9"
+|Google-chrome\
+|Navigator\
+|qBittorrent\
+|Tor Browser)"] exec --no-startup-id "export LC_ALL=C;transset --id $(printf '%d' $($focused_win)) 0.9"
 for_window [class="^(Evince|Totem)"] border pixel $border_size
-for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
 for_window [class="^Scratchpad$"] move scratchpad
+for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
+for_window [window_role="^pop-up$"] floating enable
 for_window [instance=":\*$"] sticky enable
 for_window [instance=":\+$"] exec --no-startup-id "W=$($focused_ws);i3-msg move container to workspace number $((W + 1))"
 for_window [instance=":-$"] exec --no-startup-id "W=$($focused_ws);i3-msg move container to workspace number $((W - 1))"
