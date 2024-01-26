@@ -1915,7 +1915,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       orgmode.setup({
         org_agenda_files = { "~/var/Dropbox/Orgzly/*", "~/my-orgs/**/*" },
         org_default_notes_file = vim.fn.filereadable(notes) ~= 0 and notes
-          or nil,
+          or '',
         org_todo_keywords = {
           "TODO(t)",
           "NEXT(n)",
@@ -1957,7 +1957,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         org_priority_default = "H",
         org_priority_lowest = "O",
         org_ellipsis = "▼",
-        org_indent_mode = "noindent",
+        org_startup_indented = false,
+        org_adapt_indentation = false,
         org_log_into_drawer = "LOGSTATE",
       })
     end,
