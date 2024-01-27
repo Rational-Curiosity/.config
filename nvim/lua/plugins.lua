@@ -411,23 +411,28 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     dependencies = { 'telescope.nvim' },
     cmd = { 'OverseerRun', 'OverseerToggle' },
     keys = {
-      {
-        "<leader>ft", "<cmd>OverseerRun<cr>", desc = "Telescope overseer"
-      },
+      { "<leader>ft", "<cmd>OverseerRun<cr>", desc = "Telescope overseer" },
     },
     config = function()
       local overseer = require('overseer')
       overseer.setup({
+        task_list = {
+          default_detail = 2,
+        },
         component_aliases = {
           default = {
             { "display_duration", detail_level = 2 },
-            "on_output_summarize",
+            { "on_output_summarize", max_lines = 7 },
             "on_exit_set_status",
             "on_complete_notify",
+            { "on_complete_open", enter = true, direction = "left" },
             { "on_complete_dispose", timeout = 600 },
           },
         },
       })
+      overseer.add_template_hook({ module = "^make$" }, function(task_defn, util)
+        vim.api.nvim_command("wall")
+      end)
       local compose_file = vim.env.HOME
         .. "/Prog/gigas/gigas_devenv/docker-compose.yml"
       local containers_core = {
