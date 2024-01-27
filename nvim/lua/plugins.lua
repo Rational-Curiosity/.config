@@ -527,6 +527,19 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     end
   },
   {
+    "rcarriga/nvim-notify",
+    event = "VeryLazy",
+    config = function()
+      local notify = require('notify')
+      notify.setup({
+        render = "compact",
+        stages = "static",
+        level = 0,
+      })
+      vim.notify = notify
+    end,
+  },
+  {
     "nvim-telescope/telescope.nvim",
     dependencies = {
       { "nvim-lua/plenary.nvim" },
