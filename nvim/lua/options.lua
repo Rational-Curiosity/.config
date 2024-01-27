@@ -528,18 +528,18 @@ do
 end
 
 -- Notifications
-do
-  local orig_notify_once = vim.notify_once
-  vim.notify_once = function(msg, level, opts)
-    local messages = { "fidget.nvim will soon be rewritten. " }
-    for _, message in ipairs(messages) do
-      if msg:sub(1, #message) == message then
-        return
-      end
-    end
-    orig_notify_once(msg, level, opts)
-  end
-end
+-- do
+--   local orig_notify_once = vim.notify_once
+--   vim.notify_once = function(msg, level, opts)
+--     local messages = { "fidget.nvim will soon be rewritten. " }
+--     for _, message in ipairs(messages) do
+--       if msg:sub(1, #message) == message then
+--         return
+--       end
+--     end
+--     orig_notify_once(msg, level, opts)
+--   end
+-- end
 
 -- Global functions
 function _G.getcwdhead()
