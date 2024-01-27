@@ -781,7 +781,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       telescope.setup({
         extensions = {
           ["ui-select"] = {
-            require("telescope.themes").get_dropdown({})
+            require("telescope.themes").get_dropdown({
+              initial_mode = "insert",
+              layout_config = {
+                width = 0.7,
+                height = 0.7,
+              },
+            })
           },
           fzf = {
             fuzzy = true, -- false will only do exact matching
@@ -3557,7 +3563,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         F = { name = "Yank filename" },
         G = { name = "Neogit" },
         h = { name = "Gitsigns", t = "Toggle" },
-        o = { name = "Org", i = "Insert", x = "Clock" },
+        o = { name = "Org", i = "Insert", l = "Link", x = "Clock" },
         P = { name = "Put exec" },
         R = { name = "Snip run" },
         S = { name = "Sessions", W = "Working dir" },
