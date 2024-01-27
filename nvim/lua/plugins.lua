@@ -2655,6 +2655,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           { name = "orgmode" },
           -- { name = 'neorg' },
           -- { name = 'codeium' },
+          { name = 'otter' },
         }, {
           { name = "buffer" },
         }),
@@ -3029,6 +3030,60 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         config.launch()
       end
     end,
+  },
+  {
+    'jmbuhr/otter.nvim',
+    dependencies = {
+      'nvim-cmp',
+      'nvim-lspconfig',
+      'nvim-treesitter',
+    },
+    ft = {
+      'markdown', 'org'
+    },
+    init = function()
+      vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+        group = "initAutoGroup",
+        pattern = { "*.md", "*.org" },
+        callback = function(ev)
+          local otter = require("otter")
+          otter.activate(ft_prog_lsp)
+          mapset(
+            "n",
+            "<leader>ld",
+            otter.ask_definition,
+            { silent = true, buffer = ev.buf, desc = "Lsp definition" }
+          )
+          mapset(
+            "n",
+            "<leader>lK",
+            otter.ask_hover,
+            { silent = true, buffer = ev.buf, desc = "Lsp hover" }
+          )
+          mapset(
+            "n",
+            "<leader>lt",
+            otter.ask_type_definition,
+            { silent = true, buffer = ev.buf, desc = "Lsp type definition" }
+          )
+          mapset(
+            "n",
+            "<leader>ln",
+            otter.ask_rename,
+            { silent = true, buffer = ev.buf, desc = "Lsp rename" }
+          )
+          mapset(
+            "n",
+            "<leader>lr",
+            otter.ask_references,
+            { silent = true, buffer = ev.buf, desc = "Lsp references" }
+          )
+          mapset({ "n", "v" }, "<leader>lf",
+            otter.ask_format,
+            { silent = true, buffer = ev.buf, desc = "Lsp format" })
+        end,
+      })
+    end
   },
   {
     "nvim-neotest/neotest",
