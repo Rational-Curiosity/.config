@@ -3044,12 +3044,12 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       'nvim-treesitter',
     },
     ft = {
-      'markdown', 'org'
+      'html', 'markdown', 'org'
     },
     init = function()
       vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
         group = "initAutoGroup",
-        pattern = { "*.md", "*.org" },
+        pattern = { "*.html", "*.htm", "*.md", "*.org" },
         callback = function(ev)
           local otter = require("otter")
           otter.activate(ft_prog_lsp)
