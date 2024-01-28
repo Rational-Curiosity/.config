@@ -156,7 +156,7 @@ function weather
         |sed -E 's/\x1b\[([0-9;]+);5m([^\x1b]+)\x1b\[([0-9;]+);25m/\x1b\[\1m\2\x1b\[\3m/g'
 end
 
-if test $COLUMNS -ge 90
+if not set -q NVIM && not set -q INSIDE_EMACS && test $COLUMNS -ge 90
     set -l banners
     if ping -q -c 1 -W 0.5 wttr.in &>/dev/null
         set -a banners 'weather'
