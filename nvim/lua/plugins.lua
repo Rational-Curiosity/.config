@@ -3043,9 +3043,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       'nvim-lspconfig',
       'nvim-treesitter',
     },
-    ft = {
-      'html', 'markdown', 'org'
-    },
     init = function()
       vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
         group = "initAutoGroup",
