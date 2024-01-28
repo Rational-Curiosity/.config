@@ -429,6 +429,17 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             { "on_complete_dispose", timeout = 600 },
           },
         },
+        log = {
+          {
+            type = "notify",
+            level = vim.log.levels.WARN,
+          },
+          {
+            type = "file",
+            filename = "overseer.log",
+            level = vim.log.levels.WARN,
+          },
+        },
       })
       overseer.add_template_hook({ module = "^make$" }, function(task_defn, util)
         vim.api.nvim_command("wall")
