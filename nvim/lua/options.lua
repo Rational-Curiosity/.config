@@ -408,8 +408,34 @@ api.nvim_create_autocmd({ "CmdlineLeave" }, {
   group = "initAutoGroup",
   pattern = { "*" },
   callback = function()
-    if o.cmdheight == 1 then
-      o.cmdheight = 0
+    if o.cmdheight ~= 0 then
+      local cmdtype = fn.getcmdtype()
+      if cmdtype == ':' then
+        if fn.getcmdline() == '' then
+          o.cmdheight = 0
+          return
+        end
+        local regcmd = fn.getreg(':')
+        if regcmd ~= '' and regcmd ~= fn.histget(':', -1) then
+          fn.histdel(':', -1)
+        end
+      end
+      api.nvim_command('redir => g:tmp_last_output')
+      fn.timer_start(100, function()
+        api.nvim_command('redir END')
+        local tmp_output = vim.trim(api.nvim_get_var('tmp_last_output'))
+        if cmdtype == '/' or cmdtype == '?' then
+          tmp_output = tmp_output:gsub('^[/?][^\n]*\n?\n?', '', 1)
+        end
+        if tmp_output == '' or select(2, tmp_output:gsub('\n', '')) > 0 then
+          o.cmdheight = 0
+        else
+          -- if cmdtype == ':' and tmp_output:sub(1, 6) ~= 'E492: ' then
+          --   fn.setreg(':', 'echoerr "Not an editor command"')
+          -- end
+          fn.timer_start(5000, function() o.cmdheight = 0 end)
+        end
+      end)
     end
   end,
 })
