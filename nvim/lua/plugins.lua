@@ -21,6 +21,7 @@ local ft_prog_lsp = {
   "config",
   "cpp",
   "h",
+  "handlebars",
   "hpp",
   "html",
   "java",
@@ -551,8 +552,14 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         render = "compact",
         stages = "static",
         level = 0,
+        timeout = 10000,
+        top_down = false,
       })
       vim.notify = notify
+      mapset(
+        "n", "<leader>Id", notify.dismiss,
+        { desc = "Dismiss all notifications" }
+      )
     end,
   },
   {
@@ -615,6 +622,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         "<leader>fd",
         "<cmd>Telescope diagnostics<cr>",
         desc = "Telescope diagnostic",
+      },
+      {
+        "<leader>fW",
+        "<cmd>Telescope find_files cwd=%:p:h initial_mode=insert<cr>",
+        desc = "Telescope find_files cwd",
       },
       {
         "<leader>fF",
@@ -780,8 +792,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             args[#args + 1] = s
           end)
         end
-        print(opts.ft)
-        if opts.ft == true then
+        if opts.ft then
           for _, v in
             pairs(fd_filetype_args[vim.bo.filetype] or { vim.bo.filetype })
           do
@@ -1044,12 +1055,12 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     "nat-418/boole.nvim",
-    keys = { "<C-.>", "<C-,>" },
+    keys = { "<A-a>", "<A-x>" },
     config = function()
       require("boole").setup({
         mappings = {
-          increment = "<C-.>",
-          decrement = "<C-,>",
+          increment = "<A-a>",
+          decrement = "<A-x>",
         },
         additions = {
           { "trace", "debug", "info", "warning", "warn", "error", "fatal" },
@@ -1348,23 +1359,29 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "diff",
           "dockerfile",
           "dot",
+          "doxygen",
           "dtd",
           "elixir",
           "elm",
           "erlang",
           "fennel",
           "fish",
+          "git_config",
           "git_rebase",
           "gitattributes",
           "gitcommit",
           "gitignore",
           "glimmer",
+          "gnuplot",
           "go",
           "godot_resource",
           "gomod",
+          "gosum",
           "gowork",
+          "gpg",
           "graphql",
           "haskell",
+          "haskell_persistent",
           "hjson",
           "html",
           "htmldjango",
@@ -1398,13 +1415,17 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "org",
           "perl",
           "php",
+          "php_only",
           "phpdoc",
-          "python",
+          "printf",
           "properties",
+          "proto",
+          "pymanifest",
+          "python",
           "ql",
           "query",
-          "regex",
           "rasi",
+          "regex",
           "ron",
           "rst",
           "rust",
@@ -1415,8 +1436,11 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           "ssh_config",
           "styled",
           "svelte",
+          "swift",
+          "sxhkdrc",
           "textproto",
           "toml",
+          "tsv",
           "tsx",
           "typescript",
           "vim",
@@ -1502,8 +1526,14 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
 
       vim.keymap.set(
         "",
-        "<space>I",
-        "<cmd>echo nvim_treesitter#statusline()<cr>"
+        "<leader>Is",
+        function()
+          vim.notify(
+            vim.fn["nvim_treesitter#statusline"](),
+            vim.log.levels.INFO
+          )
+        end,
+        { desc = "Treesitter statusline" }
       )
       -- vim.treesitter.set_query("python", "folds", [[
       --   (function_definition (block) @fold)
@@ -1639,6 +1669,30 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         ["]"] = { name = "Swap next" },
       }, { mode = "n", prefix = "<leader>" })
     end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    dependencies = { "nvim-treesitter" },
+    event = "VeryLazy",
+    config = function()
+      local tscontext = require("treesitter-context")
+      tscontext.setup({
+        max_lines = 4,
+        multiline_threshold = 1,
+        mode = 'topline',
+      })
+      vim.api.nvim_set_hl(
+        0, "TreesitterContextBottom",
+        { sp = "gray", underline = true }
+      )
+      vim.api.nvim_set_hl(
+        0, "TreesitterContextLineNumberBottom",
+        { sp = "gray", underline = true }
+      )
+      mapset("n", "[x", function()
+        tscontext.go_to_context(vim.v.count1)
+      end, { silent = true })
+    end
   },
   {
     "ziontee113/syntax-tree-surfer",
@@ -2072,16 +2126,73 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     ft = { "log" },
   },
   {
-    "echasnovski/mini.hipatterns",
+    -- "echasnovski/mini.hipatterns",
+    -- event = "VeryLazy",
+    -- config = function()
+    --   local hipatterns = require("mini.hipatterns")
+    --   hipatterns.setup({
+    --     highlighters = {
+    --       htm_color = {
+    --         pattern = '#%x%x%x%x%x%x%x?%x?%f[%X]',
+    --         group = function(_, _, data)
+    --           local match = data.full_match
+    --           return hipatterns.compute_hex_color_group(
+    --             #match > 7 and match:sub(1, 7) or match,
+    --             'bg'
+    --           )
+    --         end,
+    --         extmark_opts = { priority = 200 },
+    --       },
+    --       hex_color = {
+    --         pattern = '0x%x%x%x%x%x%x%x?%x?%f[%X]',
+    --         group = function(_, _, data)
+    --           local match = data.full_match:sub(3)
+    --           return hipatterns.compute_hex_color_group(
+    --             '#' .. (#match > 6 and match:sub(3) or match),
+    --             'bg'
+    --           )
+    --         end,
+    --         extmark_opts = { priority = 200 },
+    --       },
+    --     },
+    --   })
+    -- end,
+    "NvChad/nvim-colorizer.lua",
     event = "VeryLazy",
     config = function()
-      local hipatterns = require("mini.hipatterns")
-      hipatterns.setup({
-        highlighters = {
-          -- Highlight hex color strings (`#rrggbb`) using that color
-          hex_color = hipatterns.gen_highlighter.hex_color(),
-        },
+      local colorizer = require("colorizer")
+      colorizer.setup({
+        user_default_options = {
+          RGB = true,
+          RRGGBB = true,
+          names = false,
+          RRGGBBAA = true,
+          AARRGGBB = true,
+        }
       })
+      colorizer.attach_to_buffer(0)
+    end,
+  },
+  {
+    "chrisbra/Colorizer",
+    init = function()
+      vim.cmd([[
+      " Conflict with vim.g.loaded_colorizer from nvim-colorizer
+      command! ColorHighlight unlet g:loaded_colorizer|
+        \let g:colorizer_skip_comments = 1|
+        \let g:colorizer_colornames = 0|
+        \let g:colorizer_hex_pattern = []|
+        \let g:colorizer_textchangedi = 0|
+        \let g:colorizer_vimhighl_dump_disable = 1|
+        \let g:colorizer_taskwarrior_disable = 1|
+        \let g:colorizer_vimhighlight_disable = 1|
+        \let g:colorizer_vimcolors_disable = 1|
+        \let g:colorizer_rgba_disable = 1|
+        \let g:colorizer_rgb_disable = 1|
+        \let g:colorizer_hsla_disable = 1|
+        \let g:colorizer_colornames_disable = 1|
+        \Lazy load Colorizer|ColorHighlight
+      ]])
     end,
   },
   {
@@ -2280,7 +2391,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         ["Rvc"] = "⇒", -- Virtual Replace mode completion |compl-generic|
         ["Rvx"] = "⇒", -- Virtual Replace mode |i_CTRL-X| completion
         ["c"] = "C", -- Command-line editing
+        ["cr"] = "C", -- Command-line editing overstrike mode |c_<Insert>|
         ["cv"] = "⌘", -- Vim Ex mode |gQ|
+        ["cvr"] = "⌘", -- Vim Ex mode while in overstrike mode |c_<Insert>|
         ["r"] = "↲", -- Hit-enter prompt
         ["rm"] = "…", -- The -- more -- prompt
         ["r?"] = "?", -- A |:confirm| query of some sort
@@ -2294,9 +2407,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         color = { fg = "#000000", gui = "bold" },
         padding = { left = 0, right = 0 },
       }
-      local search_rec_component = {
+      local cmd_component = {
         function()
-          local status = {}
+          local status = { '%S' }
           if vim.v.hlsearch ~= 0 then
             local search = vim.fn.searchcount()
             if search.total > 0 then
@@ -2482,7 +2595,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             --   display_components = {{'title', 'percentage', 'message'}, 'lsp_client_name', 'spinner'},
             --   spinner_symbols = { '⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷' }},
             -- { 'nvim_treesitter#statusline', max_length = 20 },
-            search_rec_component,
+            cmd_component,
             codeium_component,
           },
           lualine_y = {
@@ -2526,7 +2639,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
               lualine_a = { mode_component },
               lualine_b = { quickfix_doc },
               lualine_c = {},
-              lualine_x = { search_rec_component },
+              lualine_x = { cmd_component },
               lualine_y = {},
               lualine_z = {
                 { "location", padding = 0 },
@@ -2615,9 +2728,50 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     },
     event = { "InsertEnter", "CmdlineEnter" },
     config = function()
-      -- Setup nvim-cmp.
-      local cmp = require("cmp")
+      local kind_icons = {
+        Text = "",
+        Method = "󰆧",
+        Function = "󰊕",
+        Constructor = "",
+        Field = "󰇽",
+        Variable = "󰂡",
+        Class = "󰠱",
+        Interface = "",
+        Module = "",
+        Property = "󰜢",
+        Unit = "",
+        Value = "󰎠",
+        Enum = "",
+        Keyword = "󰌋",
+        Snippet = "",
+        Color = "󰏘",
+        File = "󰈙",
+        Reference = "",
+        Folder = "󰉋",
+        EnumMember = "",
+        Constant = "󰏿",
+        Struct = "",
+        Event = "",
+        Operator = "󰆕",
+        TypeParameter = "󰅲",
+      }
+      local source_names = {
+        buffer = "Buf",
+        cmdline = ":",
+        cmdline_history = ":Hi",
+        conventionalcommits = "CC",
+        latex_symbols = "TeX",
+        luasnip = "LSn",
+        nvim_lsp = "LSP",
+        nvim_lsp_signature_help = "Sig",
+        nvim_lua = "Lua",
+        orgmode = "Org",
+        otter = "Ott",
+        path = "/…",
+        treesitter = "TS",
+      }
 
+      local cmp = require("cmp")
       cmp.setup({
         performance = {
           debounce = 50,
@@ -2636,6 +2790,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
             -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
           end,
+        },
+        formatting = {
+          format = function(entry, vim_item)
+            vim_item.kind = kind_icons[vim_item.kind] or vim_item.kind
+            vim_item.menu = source_names[entry.source.name] or entry.source.name
+            return vim_item
+          end
         },
         window = {
           -- completion = cmp.config.window.bordered(),
@@ -2861,7 +3022,10 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             desc = "Lsp remove workspace folder",
           })
           mapset("n", "<leader>lL", function()
-            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+            vim.notify(
+              table.concat(vim.lsp.buf.list_workspace_folders(), "\n"),
+              vim.log.levels.INFO
+            )
           end, {
             silent = true,
             buffer = ev.buf,
@@ -2963,14 +3127,19 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       for lsp, config in pairs({
         autotools_ls = base_config,
         bashls = base_config,
-        biome = base_config,
+        biome = append_to_last(base_config, {
+          root_dir = util.root_pattern("biome.json", ".git"),
+        }),
         ccls = base_config,
-        denols = append(base_config, {
+        denols = append_to_last(base_config, {
           root_dir = util.root_pattern("deno.json", "deno.jsonc"),
+        }),
+        ember = append_to_last(base_config, {
+          root_dir = util.root_pattern("ember-cli-build.js"),
         }),
         html = base_config,
         intelephense = base_config,
-        java_language_server = append(base_config, {
+        java_language_server = append_to_last(base_config, {
           cmd = {
             vim.env.HOME
               .. "/tmp/java-language-server/dist/lang_server_linux.sh",
@@ -2984,7 +3153,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
             },
           },
         },
-        rust_analyzer = append(base_config, {
+        rust_analyzer = append_to_last(base_config, {
           settings = {
             ["rust-analyzer"] = {
               diagnostics = {
@@ -3014,7 +3183,7 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           },
         }),
         tsserver = base_config,
-        typst_lsp = append(base_config, {
+        typst_lsp = append_to_last(base_config, {
           settings = {
             exportPdf = "onType",
           },
@@ -3517,6 +3686,17 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
     config = function()
       local which_key = require("which-key")
       which_key.setup({
+        key_labels = {
+          ["<space>"] = "␣",
+          ["<Space>"] = "␣",
+          ["<SPACE>"] = "␣",
+          ["<cr>"] = "↲",
+          ["<Cr>"] = "↲",
+          ["<CR>"] = "↲",
+          ["<tab>"] = "⭾",
+          ["<Tab>"] = "⭾",
+          ["<TAB>"] = "⭾",
+        },
         popup_mappings = {
           scroll_down = "<C-d>", -- binding to scroll down inside the popup
           scroll_up = "<C-u>", -- binding to scroll up inside the popup
