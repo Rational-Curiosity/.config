@@ -203,7 +203,7 @@ if not set -q NVIM && not set -q INSIDE_EMACS && test $COLUMNS -ge 90
         set -a banners 'weather'
     end
     if type -q flashfetch
-        set -a banners 'LC_ALL=C timeout -k 1.25s 1.0s flashfetch'
+        set -a banners 'timeout -k 1.25s 1.0s flashfetch'
     end
     # if type -q unsplash-feh
     #     set -a banners 'unsplash-feh &; disown'
