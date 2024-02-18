@@ -125,15 +125,76 @@ end
 zoxide init fish | source
 starship init fish | source
 
-function weather
-    set -x LC_ALL C
-    set -l CITY "$(curl -s -m 0.8 ipinfo.io|jq -nrM 'try (input|.city) catch "Madrid"')"
-    switch $CITY
-    case 'Aranda de Duero'
-        set CITY Ponferrada
+function interface
+    ip route | grep '^default' | cut -d' ' -f5
+end
+function mtu -a itf
+    if test -z "$itf"
+        set itf (interface)
     end
-    curl -s -m 0.8 "wttr.in/$CITY"\
-        |sed -E 's/\x1b\[([0-9;]+);5m([^\x1b]+)\x1b\[([0-9;]+);25m/\x1b\[\1m\2\x1b\[\3m/g'
+    ip link show "$itf" | sed -nr 's/^.* mtu ([0-9]+) .*$/\1/p'
+end
+
+function weather
+    set -l CACHE ~/.cache/weather.response
+    set -l MAX_TIME 0.8
+    set -l CMD
+    if type -q wego
+        # go install github.com/schachmat/wego@latest
+        # owm-api-key=271e944f618513ad8ed9f7d5d75f6175
+        set CMD 'wego -l "$CITY"'
+    else
+        set CMD 'curl -s -m "$MAX_TIME" "wttr.in/$CITY"'
+    end
+    while set -q argv[1]
+        switch $argv[1]
+        case --clear
+            rm -f "$CACHE"
+        case --city
+            curl -s -m "$MAX_TIME" ipinfo.io
+            return
+        case -m --max-time
+            set MAX_TIME $argv[2]
+            set -e argv[1]
+        case --wego
+            set CMD 'wego -l "$CITY"'
+        case --wttr
+            set CMD 'curl -s -m "$MAX_TIME" "wttr.in/$CITY"'
+        case '*'
+            rm -f "$CACHE"
+            set CITY "$argv[1]"
+        end
+        set -e argv[1]
+    end
+    set -l SINCE
+    if not test -f $CACHE
+            or begin set SINCE (math \( (date +%s) - (date -r $CACHE +%s) \) / 3600); test $SINCE -gt 5; end
+        if not set -q CITY
+            set CITY "$(curl -s -m "$MAX_TIME" ipinfo.io|jq -nrM 'try (input|.city) catch "Madrid"')"
+            if test $pipestatus[1] -ne 0
+                echo 'weather: Failed to get city name from ipinfo.io' >&2
+            end
+            switch $CITY
+            case 'Aranda de Duero' Zaragoza
+                set CITY Ponferrada
+            end
+        end
+
+        eval $CMD|sed -E 's/\x1b\[([0-9;]+);5m([^\x1b]+)\x1b\[([0-9;]+);25m/\x1b\[\1m\2\x1b\[\3m/g'\
+            > $CACHE
+        if test $pipestatus[1] -ne 0
+            rm -f $CACHE
+            echo 'weather: Failed to get weather from wttr.in' >&2
+            return
+        end
+    else
+        echo "weather: data getted $(math floor $SINCE) hours $(math round $SINCE % 1 x 60) minutes ago" >&2
+    end
+    if test $COLUMNS -lt 125
+        sed -E "s/^[┌│├└ ][ ─]//;s/^([^\x1b]|(\x1b\[[0-9;]+m)+[^\x1b]){$(math "ceil((123-$COLUMNS)/2)")}(([^\x1b]|(\x1b\[[0-9;]+m)+[^\x1b]){$COLUMNS}).*\$/\3\x1b\[0m/" $CACHE
+    else
+        cat $CACHE
+    end
 end
 
 if not set -q NVIM && not set -q INSIDE_EMACS && test $COLUMNS -ge 90
