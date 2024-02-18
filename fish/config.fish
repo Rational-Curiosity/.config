@@ -1,26 +1,11 @@
 set -xg EDITOR nvim
 set -xg VISUAL nvim
 
-switch (uname -n)
-case 'gigas*'
-    function activate-gigas
-        set -xg COMPOSE_FILE "$HOME/Prog/gigas/gigas_devenv/docker-compose.yml"
-        set -xg CODEPATH "$HOME/Prog/gigas"
-        set -xg CODELIBSPATH "$CODEPATH/libs"
-        set -xg CODEPKGSPATH "$CODELIBSPATH/npm-packages"
-        set -xg HOSTBILL_UID '1000'
-        set -xg HOSTBILL_GID '1000'
-    end
-    activate-gigas
-    function deactivate-gigas
-        set -e COMPOSE_FILE CODEPATH CODELIBSPATH CODEPKGSPATH HOSTBILL_UID HOSTBILL_GID
-    end
-end
-
 if not status --is-interactive
     exit
 end
 
+abbr -a c bc -l
 abbr -a d disown
 abbr -a ec 'emacsclient -c -n -a ""'
 abbr -a ecn 'emacsclient -nw -a ""'
