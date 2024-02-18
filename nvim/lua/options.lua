@@ -554,6 +554,34 @@ do
     wo.winfixwidth = false
   end
 end
+api.nvim_create_autocmd({ "VimLeave" }, {
+  group = "initAutoGroup",
+  pattern = { "*" },
+  callback = function()
+    vim.cmd([[
+    set nomore
+    redir => s:msgs
+    messages
+    if exists(':Notifications')
+      Notifications
+    endif
+    redir END
+    let s:msgs = trim(s:msgs)
+    if len(s:msgs) > 0
+      let s:file = stdpath('config') .. '/shada/messages'
+      let s:filelist = split(glob(s:file .. '*.txt'), '\n')
+      if len(s:filelist) > 4
+        call remove(s:filelist, -4, -1)
+        for file in s:filelist
+          call delete(file)
+        endfor
+      endif
+      call writefile(split(s:msgs, '\n'),
+      \ s:file .. strftime('%Y-%m-%d_%H.%M.%S') .. '.txt')
+    endif
+    ]])
+  end,
+})
 
 -- Notifications
 -- do
