@@ -538,7 +538,7 @@ do
   })
   function _G.win_fit_filetype_width()
     if wo.winfixwidth then
-      print("Fixed width window")
+      vim.notify("Fixed width window", vim.log.levels.WARN)
       return
     end
     local width = filetype_max_line_length[bo.filetype] or 80
@@ -627,7 +627,7 @@ end
 
 function _G.win_fit_width_to_content()
   if wo.winfixwidth then
-    print("Fixed width window")
+    vim.notify("Fixed width window", vim.log.levels.WARN)
     return
   end
   local line_count = api.nvim_buf_line_count(0)
@@ -728,20 +728,37 @@ function _G.find_ancestor(filename, path)
   return nil
 end
 
-function _G.append(from, to)
-  for k, v in pairs(from) do
-    if to[k] == nil then
-      to[k] = v
+function _G.append_to_last(...)
+  local args = {...}
+  local to = table.remove(args)
+  for _, from in ipairs(args) do
+    for k, v in pairs(from) do
+      if to[k] == nil then
+        to[k] = v
+      end
     end
   end
   return to
 end
 
 -- Keymap bindings
+for _, v in ipairs({'n', 'N', 'K'}) do
+  mapset("n", v, function()
+    local status, output = pcall(
+      api.nvim_cmd,
+      { cmd = "norm", args = { v }, bang = true },
+      { output = true }
+    )
+    if not status then
+      vim.notify(output, vim.log.levels.ERROR)
+    end
+  end)
+end
+mapset("n", "ZZ", "<Nop>")
 mapset(
   "",
   "<leader>V",
-  '<cmd>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<cr>',
+  '<CMD>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<CR>',
   { desc = "Toggle virtual edit" }
 )
 mapset("t", "<Esc><Esc>", "<C-\\><C-n>")
@@ -749,7 +766,7 @@ mapset("t", "<C-q>", "<C-\\><C-n><C-w><C-w>")
 mapset(
   "x",
   "zx",
-  "<Esc>:silent 1,'<-1fold<cr>:silent '>+1,$fold<CR>",
+  "<ESC>:silent 1,'<-1fold<CR>:silent '>+1,$fold<CR>",
   { desc = "Fold except region" }
 )
 mapset("x", "\\p", '"_dP')
@@ -762,14 +779,15 @@ mapset({ "n", "x" }, "\\x", '"_x')
 -- added in vim version 0.8.0
 -- map('x', '<leader>*', '"0y/<C-R>0<CR>', noremap)
 -- map('x', '<leader>#', '"0y?<C-R>0<CR>', noremap)
-mapset("n", "<leader>*", ':let @"=@*<CR>')
-mapset("n", "<leader>+", ':let @"=@+<CR>')
-mapset("n", "<leader>-", ':let @"=@-<CR>')
-mapset("n", '<leader>"', ':let @+=@"<CR>')
+mapset("n", "<leader>*", '<CMD>let @"=@*<CR>')
+mapset("n", "<leader>+", '<CMD>let @"=@+<CR>')
+mapset("n", "<leader>-", '<CMD>let @"=@-<CR>')
+mapset("n", '<leader>"', '<CMD>let @+=@"<CR>')
 mapset({ "n", "x" }, "<leader>y", '"+y')
 mapset("n", "<leader>Y", '"+y$')
 mapset({ "n", "x" }, "<leader>p", '"+p')
 mapset({ "n", "x" }, "<leader>P", '"+P')
+mapset("n", '<leader><space>', '/\\s\\+$<CR>')
 mapset("n", "<leader>tc", function()
   o.clipboard = o.clipboard == "" and "unnamedplus" or ""
 end, { desc = "Toggle clipboard" })
@@ -785,7 +803,7 @@ mapset("n", "<C-x>", function()
   mapset("n", "<C-x>", inc.decrease_at_cursor, { desc = "Decrease at cursor" })
   inc.decrease_at_cursor()
 end, { desc = "Decrease at cursor" })
-mapset("n", "<C-q>", "@:")
+mapset({ "n", "x" }, "<A-.>", "@:")
 mapset("n", "zdc", ":%g/^[ \t]*class /normal! zc<CR>")
 mapset("n", "zdf", ":%g/^[ \t]*\\(function\\|def\\) /normal! zc<CR>")
 mapset("n", "<leader><Return>", "i<CR><C-\\><C-n>")
@@ -892,19 +910,19 @@ mapset(
 mapset(
   "n",
   "<leader>Fn",
-  ':let @+=expand("%")<CR>',
+  '<CMD>let @+=expand("%")<CR>',
   { desc = "Yank file relative name" }
 )
 mapset(
   "n",
   "<leader>Fp",
-  ':let @+=expand("%:p")<CR>',
+  '<CMD>let @+=expand("%:p")<CR>',
   { desc = "Yank file absolute path" }
 )
 mapset(
   "n",
   "<leader>Fd",
-  ':let @+=expand("%:p:h")<CR>',
+  '<CMD>let @+=expand("%:p:h")<CR>',
   { desc = "Yank file directory" }
 )
 mapset(
@@ -928,7 +946,7 @@ mapset(
 mapset(
   "n",
   "<C-l>",
-  ":hi Normal ctermbg=NONE guibg=NONE|nohlsearch|diffupdate<CR><C-L>"
+  "<CMD>hi Normal ctermbg=NONE guibg=NONE|nohlsearch|diffupdate<CR><C-L>"
 )
 mapset(
   "n",
@@ -939,19 +957,19 @@ mapset(
 mapset(
   "n",
   "<leader>S.",
-  ":source ~/.config/nvim/session/_view.vim<CR>",
+  "<CMD>source ~/.config/nvim/session/_view.vim<CR>",
   noremap
 )
 mapset(
   "n",
   "<leader>S_",
-  ":mksession! ~/.config/nvim/session/_last.vim<CR>",
+  "<CMD>mksession! ~/.config/nvim/session/_last.vim<CR>",
   noremap
 )
 mapset(
   "n",
   "<leader>S-",
-  ":source ~/.config/nvim/session/_last.vim<CR>",
+  "<CMD>source ~/.config/nvim/session/_last.vim<CR>",
   noremap
 )
 mapset(
@@ -1074,3 +1092,26 @@ mapset("c", "<A-BS>", function()
     return "<C-f>db<C-c>"
   end
 end, noremap_expr)
+
+return {
+  defaults = { lazy = true },
+  install = { colorscheme = { "tokyonight" } },
+  performance = {
+    cache = {
+      enabled = true,
+    },
+    rtp = {
+      reset = true,
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
+  },
+}
