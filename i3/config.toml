@@ -135,10 +135,10 @@ full = "$icon$timestamp.datetime(f:'%m\\%d %a %R', l:es_ES)"
 short = "$icon$timestamp.datetime(f:'%m\\%d %w %R', l:es_ES)"
 [[block.click]]
 button = "left"
-cmd = "gsimplecal"
+cmd = "LC_ALL=es_ES.utf8 gsimplecal"
 [block.theme_overrides]
 idle_bg = "#123456"
-idle_fg = "#abcdef"
+idle_fg = "#ABCDEF"
 
 [[block]]
 block = "custom"
