@@ -110,12 +110,12 @@ idle_fg = "#101010"
 block = "custom"
 interval = 15
 command = """lsblk -nro MOUNTPOINT,LABEL|sed -nE '/(^ | $|^$)/!{s/^[^ ]+ //;H};${g;s/^\\n//;s/\\n/|/g;s/\\\\x20/ /g;s/([a-zA-Z]{3})[a-zA-Z]+ */\\1…/g;p}'"""
-format = "$text.pango-str()"
+format = "$text.str(max_w:25,rot_interval:0.4,rot_separator:'║')"
 [[block.click]]
 button = "left"
 cmd = "unmedia"
 [block.theme_overrides]
-idle_bg = "#8a2be2"
+idle_bg = "#8A2BE2"
 idle_fg = "#101010"
 
 [[block]]
