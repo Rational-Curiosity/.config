@@ -17,27 +17,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("options")
-require("lazy").setup("plugins", {
-  defaults = { lazy = true },
-  install = { colorscheme = { "tokyonight" } },
-  performance = {
-    cache = {
-      enabled = true,
-    },
-    rtp = {
-      reset = true,
-      paths = { datapath .. "/site" },
-      disabled_plugins = {
-        "gzip",
-        "matchit",
-        "matchparen",
-        "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
-      },
-    },
-  },
-})
+local options = require("options")
+options.performance.rtp.paths = { datapath .. "/site" }
+require("lazy").setup("plugins", options)
