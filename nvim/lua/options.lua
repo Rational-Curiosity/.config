@@ -18,9 +18,10 @@ g.editorconfig = false
 g.tokyonight_style = "night"
 g.tokyonight_transparent = true
 -- g.tokyonight_colors = { fg_gutter = "#ffba00" }
-o.shortmess = o.shortmess .. "A"
+o.shortmess = o.shortmess .. "AsScIW"
 o.updatetime = 2000
 o.cmdheight = 0
+o.showcmdloc = "statusline"
 o.showmode = false
 o.fileencoding = "utf-8"
 o.redrawtime = 150
@@ -43,6 +44,7 @@ opt.listchars = {
 }
 o.cursorline = true
 o.wrap = false
+o.scrolloff = 1
 o.sidescrolloff = 1
 o.foldmethod = "manual"
 o.foldexpr = "nvim_treesitter#foldexpr()"
@@ -105,7 +107,7 @@ vim.cmd([[
     " Recompile plugins.lua
     "autocmd BufWritePost plugins.lua source | PackerCompile
     " Terminal config
-    autocmd TermOpen term://* setlocal scrollback=100000 nospell|startinsert
+    autocmd TermOpen term://* setlocal scrollback=100000 nospell nonumber norelativenumber|startinsert
   augroup end
 
   " SNIPPETS
@@ -222,7 +224,7 @@ nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\
 nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
         ]])
       elseif bo.filetype == "qf" then
-        vim.keymap.set("n", "<A-CR>", "<CR>:cclose<cr>", {
+        vim.keymap.set("n", "<A-CR>", "<CR>:cclose<CR>", {
           buffer = ev.buf,
           noremap = true,
           silent = true,
@@ -230,7 +232,7 @@ nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><
         vim.keymap.set(
           "n",
           "<leader><CR>",
-          ":let swbTMP=&switchbuf|set switchbuf=vsplit<cr><CR>:let &switchbuf=swbTMP|unlet swbTMP<cr>",
+          ":let swbTMP=&switchbuf|set switchbuf=vsplit<CR><CR>:let &switchbuf=swbTMP|unlet swbTMP<CR>",
           {
             buffer = ev.buf,
             noremap = true,
@@ -254,28 +256,28 @@ api.nvim_create_autocmd({ "BufWinEnter" ,"WinEnter" }, {
     end
   end,
 })
-api.nvim_create_autocmd({ "TermEnter" }, {
-  group = "initAutoGroup",
-  pattern = { "*" },
-  callback = function()
-    wo.relativenumber = false
-    wo.number = false
-  end,
-})
-api.nvim_create_autocmd({ "TermLeave" }, {
-  group = "initAutoGroup",
-  pattern = { "*" },
-  callback = function()
-    wo.number = true
-    wo.relativenumber = true
-  end,
-})
+-- api.nvim_create_autocmd({ "TermEnter" }, {
+--   group = "initAutoGroup",
+--   pattern = { "*" },
+--   callback = function()
+--     wo.relativenumber = false
+--     wo.number = false
+--   end,
+-- })
+-- api.nvim_create_autocmd({ "TermLeave" }, {
+--   group = "initAutoGroup",
+--   pattern = { "*" },
+--   callback = function()
+--     wo.number = true
+--     wo.relativenumber = true
+--   end,
+-- })
 api.nvim_create_autocmd({ "TermClose" }, {
   group = "initAutoGroup",
   pattern = { "*" },
   callback = function(ev)
     api.nvim_command('stopinsert')
-    vim.keymap.set("n", "q", "<cmd>bdelete<cr>", {
+    vim.keymap.set("n", "q", "<CMD>bdelete<CR>", {
       buffer = ev.buf,
       noremap = true,
       silent = true,
@@ -291,7 +293,7 @@ api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
         wo.number = true
       end
     elseif bo.buftype == "help" then
-      vim.keymap.set("n", "q", "<cmd>bdelete<cr>", {
+      vim.keymap.set("n", "q", "<CMD>bdelete<CR>", {
         buffer = ev.buf,
         noremap = true,
         silent = true,
@@ -340,7 +342,7 @@ api.nvim_create_autocmd({
 })
 do
   local yank_registers = { "r", "s", "t", "u", "v", "w", "x", "y", "z" }
-  local update_yank_ring = function(register)
+  local function update_yank_ring(register)
     if fn.getreg(register, 1) == fn.getreg(yank_registers[1], 1) then
       return
     end
