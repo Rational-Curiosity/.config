@@ -16,11 +16,6 @@ abbr -a sv sudo -E nvim
 abbr -a v nvim
 abbr -a zd lazydocker
 abbr -a zj zellij
-if type -q eva
-    abbr -a c eva
-else
-    abbr -a c bc -l
-end
 abbr -a -- - 'cd -'
 abbr -a ... 'cd ../..'
 abbr -a ..2 'cd ../..'
