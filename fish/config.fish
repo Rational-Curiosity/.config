@@ -70,8 +70,12 @@ set fish_greeting
 set -xg fish_prompt_pwd_dir_length 2
 set -xg fish_prompt_pwd_full_dirs 3
 set -xg FZF_DEFAULT_OPTS --cycle
-set -xg SKIM_DEFAULT_COMMAND "fd --type f --color never -H -E .git -E '[._]*cache*' -E .log"
-set -xg SKIM_DEFAULT_OPTIONS "-m --bind 'alt-a:page-up,alt-e:page-down,alt-p:preview-up,alt-n:preview-down,alt-v:preview-page-up,ctrl-v:preview-page-down,ctrl-k:kill-line' --preview='bat --color always {}||exa -l {}'"
+set -xg SKIM_DEFAULT_COMMAND \
+"fd --type f --color never -H -E .git -E '[._]*cache*' -E .log"
+set -xg SKIM_DEFAULT_OPTIONS \
+"-m --bind 'alt-a:page-up,alt-e:page-down,alt-p:preview-up,alt-n:preview-down"\
+",alt-v:preview-page-up,ctrl-v:preview-page-down,ctrl-k:kill-line'"\
+" --preview='bat --color always {}||exa -l {}'"
 
 if not set -q DELTA_COLUMNS
     set -xg DELTA_COLUMNS 169
@@ -135,84 +139,28 @@ function mtu -a itf
     ip link show "$itf" | sed -nr 's/^.* mtu ([0-9]+) .*$/\1/p'
 end
 
-function weather
-    set -l CACHE ~/.cache/weather.response
-    set -l MAX_TIME 0.8
-    set -l CMD
-    if type -q wego
-        # go install github.com/schachmat/wego@latest
-        # owm-api-key=271e944f618513ad8ed9f7d5d75f6175
-        set CMD 'wego -l "$CITY"'
+function ansi
+    set -xg ANSI_LAST (random choice (find ~/Pictures/ansi -type f))
+    if type -q fansi
+        fansi --speed 1 $ANSI_LAST
     else
-        set CMD 'curl -s -m "$MAX_TIME" "wttr.in/$CITY"'
-    end
-    while set -q argv[1]
-        switch $argv[1]
-        case --clear
-            rm -f "$CACHE"
-        case --city
-            curl -s -m "$MAX_TIME" ipinfo.io
-            return
-        case -m --max-time
-            set MAX_TIME $argv[2]
-            set -e argv[1]
-        case --wego
-            set CMD 'wego -l "$CITY"'
-        case --wttr
-            set CMD 'curl -s -m "$MAX_TIME" "wttr.in/$CITY"'
-        case '*'
-            rm -f "$CACHE"
-            set CITY "$argv[1]"
-        end
-        set -e argv[1]
-    end
-    set -l SINCE
-    if not test -f $CACHE
-            or begin set SINCE (math \( (date +%s) - (date -r $CACHE +%s) \) / 3600); test $SINCE -gt 5; end
-        if not set -q CITY
-            set CITY "$(curl -s -m "$MAX_TIME" ipinfo.io|jq -nrM 'try (input|.city) catch "Madrid"')"
-            if test $pipestatus[1] -ne 0
-                echo 'weather: Failed to get city name from ipinfo.io' >&2
-            end
-            switch $CITY
-            case 'Aranda de Duero' Zaragoza
-                set CITY Ponferrada
-            end
-        end
-
-        eval $CMD|sed -E 's/\x1b\[([0-9;]+);5m([^\x1b]+)\x1b\[([0-9;]+);25m/\x1b\[\1m\2\x1b\[\3m/g'\
-            > $CACHE
-        if test $pipestatus[1] -ne 0
-            rm -f $CACHE
-            echo 'weather: Failed to get weather from wttr.in' >&2
-            return
-        end
-    else
-        echo "weather: data getted $(math floor $SINCE) hours $(math round $SINCE % 1 x 60) minutes ago" >&2
-    end
-    if test $COLUMNS -lt 125
-        sed -E "s/^[┌│├└ ][ ─]//;s/^([^\x1b]|(\x1b\[[0-9;]+m)+[^\x1b]){$(math "ceil((123-$COLUMNS)/2)")}(([^\x1b]|(\x1b\[[0-9;]+m)+[^\x1b]){$COLUMNS}).*\$/\3\x1b\[0m/" $CACHE
-    else
-        cat $CACHE
+        iconv -f 437 $ANSI_LAST
     end
 end
 
 if not set -q NVIM && not set -q INSIDE_EMACS && test $COLUMNS -ge 90
     set -l banners
-    if ping -q -c 1 -W 0.5 wttr.in &>/dev/null
-        set -a banners 'weather'
+    if timeout -k 0.6 0.4 ping -q -c 1 -W 0.5 api.openweathermap.org &>/dev/null
+        set -a banners 'timeout -k 1.25 1.0 weather'
     end
     if type -q flashfetch
-        set -a banners 'timeout -k 1.25s 1.0s flashfetch'
+        set -a banners 'timeout -k 1.25 1.0 flashfetch'
     end
     # if type -q unsplash-feh
     #     set -a banners 'unsplash-feh &; disown'
     # end
-    if test -d ~/tmp/shell-color-scripts
-        set -a banners 'eval (random choice ~/tmp/shell-color-scripts/colorscripts/*)'
-    end
-    if test -d ~/tmp/ansi
-        set -a banners 'cat (random choice ~/tmp/ansi/*.ansi)'
+    if test -d ~/Pictures/ansi
+        set -a banners 'ansi'
     end
     eval (random choice $banners)
 end
