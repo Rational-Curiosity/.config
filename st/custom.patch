@@ -69,7 +69,7 @@ index 91ab8ca..fe27f4b 100644
 +// Active style
 +#define UNDERCURL_STYLE UNDERCURL_SPIKY
 diff --git a/st.c b/st.c
-index 623376e..097308a 100644
+index 77c3e8a..a40c263 100644
 --- a/st.c
 +++ b/st.c
 @@ -33,6 +33,7 @@
@@ -201,7 +201,7 @@ index fd3b0d8..f741073 100644
  
  typedef Glyph *Line;
 diff --git a/st.info b/st.info
-index 8201ad6..659878c 100644
+index efab2cf..23b1875 100644
 --- a/st.info
 +++ b/st.info
 @@ -1,4 +1,5 @@
@@ -211,7 +211,7 @@ index 8201ad6..659878c 100644
  	am,
  	bce,
 diff --git a/x.c b/x.c
-index aa09997..2b1a897 100644
+index b36fb8c..bfecd1b 100644
 --- a/x.c
 +++ b/x.c
 @@ -45,6 +45,14 @@ typedef struct {
