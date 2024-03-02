@@ -301,6 +301,20 @@ api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
     end
   end,
 })
+api.nvim_create_autocmd({ "FocusGained" }, {
+  group = "initAutoGroup",
+  pattern = { "*" },
+  callback = function()
+      api.nvim_command('let @"=@+')
+  end,
+})
+api.nvim_create_autocmd({ "FocusLost" }, {
+  group = "initAutoGroup",
+  pattern = { "*" },
+  callback = function()
+      api.nvim_command('let @+=@"')
+  end,
+})
 api.nvim_create_autocmd({
   "BufEnter",
   "FocusGained",
@@ -336,7 +350,7 @@ api.nvim_create_autocmd({
       and wo.relativenumber ~= false
     then
       wo.relativenumber = false
-      vim.cmd("redraw")
+      api.nvim_command("redraw")
     end
   end,
 })
@@ -404,20 +418,23 @@ api.nvim_create_autocmd({ "CmdlineEnter" }, {
     end
   end,
 })
-api.nvim_create_autocmd({ "CmdlineLeave" }, {
-  group = "initAutoGroup",
-  pattern = { "*" },
-  callback = function()
-    if o.cmdheight ~= 0 then
+do
+  local last_cmd_del = false
+  api.nvim_create_autocmd({ "CmdlineLeave" }, {
+    group = "initAutoGroup",
+    pattern = { "*" },
+    callback = function()
+      local cmdline
       local cmdtype = fn.getcmdtype()
       if cmdtype == ':' then
-        if fn.getcmdline() == '' then
+        if last_cmd_del then
+          last_cmd_del = false
+          fn.histdel(':', -1)
+        end
+        cmdline = fn.getcmdline()
+        if cmdline == '' then
           o.cmdheight = 0
           return
-        end
-        local regcmd = fn.getreg(':')
-        if regcmd ~= '' and regcmd ~= fn.histget(':', -1) then
-          fn.histdel(':', -1)
         end
       end
       api.nvim_command('redir => g:tmp_last_output')
@@ -425,113 +442,125 @@ api.nvim_create_autocmd({ "CmdlineLeave" }, {
         api.nvim_command('redir END')
         local tmp_output = vim.trim(api.nvim_get_var('tmp_last_output'))
         if cmdtype == '/' or cmdtype == '?' then
-          tmp_output = tmp_output:gsub('^[/?][^\n]*\n?\n?', '', 1)
+          tmp_output = tmp_output:gsub('^%'..cmdtype..'[^\n]*\n+', '', 1)
+        elseif cmdtype == ':' then
+          tmp_output = tmp_output:gsub('^:[^\n]*\n+', '', 1)
+          if tmp_output:match('^E[0-9][0-9][0-9]: ') then
+            last_cmd_del = true
+          elseif tmp_output == '' and fn.getreg(':') ~= cmdline then
+            fn.histdel(':', -1)
+          end
         end
         if tmp_output == '' or select(2, tmp_output:gsub('\n', '')) > 0 then
           o.cmdheight = 0
         else
-          -- if cmdtype == ':' and tmp_output:sub(1, 6) ~= 'E492: ' then
-          --   fn.setreg(':', 'echoerr "Not an editor command"')
-          -- end
           fn.timer_start(5000, function() o.cmdheight = 0 end)
         end
       end)
-    end
-  end,
-})
+    end,
+  })
+end
 do
   local filetype_max_line_length = {
     c = 80,
     java = 110,
     org = 80,
     javascript = 100,
+    javascriptreact = 100,
     lua = 80,
     php = 80,
     python = 79,
     rust = 100,
     typescript = 100,
+    typescriptreact = 100,
   }
   api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
     group = "initAutoGroup",
     pattern = { "*" },
     callback = function(ev)
       local columns = filetype_max_line_length[bo.filetype]
-      if columns then
-        local last_pos = fn.getpos("']")
-        if last_pos[4] ~= 0 then
+      if not columns then
+        return
+      end
+      local last_pos = fn.getpos("']")
+      if last_pos[4] ~= 0 then
+        return
+      end
+      local last_line = last_pos[2]
+      local first_line = fn.getpos("'[")[2]
+      if wo.colorcolumn == "" then
+        local lines = api.nvim_buf_get_lines(
+          ev.buf,
+          first_line - 1,
+          last_line,
+          false
+        )
+        if next(lines) == nil then
           return
         end
-        local last = last_pos[2]
-        local first = fn.getpos("'[")[2]
-        if wo.colorcolumn == "" then
-          local lines = api.nvim_buf_get_lines(ev.buf, first - 1, last, false)
-          if next(lines) == nil then
+        local max_index = #lines
+        local max_len = fn.strdisplaywidth(table.remove(lines))
+        for index, line in pairs(lines) do
+          local line_len = fn.strdisplaywidth(line)
+          if line_len > max_len then
+            max_len = line_len
+            max_index = index
+          end
+        end
+        if columns < max_len then
+          api.nvim_buf_set_mark(
+            ev.buf,
+            "r",
+            first_line + max_index - 1,
+            max_len - 1,
+            {}
+          )
+          vim.opt_local.colorcolumn = tostring(columns + 1)
+        end
+      else
+        local max_mark = api.nvim_buf_get_mark(ev.buf, "r")[1]
+        if max_mark ~= 0 then
+          if max_mark + 1 < first_line or last_line < max_mark then
             return
           end
-          local max_index = #lines
-          local max_len = fn.strdisplaywidth(table.remove(lines))
-          for index, line in pairs(lines) do
-            local line_len = fn.strdisplaywidth(line)
-            if line_len > max_len then
-              max_len = line_len
-              max_index = index
+          local lines =
+            api.nvim_buf_get_lines(ev.buf, max_mark - 1, max_mark + 1, false)
+          if next(lines) ~= nil then
+            local max_len = fn.strdisplaywidth(table.remove(lines))
+            for _, line in pairs(lines) do
+              local line_len = fn.strdisplaywidth(line)
+              if line_len > max_len then
+                max_len = line_len
+              end
             end
-          end
-          if columns < max_len then
-            api.nvim_buf_set_mark(
-              ev.buf,
-              "r",
-              first + max_index - 1,
-              max_len - 1,
-              {}
-            )
-            vim.opt_local.colorcolumn = tostring(columns + 1)
-          end
-        else
-          local max_mark = api.nvim_buf_get_mark(ev.buf, "r")[1]
-          if max_mark ~= 0 then
-            if max_mark + 1 < first or last < max_mark then
+            if columns < max_len then
               return
             end
-            local lines =
-              api.nvim_buf_get_lines(ev.buf, max_mark - 1, max_mark + 1, false)
-            if next(lines) ~= nil then
-              local max_len = fn.strdisplaywidth(table.remove(lines))
-              for _, line in pairs(lines) do
-                local line_len = fn.strdisplaywidth(line)
-                if line_len > max_len then
-                  max_len = line_len
-                end
-              end
-              if columns < max_len then
-                return
-              end
-            end
           end
-          api.nvim_buf_del_mark(ev.buf, "r")
-          local first = vim.fn.line("w0")
-          lines =
-            api.nvim_buf_get_lines(ev.buf, first - 1, vim.fn.line("w$"), true)
-          local max_index = #lines
-          local max_len = fn.strdisplaywidth(table.remove(lines))
-          for index, line in pairs(lines) do
-            local line_len = fn.strdisplaywidth(line)
-            if line_len > max_len then
-              max_len = line_len
-              max_index = index
-            end
+        end
+        api.nvim_buf_del_mark(ev.buf, "r")
+        local first = vim.fn.line("w0")
+        lines =
+          api.nvim_buf_get_lines(ev.buf, first - 1, vim.fn.line("w$"), true)
+        local max_index = #lines
+        local max_len = fn.strdisplaywidth(table.remove(lines))
+        for index, line in pairs(lines) do
+          local line_len = fn.strdisplaywidth(line)
+          if line_len > max_len then
+            max_len = line_len
+            max_index = index
           end
-          if columns < max_len then
-            api.nvim_buf_set_mark(
-              ev.buf,
-              "r",
-              first + max_index - 1,
-              max_len - 1,
-              {}
-            )
-          else
-            vim.opt_local.colorcolumn = ""
-          end
+        end
+        if columns < max_len then
+          api.nvim_buf_set_mark(
+            ev.buf,
+            "r",
+            first + max_index - 1,
+            max_len - 1,
+            {}
+          )
+        else
+          vim.opt_local.colorcolumn = ""
         end
       end
     end,
@@ -559,14 +588,12 @@ api.nvim_create_autocmd({ "VimLeave" }, {
   pattern = { "*" },
   callback = function()
     vim.cmd([[
+    let @+=@"
     set nomore
-    redir => s:msgs
-    messages
+    let s:msgs = trim(execute('messages'))
     if exists(':Notifications')
-      Notifications
+      let s:msgs = s:msgs .. execute('Notifications')
     endif
-    redir END
-    let s:msgs = trim(s:msgs)
     if len(s:msgs) > 0
       let s:file = stdpath('config') .. '/shada/messages'
       let s:filelist = split(glob(s:file .. '*.txt'), '\n')
