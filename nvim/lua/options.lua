@@ -69,8 +69,8 @@ o.grepprg = "rg --vimgrep --smart-case --follow"
 o.ignorecase = true
 o.smartcase = true
 o.shell = "sh"
-g.python3_host_prog = vim.fn.executable("/usr/local/bin/python3") == 1
-    and "/usr/local/bin/python3"
+g.python3_host_prog = fn.executable("/usr/local/bin/python3") == 1
+  and "/usr/local/bin/python3"
   or "/usr/bin/python3"
 g.netrw_scp_cmd = "yad --separator= --form --field=Password:H|sshpass scp -q"
 g.loaded_ruby_provider = 0
@@ -80,9 +80,6 @@ g.loaded_perl_provider = 0
 o.undodir = fn.stdpath("config") .. "/undo"
 o.undofile = true
 o.undolevels = 700
-
--- UNDOTREE
-g.undotree_WindowLayout = 2
 
 vim.cmd([[
   syn sync maxlines=200
@@ -158,16 +155,12 @@ vim.cmd([[
   cabbrev <expr> terminal getcmdpos() == 9 && getcmdtype() == ':' ? 'Term' : 'terminal'
 
   " Commands
-  command! Cd exec 'cd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
-  command! Lcd exec 'lcd' fnameescape(finddir('.git/..', escape(expand('%:p:h'), ' ').';'))
-  command! SetStatusline lua vim.go.statusline = "%{%v:lua.require'lualine'.statusline()%}"
-  command! DiagNext lua vim.diagnostic.goto_next()
-  command! DiagPrev lua vim.diagnostic.goto_prev()
+  command! -complete=custom,LastSavedSession -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
   command! -complete=custom,LastSavedSession -nargs=? Q mksession! ~/.config/nvim/session/_last_<args>.vim|qall
   command! -complete=custom,LastSavedSession -nargs=? S mksession! ~/.config/nvim/session/_last_<args>.vim
-  command! -complete=custom,LastSavedSession -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
-  command! -nargs=* Term set shell=fish|exe "term ".<q-args>|set shell=sh
-  command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
+  command! -complete=shellcmd -nargs=* CSystem cexpr system(<q-args>)|copen
+  command! -count=1 DiagNext for i in range(<count>)|call luaeval('vim.diagnostic.goto_next()')|endfor
+  command! -count=1 DiagPrev for i in range(<count>)|call luaeval('vim.diagnostic.goto_prev()')|endfor
   command! -count=10 -nargs=* HTerm botright <count>split|exe "Term ".<q-args>|setlocal wfh|exe "normal \<c-w>="
   command! -count=7 -nargs=* B exe "if bufexists('*".<q-args>."*')|sil! bdelete *".<q-args>."*|endif|
     \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
@@ -175,11 +168,21 @@ vim.cmd([[
   command! -count=7 Messages if bufexists("*Messages*")|sil! bdelete *Messages*|endif|
     \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file *Messages*|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
+  command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
+  command! -nargs=* HistDel call histdel(<f-args>)|wshada!
+  command! -nargs=* Term set shell=fish|exe "term ".<q-args>|set shell=sh
+  command! -nargs=? Cd exec 'cd' fnameescape(finddir(<q-args> ?? '.git/..', escape(expand('%:p:h'), ' ').';'))
+  command! -nargs=? Lcd exec 'lcd' fnameescape(finddir(<q-args> ?? '.git/..', escape(expand('%:p:h'), ' ').';'))
   command! ProfileStart profile start ~/nvim_profile.log|profile func *|profile file *
   command! ProfileStop profile stop
-  command! -complete=shellcmd -nargs=* CSystem cexpr system(<q-args>)|copen
+  command! SetStatusline lua vim.go.statusline = "%{%v:lua.require'lualine'.statusline()%}"
 
   " Functions
+  function Params(...)
+    for param in a:000
+      echo param
+    endfor
+  endfunction
   function LastSavedSession(A,L,P)
     return substitute(
       \ globpath("~/.config/nvim/session", "_last_"..a:A.."*.vim"),
@@ -442,9 +445,9 @@ do
         api.nvim_command('redir END')
         local tmp_output = vim.trim(api.nvim_get_var('tmp_last_output'))
         if cmdtype == '/' or cmdtype == '?' then
-          tmp_output = tmp_output:gsub('^%'..cmdtype..'[^\n]*\n+', '', 1)
+          tmp_output = tmp_output:gsub('^%'..cmdtype..'[^\n]*\n*', '', 1)
         elseif cmdtype == ':' then
-          tmp_output = tmp_output:gsub('^:[^\n]*\n+', '', 1)
+          tmp_output = tmp_output:gsub('^:[^\n]*\n*', '', 1)
           if tmp_output:match('^E[0-9][0-9][0-9]: ') then
             last_cmd_del = true
           elseif tmp_output == '' and fn.getreg(':') ~= cmdline then
@@ -464,10 +467,10 @@ do
   local filetype_max_line_length = {
     c = 80,
     java = 110,
-    org = 80,
     javascript = 100,
     javascriptreact = 100,
     lua = 80,
+    org = 80,
     php = 80,
     python = 79,
     rust = 100,
