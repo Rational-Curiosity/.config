@@ -19,6 +19,12 @@ return {
         integrations = {
           telescope = true,
         },
+        mappings = {
+          popup = {
+            l = false,
+            L = "LogPopup",
+          },
+        },
       })
     end,
   },
