@@ -34,6 +34,94 @@ local ft_prog_lsp = {
 local ft_prog = { "fish", "lua", "smarty", unpack(ft_prog_lsp) }
 
 return {
+  -- {
+  --   'jmbuhr/otter.nvim',
+  --   dependencies = {
+  --     'nvim-cmp',
+  --     'nvim-lspconfig',
+  --     'nvim-treesitter',
+  --   },
+  --   init = function()
+  --     vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  --       group = "initAutoGroup",
+  --       pattern = { "*.html", "*.htm", "*.md", "*.org" },
+  --       callback = function(ev)
+  --         local otter = require("otter")
+  --         otter.activate(ft_prog_lsp)
+  --         vim.keymap.set(
+  --           "n",
+  --           "<leader>ld",
+  --           otter.ask_definition,
+  --           { silent = true, buffer = ev.buf, desc = "Lsp definition" }
+  --         )
+  --         vim.keymap.set(
+  --           "n",
+  --           "<leader>lK",
+  --           otter.ask_hover,
+  --           { silent = true, buffer = ev.buf, desc = "Lsp hover" }
+  --         )
+  --         vim.keymap.set(
+  --           "n",
+  --           "<leader>lt",
+  --           otter.ask_type_definition,
+  --           { silent = true, buffer = ev.buf, desc = "Lsp type definition" }
+  --         )
+  --         vim.keymap.set(
+  --           "n",
+  --           "<leader>ln",
+  --           otter.ask_rename,
+  --           { silent = true, buffer = ev.buf, desc = "Lsp rename" }
+  --         )
+  --         vim.keymap.set(
+  --           "n",
+  --           "<leader>lr",
+  --           otter.ask_references,
+  --           { silent = true, buffer = ev.buf, desc = "Lsp references" }
+  --         )
+  --         vim.keymap.set({ "n", "v" }, "<leader>lf",
+  --           otter.ask_format,
+  --           { silent = true, buffer = ev.buf, desc = "Lsp format" })
+  --       end,
+  --     })
+  --   end
+  -- },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    ft = ft_prog,
+    dependencies = "tokyonight.nvim",
+    config = function()
+      local hooks = require("ibl.hooks")
+      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+        vim.api.nvim_set_hl(0, "IblIndent", { fg = "#3b4261", bg = "none" })
+        vim.api.nvim_set_hl(0, "IblWhitespace", { link = "NonText" })
+        vim.api.nvim_set_hl(0, "IblScope", { fg = "#ffba00", bg = "none" })
+      end)
+      require("ibl").setup({
+        indent = {
+          char = "▏",
+        },
+        whitespace = {
+          remove_blankline_trail = false,
+        },
+        scope = {
+          highlight = "IblScope",
+          show_start = false,
+          show_end = false,
+          include = {
+            node_type = {
+              lua = { "table_constructor" },
+            },
+          },
+        },
+      })
+      vim.keymap.set(
+        "n",
+        "<leader>i",
+        ":IBLToggle<CR>",
+        { desc = "Toggle indent blankline" }
+      )
+    end,
+  },
   {
     "mhartington/formatter.nvim",
     cmd = { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" },
@@ -368,6 +456,7 @@ return {
           },
         }),
         pyright = base_config,
+        -- pylyzer = base_config,
         ruff_lsp = {
           init_options = {
             settings = {
@@ -460,124 +549,144 @@ return {
   },
   {
     "mfussenegger/nvim-dap",
-    dependencies = { "which-key.nvim" },
-    ft = ft_prog_lsp,
-    config = function()
-      local dap = require("dap")
-      -- dap.adapters.python = {
-      --   type = 'executable',
-      --   command = 'python3',
-      --   args = { '-m', 'debugpy.adapter' },
-      -- }
-      -- dap.configurations.python = {
-      --   {
-      --     type = 'python';
-      --     request = 'launch';
-      --     name = "Launch file";
-      --     program = "${file}";
-      --     pythonPath = function()
-      --       return 'python3'
-      --     end;
-      --   },
-      -- }
-
-      vim.keymap.set(
-        "n",
+    dependencies = {
+      "nvim-dap-ui",
+      "nvim-dap-python",
+      "mxsdev/nvim-dap-vscode-js",
+    },
+    keys = {
+      {
         "<leader>db",
-        dap.toggle_breakpoint,
-        { silent = true, desc = "Toggle breakpoint" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").toggle_breakpoint() end,
+        silent = true, desc = "Toggle breakpoint",
+      },
+      {
         "<leader>dc",
-        dap.continue,
-        { silent = true, desc = "Continue" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").continue() end,
+        silent = true, desc = "Continue",
+      },
+      {
         "<leader>dn",
-        dap.step_over,
-        { silent = true, desc = "Step over" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").step_over() end,
+        silent = true, desc = "Step over",
+      },
+      {
         "<leader>dp",
-        dap.step_back,
-        { silent = true, desc = "Step back" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").step_back() end,
+        silent = true, desc = "Step back",
+      },
+      {
         "<leader>do",
-        dap.step_out,
-        { silent = true, desc = "Step out" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").step_out() end,
+        silent = true, desc = "Step out",
+      },
+      {
         "<leader>di",
-        dap.step_into,
-        { silent = true, desc = "Step into" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").step_into() end,
+        silent = true, desc = "Step into",
+      },
+      {
         "<leader>dr",
-        dap.repl.toggle,
-        { silent = true, desc = "Toggle REPL" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").repl.toggle() end,
+        silent = true, desc = "Toggle REPL",
+      },
+      {
         "<leader>dl",
-        dap.list_breakpoints,
-        { silent = true, desc = "List breakpoints" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").list_breakpoints() end,
+        silent = true, desc = "List breakpoints",
+      },
+      {
         "<leader>dd",
-        dap.clear_breakpoints,
-        { silent = true, desc = "Clear breakpoints" }
-      )
-      vim.keymap.set(
-        "n",
+        function() require("dap").clear_breakpoints() end,
+        silent = true, desc = "Clear breakpoints",
+      },
+      {
         "<leader>dR",
-        dap.run_last,
-        { silent = true, desc = "Run last" }
-      )
-      vim.keymap.set("n", "<leader>dB", function()
-        dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
-      end, { silent = true, desc = "Set breakpoint condition" })
-      vim.keymap.set("n", "<leader>dL", function()
-        dap.set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-      end, { silent = true, desc = "Set log point message" })
-      vim.keymap.set(
-        "n",
+        function() require("dap").run_last() end,
+        silent = true, desc = "Run last",
+      },
+      {
+        "<leader>dB",
+        function()
+          require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+        end,
+        silent = true, desc = "Set breakpoint condition",
+      },
+      {
+        "<leader>dL",
+        function()
+          require("dap").set_breakpoint(
+            nil,
+            nil,
+            vim.fn.input("Log point message: ")
+          )
+        end,
+        silent = true, desc = "Set log point message",
+      },
+      {
         "<leader>dQ",
-        dap.terminate,
-        { silent = true, desc = "Terminate" }
-      )
-
-      require("which-key").register({
-        d = { name = "Dap" },
-      }, { mode = "n", prefix = "<leader>" })
-    end,
+        function() require("dap").terminate() end,
+        silent = true, desc = "Terminate",
+      },
+    },
+    -- config = function()
+    --   -- local dap = require("dap")
+    --   -- dap.adapters.python = {
+    --   --   type = 'executable',
+    --   --   command = 'python3',
+    --   --   args = { '-m', 'debugpy.adapter' },
+    --   -- }
+    --   -- dap.configurations.python = {
+    --   --   {
+    --   --     type = 'python';
+    --   --     request = 'launch';
+    --   --     name = "Launch file";
+    --   --     program = "${file}";
+    --   --     pythonPath = function()
+    --   --       return 'python3'
+    --   --     end;
+    --   --   },
+    --   -- }
+    -- end,
   },
   {
     "rcarriga/nvim-dap-ui",
-    dependencies = { "nvim-dap" },
-    ft = ft_prog_lsp,
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+    },
+    keys = {
+      {
+        "<leader>dU",
+        function() require("dapui").toggle() end,
+        silent = true, desc = "Dap UI Toggle",
+      },
+    },
     config = function()
       local dapui = require("dapui")
       dapui.setup({})
-      vim.keymap.set(
-        "n",
-        "<leader>dU",
-        dapui.toggle,
-        { silent = true, desc = "Dap UI Toggle" }
-      )
     end,
   },
   {
     "mfussenegger/nvim-dap-python",
     dependencies = { "nvim-dap" },
-    ft = { "python" },
+    keys = {
+      {
+        "<leader>dF",
+        function() require"dap-python".test_method() end,
+        noremap = true, silent = true, desc = "DAP test method",
+      },
+      {
+        "<leader>dC",
+        function() require"dap-python".test_class() end,
+        noremap = true, silent = true, desc = "DAP test class",
+      },
+      {
+        "<leader>dS",
+        '<ESC>:lua require"dap-python".debug_selection()<CR>',
+        mode = "v",
+        noremap = true, silent = true, desc = "DAP debug selection",
+      },
+    },
     config = function()
       local dap_python = require("dap-python")
       if vim.fn.executable("python") == 1 then
@@ -588,37 +697,17 @@ return {
       if vim.fn.executable("pytest") == 1 then
         dap_python.test_runner = "pytest"
       end
-      vim.keymap.set(
-        "n",
-        "<leader>dF",
-        '<cmd>lua require"dap-python".test_method()<CR>',
-        { noremap = true, silent = true, desc = "DAP test method" }
-      )
-      vim.keymap.set(
-        "n",
-        "<leader>dC",
-        '<cmd>lua require"dap-python".test_class()<CR>',
-        { noremap = true, silent = true, desc = "DAP test class" }
-      )
-      vim.keymap.set(
-        "v",
-        "<leader>dS",
-        '<ESC>:lua require"dap-python".debug_selection()<CR>',
-        { noremap = true, silent = true, desc = "DAP debug selection" }
-      )
     end,
   },
   {
     "mxsdev/nvim-dap-vscode-js",
     dependencies = {
-      "nvim-dap",
       {
         "microsoft/vscode-js-debug",
         -- commit = '9c9a3f3',
         build = "sh -c 'npm install --legacy-peer-deps && npm run compile;COD=$?; git checkout package-lock.json; (exit $COD)'",
       },
     },
-    ft = { "javascript", "typescript" },
     config = function()
       require("dap-vscode-js").setup({
         -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"

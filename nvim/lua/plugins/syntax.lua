@@ -245,10 +245,21 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     dependencies = {
-      "which-key.nvim",
       "nvim-treesitter",
     },
-    event = "VeryLazy",
+    keys = {
+      { "<leader>s", desc = "Peek definition" },
+      { "<leader>[", desc = "Swap prev" },
+      { "<leader>]", desc = "Swap next" },
+      { "[" },
+      { "]" },
+      { "ca" },
+      { "ci" },
+      { "da" },
+      { "di" },
+      { "ya" },
+      { "yi" },
+    },
     config = function()
       require("nvim-treesitter.configs").setup({
         textobjects = {
@@ -341,10 +352,6 @@ return {
           },
         },
       })
-      require("which-key").register({
-        ["["] = { name = "Swap prev" },
-        ["]"] = { name = "Swap next" },
-      }, { mode = "n", prefix = "<leader>" })
     end,
   },
   {
@@ -370,43 +377,6 @@ return {
         tscontext.go_to_context(vim.v.count1)
       end, { silent = true })
     end
-  },
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    ft = ft_prog,
-    dependencies = "tokyonight.nvim",
-    config = function()
-      local hooks = require("ibl.hooks")
-      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-        vim.api.nvim_set_hl(0, "IblIndent", { fg = "#3b4261", bg = "none" })
-        vim.api.nvim_set_hl(0, "IblWhitespace", { link = "NonText" })
-        vim.api.nvim_set_hl(0, "IblScope", { fg = "#ffba00", bg = "none" })
-      end)
-      require("ibl").setup({
-        indent = {
-          char = "▏",
-        },
-        whitespace = {
-          remove_blankline_trail = false,
-        },
-        scope = {
-          highlight = "IblScope",
-          show_start = false,
-          show_end = false,
-          include = {
-            node_type = {
-              lua = { "table_constructor" },
-            },
-          },
-        },
-      })
-      vim.keymap.set(
-        "n",
-        "<leader>i",
-        ":IBLToggle<CR>",
-        { desc = "Toggle indent blankline" }
-      )
-    end,
   },
   {
     -- "echasnovski/mini.hipatterns",
