@@ -2,6 +2,14 @@ return {
   {
     "mbbill/undotree",
     cmd = { "UndotreeHide", "UndotreeShow", "UndotreeFocus", "UndotreeToggle" },
+    config = function()
+      vim.g.undotree_WindowLayout = 2
+      vim.g.undotree_SetFocusWhenToggle = 1
+      vim.g.undotree_ShortIndicators = 1
+      vim.g.undotree_SplitWidth = 24
+      vim.g.undotree_DiffCommand = vim.fn.executable("delta") == 1
+        and "delta" or "diff"
+    end,
   },
   {
     "tzachar/highlight-undo.nvim",
