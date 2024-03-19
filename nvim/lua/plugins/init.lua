@@ -34,6 +34,15 @@ M = {
     },
   },
   {
+    "LunarVim/bigfile.nvim",
+    lazy = false,
+    config = function()
+      require("bigfile").setup({
+        filesize = 25, -- in MB
+      })
+    end,
+  },
+  {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     dependencies = {
