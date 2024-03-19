@@ -1,6 +1,6 @@
 return {
   {
-    "anuvyklack/hydra.nvim",
+    "nvimtools/hydra.nvim",
     dependencies = {
       "anuvyklack/keymap-layer.nvim",
     },
@@ -220,11 +220,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       which_key.register({
         -- n = { name = 'Neorg', m = 'mode', n = 'note', t = 'gtd' },
         C = { name = "Quickfix" },
+        d = { name = "Dap" },
         E = { name = "Diagnostic", h = "Hide", s = "Show" },
         f = { name = "Telescope", g = "Git", l = "Lsp" },
         F = { name = "Yank filename" },
         G = { name = "Neogit" },
         h = { name = "Gitsigns", t = "Toggle" },
+        I = { name = "Info", s = "Treesitter status", d = "Notify dismiss" },
         o = { name = "Org", i = "Insert", l = "Link", x = "Clock" },
         P = { name = "Put exec" },
         R = { name = "Snip run" },
@@ -232,6 +234,8 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         s = { name = "Treesitter" },
         t = { name = "Table mode", f = "Formula" },
         W = { name = "Working dir" },
+        ["["] = { name = "Swap prev" },
+        ["]"] = { name = "Swap next" },
       }, { mode = "n", prefix = "<leader>" })
       which_key.register({
         f = { name = "Telescope" },
