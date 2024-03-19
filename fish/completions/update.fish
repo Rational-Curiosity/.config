@@ -1,5 +1,6 @@
 complete -c update -f -a crates -d 'Update rust crates'
 complete -c update -f -a env -d 'Update environment utilities'
+complete -c update -f -a go-packages -d 'Update go packages'
 complete -c update -f -a lsp -d 'Update development helpers'
 complete -c update -f -a pip -d 'Update python pip'
 complete -c update -f -a python-packages -d 'Update python packages'

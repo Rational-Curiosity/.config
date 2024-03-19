@@ -76,6 +76,7 @@ set -xg SKIM_DEFAULT_OPTIONS \
 "-m --bind 'alt-a:page-up,alt-e:page-down,alt-p:preview-up,alt-n:preview-down"\
 ",alt-v:preview-page-up,ctrl-v:preview-page-down,ctrl-k:kill-line'"\
 " --preview='bat --color always {}||exa -l {}'"
+set -xg BAT_STYLE 'changes,header,numbers'
 
 if not set -q DELTA_COLUMNS
     set -xg DELTA_COLUMNS 169
@@ -140,21 +141,35 @@ function mtu -a itf
 end
 
 function ansi
-    set -xg ANSI_LAST (random choice (find ~/Pictures/ansi -type f))
-    if type -q fansi
-        fansi --speed 1 $ANSI_LAST
+    set -xg LAST_ANSI (random choice (find ~/Pictures/ansi -type f -not -name '*.txt'))
+    set -l TXT (path change-extension txt $LAST_ANSI)
+    if test -f $TXT
+        if test $COLUMNS -lt 80
+            sed -E "s/^([^\x1b]|(\x1b\[[0-9;]+m)+[^\x1b]){$(
+                math "ceil((80-$COLUMNS)/2)"
+            )}(([^\x1b]|(\x1b\[[0-9;]+m)+[^\x1b]){$COLUMNS}).*\$/\3\x1b\[0m/" $TXT
+        else
+            cat $TXT
+        end
     else
-        iconv -f 437 $ANSI_LAST
+        if type -q fansi
+            fansi --speed 1 $LAST_ANSI
+        else
+            iconv -f 437 $LAST_ANSI
+        end
     end
 end
 
-if not set -q NVIM && not set -q INSIDE_EMACS && test $COLUMNS -ge 90
+if not set -q NVIM && not set -q INSIDE_EMACS
     set -l banners
     if timeout -k 0.6 0.4 ping -q -c 1 -W 0.5 api.openweathermap.org &>/dev/null
         set -a banners 'timeout -k 1.25 1.0 weather'
     end
     if type -q flashfetch
         set -a banners 'timeout -k 1.25 1.0 flashfetch'
+        if test $COLUMNS -lt 103
+            set banners[-1] "$banners[-1] -l none"
+        end
     end
     # if type -q unsplash-feh
     #     set -a banners 'unsplash-feh &; disown'
@@ -162,5 +177,6 @@ if not set -q NVIM && not set -q INSIDE_EMACS && test $COLUMNS -ge 90
     if test -d ~/Pictures/ansi
         set -a banners 'ansi'
     end
-    eval (random choice $banners)
+    set -xg LAST_BANNER (random choice $banners)
+    eval $LAST_BANNER
 end
