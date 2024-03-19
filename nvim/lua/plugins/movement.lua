@@ -342,14 +342,14 @@ return {
           initial_mode = "normal",
           mappings = {
             i = {
-              ["<C-e>"] = action_layout.toggle_preview,
-              ["<C-o>"] = action_layout.cycle_layout_prev,
-              ["<C-i>"] = action_layout.cycle_layout_next,
+              ["<A-e>"] = action_layout.toggle_preview,
+              ["<A-o>"] = action_layout.cycle_layout_prev,
+              ["<A-i>"] = action_layout.cycle_layout_next,
             },
             n = {
-              ["<C-e>"] = action_layout.toggle_preview,
-              ["<C-o>"] = action_layout.cycle_layout_prev,
-              ["<C-i>"] = action_layout.cycle_layout_next,
+              ["<A-e>"] = action_layout.toggle_preview,
+              ["<A-o>"] = action_layout.cycle_layout_prev,
+              ["<A-i>"] = action_layout.cycle_layout_next,
             },
           },
           path_display = {
