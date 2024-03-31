@@ -162,7 +162,8 @@ function ansi
     end
 end
 
-if not set -q NVIM && not set -q INSIDE_EMACS
+set -q NVIM INSIDE_EMACS
+if test $status -eq 2
     set -l banners
     if timeout -k 0.6 0.4 ping -q -c 1 -W 0.5 api.openweathermap.org &>/dev/null
         set -a banners 'timeout -k 1.25 1.0 weather'
