@@ -66,6 +66,7 @@ o.grepprg = "rg --vimgrep --smart-case --follow"
 o.ignorecase = true
 o.smartcase = true
 o.shell = "sh"
+vim.env.SHELL = "sh"
 g.python3_host_prog = fn.executable("/usr/local/bin/python3") == 1
   and "/usr/local/bin/python3"
   or "/usr/bin/python3"
