@@ -109,6 +109,15 @@ return {
         desc = "Telescope buffers",
       },
       {
+        "<leader>fB",
+        function()
+          require("telescope.builtin").buffers(
+            { initial_mode = "insert", show_all_buffers = true }
+          )
+        end,
+        desc = "Telescope buffers show all",
+      },
+      {
         "<leader>fc",
         "<cmd>Telescope textcase normal_mode initial_mode=insert<cr>",
         desc = "Telescope textcase",

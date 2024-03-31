@@ -163,7 +163,7 @@ return {
     dependencies = {
       "rafamadriz/friendly-snippets",
       "honza/vim-snippets",
-      "molleweide/LuaSnip-snippets.nvim",
+      "dozken/LuaSnip-snippets.nvim",
     },
     config = function()
       local ls = require("luasnip")

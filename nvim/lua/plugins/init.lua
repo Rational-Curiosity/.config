@@ -46,9 +46,9 @@ M = {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     dependencies = {
-      { "kyazdani42/nvim-web-devicons" },
-      { "tokyonight.nvim" },
-      -- { 'arkav/lualine-lsp-progress' },
+      "kyazdani42/nvim-web-devicons",
+      "tokyonight.nvim",
+      -- 'arkav/lualine-lsp-progress',
     },
     config = function()
       local home_path = vim.env.HOME
@@ -494,11 +494,11 @@ M = {
       { "dmitmel/cmp-cmdline-history" },
       { "hrsh7th/cmp-path" },
       { "hrsh7th/cmp-nvim-lsp-signature-help" },
-      { "L3MON4D3/LuaSnip" },
       { "nvim-lua/plenary.nvim" },
       { "petertriho/cmp-git" },
       { "ray-x/cmp-treesitter" },
       { "saadparwaiz1/cmp_luasnip" },
+      { "LuaSnip" },
     },
     event = { "InsertEnter", "CmdlineEnter" },
     config = function()
@@ -528,6 +528,7 @@ M = {
         Event = "",
         Operator = "󰆕",
         TypeParameter = "󰅲",
+        Spell = "󰓆",
       }
       local source_names = {
         buffer = "Buf",

@@ -447,7 +447,7 @@ return {
         autotools_ls = base_config,
         bashls = base_config,
         biome = append_to_last(base_config, {
-          root_dir = util.root_pattern("biome.json", ".git"),
+          root_dir = util.root_pattern("biome.json", "biome.jsonc", ".git"),
         }),
         ccls = base_config,
         denols = append_to_last(base_config, {
@@ -465,6 +465,7 @@ return {
           },
         }),
         pyright = base_config,
+        -- <xor>
         -- pylyzer = base_config,
         ruff_lsp = {
           init_options = {

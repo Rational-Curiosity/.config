@@ -12,12 +12,9 @@ local noremap = { noremap = true }
 local mapset = vim.keymap.set
 local fn = vim.fn
 
--- g.did_load_filetypes = 1  -- use {'nathom/filetype.nvim'}
-
 g.editorconfig = false
 g.tokyonight_style = "night"
 g.tokyonight_transparent = true
--- g.tokyonight_colors = { fg_gutter = "#ffba00" }
 o.shortmess = o.shortmess .. "AsScIW"
 o.updatetime = 2000
 o.cmdheight = 0
@@ -122,6 +119,7 @@ vim.cmd([[
 
   " Abbreviations
   cabbrev <expr> E getcmdpos() == 2 && getcmdtype() == ':' ? 'e '.expand('%:p:h') : 'E'
+  cabbrev <expr> T getcmdpos() == 2 && getcmdtype() == ':' ? 'Telescope' : 'T'
   cabbrev <expr> VS getcmdpos() == 3 && getcmdtype() == ':' ? 'vs '.expand('%:p:h') : 'VS'
   cabbrev <expr> SP getcmdpos() == 3 && getcmdtype() == ':' ? 'sp '.expand('%:p:h') : 'SP'
   cabbrev <expr> vh getcmdpos() == 3 && getcmdtype() == ':' ? 'vert help' : 'vh'
@@ -148,11 +146,11 @@ vim.cmd([[
   command! -count=1 DiagNext for i in range(<count>)|call luaeval('vim.diagnostic.goto_next()')|endfor
   command! -count=1 DiagPrev for i in range(<count>)|call luaeval('vim.diagnostic.goto_prev()')|endfor
   command! -count=10 -nargs=* HTerm botright <count>split|exe "Term ".<q-args>|setlocal wfh|exe "normal \<c-w>="
-  command! -count=7 -nargs=* B exe "if bufexists('*".<q-args>."*')|sil! bdelete *".<q-args>."*|endif|
-    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
+  command! -count=7 -complete=command -nargs=* B exe "if bufexists('*".<q-args>."*')|
+    \sil! bdelete *".<q-args>."*|endif|bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file *".<q-args>."*|put =execute(\\\"".<q-args>."\\\")|setlocal nomod noma buftype=nofile|0goto"
-  command! -count=7 Messages if bufexists("*Messages*")|sil! bdelete *Messages*|endif|
-    \bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
+  command! -count=7 Messages if bufexists("*Messages*")|
+    \sil! bdelete *Messages*|endif|bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
     \file *Messages*|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
   command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
   command! -nargs=* HistDel call histdel(<f-args>)|wshada!
@@ -245,6 +243,7 @@ api.nvim_create_autocmd({ "BufWinEnter" ,"WinEnter" }, {
     end
   end,
 })
+-- [ Terminal relativenumber
 -- api.nvim_create_autocmd({ "TermEnter" }, {
 --   group = "initAutoGroup",
 --   pattern = { "*" },
@@ -261,6 +260,7 @@ api.nvim_create_autocmd({ "BufWinEnter" ,"WinEnter" }, {
 --     wo.relativenumber = true
 --   end,
 -- })
+-- ]
 api.nvim_create_autocmd({ "TermClose" }, {
   group = "initAutoGroup",
   pattern = { "*" },
@@ -599,7 +599,7 @@ api.nvim_create_autocmd({ "VimLeave" }, {
   end,
 })
 
--- Notifications
+-- [ Notifications
 -- do
 --   local orig_notify_once = vim.notify_once
 --   vim.notify_once = function(msg, level, opts)
@@ -612,6 +612,7 @@ api.nvim_create_autocmd({ "VimLeave" }, {
 --     orig_notify_once(msg, level, opts)
 --   end
 -- end
+-- ]
 
 -- Global functions
 function _G.getcwdhead()
@@ -774,7 +775,7 @@ mapset("n", "ZZ", "<Nop>")
 mapset(
   "",
   "<leader>V",
-  '<CMD>if &virtualedit == "" | setlocal virtualedit=all | else | setlocal virtualedit= | endif<CR>',
+  '<CMD>if &virtualedit == ""|setlocal virtualedit=all|else|setlocal virtualedit=|endif<CR>',
   { desc = "Toggle virtual edit" }
 )
 mapset("t", "<Esc><Esc>", "<C-\\><C-n>")
