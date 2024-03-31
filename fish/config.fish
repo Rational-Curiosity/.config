@@ -38,6 +38,8 @@ abbr -a ..10 'cd ../../../../../../../../../..'
 abbr -a ............ 'cd ../../../../../../../../../../..'
 abbr -a ..11 'cd ../../../../../../../../../../..'
 
+# https://github.com/fish-shell/fish-shell/issues/8233
+function fish_vi_cursor; end
 fish_vi_key_bindings
 
 bind -M insert \ck kill-line
