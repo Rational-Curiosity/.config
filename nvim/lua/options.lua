@@ -398,57 +398,59 @@ end
 --     require'cmp'.complete()
 --   end
 -- })
-api.nvim_create_autocmd({ "CmdlineEnter" }, {
-  group = "initAutoGroup",
-  pattern = { "*" },
-  callback = function()
-    if o.cmdheight == 0 then
-      o.cmdheight = 1
-    end
-  end,
-})
-do
-  local last_cmd_del = false
-  api.nvim_create_autocmd({ "CmdlineLeave" }, {
-    group = "initAutoGroup",
-    pattern = { "*" },
-    callback = function()
-      local cmdline
-      local cmdtype = fn.getcmdtype()
-      if cmdtype == ':' then
-        if last_cmd_del then
-          last_cmd_del = false
-          fn.histdel(':', -1)
-        end
-        cmdline = fn.getcmdline()
-        if cmdline == '' then
-          o.cmdheight = 0
-          return
-        end
-      end
-      api.nvim_command('redir => g:tmp_last_output')
-      fn.timer_start(100, function()
-        api.nvim_command('redir END')
-        local tmp_output = vim.trim(api.nvim_get_var('tmp_last_output'))
-        if cmdtype == '/' or cmdtype == '?' then
-          tmp_output = tmp_output:gsub('^%'..cmdtype..'[^\n]*\n*', '', 1)
-        elseif cmdtype == ':' then
-          tmp_output = tmp_output:gsub('^:[^\n]*\n*', '', 1)
-          if tmp_output:match('^E[0-9][0-9][0-9]: ') then
-            last_cmd_del = true
-          elseif tmp_output == '' and fn.getreg(':') ~= cmdline then
-            fn.histdel(':', -1)
-          end
-        end
-        if tmp_output == '' or select(2, tmp_output:gsub('\n', '')) > 0 then
-          o.cmdheight = 0
-        else
-          fn.timer_start(5000, function() o.cmdheight = 0 end)
-        end
-      end)
-    end,
-  })
-end
+-- [ Dynamic cmdheight
+-- api.nvim_create_autocmd({ "CmdlineEnter" }, {
+--   group = "initAutoGroup",
+--   pattern = { "*" },
+--   callback = function()
+--     if o.cmdheight == 0 then
+--       o.cmdheight = 1
+--     end
+--   end,
+-- })
+-- do
+--   local last_cmd_del = false
+--   api.nvim_create_autocmd({ "CmdlineLeave" }, {
+--     group = "initAutoGroup",
+--     pattern = { "*" },
+--     callback = function()
+--       local cmdline
+--       local cmdtype = fn.getcmdtype()
+--       if cmdtype == ':' then
+--         if last_cmd_del then
+--           last_cmd_del = false
+--           fn.histdel(':', -1)
+--         end
+--         cmdline = fn.getcmdline()
+--         if cmdline == '' then
+--           o.cmdheight = 0
+--           return
+--         end
+--       end
+--       api.nvim_command('redir => g:tmp_last_output')
+--       fn.timer_start(100, function()
+--         api.nvim_command('redir END')
+--         local tmp_output = vim.trim(api.nvim_get_var('tmp_last_output'))
+--         if cmdtype == '/' or cmdtype == '?' then
+--           tmp_output = tmp_output:gsub('^%'..cmdtype..'[^\n]*\n*', '', 1)
+--         elseif cmdtype == ':' then
+--           tmp_output = tmp_output:gsub('^:[^\n]*\n*', '', 1)
+--           if tmp_output:match('^E[0-9][0-9][0-9]: ') then
+--             last_cmd_del = true
+--           elseif tmp_output == '' and fn.getreg(':') ~= cmdline then
+--             fn.histdel(':', -1)
+--           end
+--         end
+--         if tmp_output == '' or select(2, tmp_output:gsub('\n', '')) > 0 then
+--           o.cmdheight = 0
+--         else
+--           fn.timer_start(5000, function() o.cmdheight = 0 end)
+--         end
+--       end)
+--     end,
+--   })
+-- end
+-- ]
 do
   local filetype_max_line_length = {
     c = 80,
