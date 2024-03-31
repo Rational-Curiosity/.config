@@ -204,7 +204,7 @@ return {
       { "hrsh7th/cmp-nvim-lsp" },
       -- { 'lvimuser/lsp-inlayhints.nvim' },
       -- { 'ray-x/lsp_signature.nvim' },
-      { "j-hui/fidget.nvim", opts = {} },
+      -- { "j-hui/fidget.nvim", opts = {} },
     },
     ft = ft_prog_lsp,
     config = function()

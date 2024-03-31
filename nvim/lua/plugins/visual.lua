@@ -19,6 +19,33 @@ return {
     end,
   },
   {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-notify",
+    },
+    opts = {
+      cmdline = {
+        view = "cmdline",
+        format = {
+          vert_help = {
+            pattern = "^:%s*vert%s*he?l?p?%s+",
+            icon = "¿",
+            icon_hl_group = "NoiceCmdlinePrompt",
+          },
+        },
+      },
+      views = {
+        cmdline = {
+          position = {
+            row = -1,
+          },
+        },
+      },
+    },
+  },
+  {
     -- Diffs on blocks in the same file
     "AndrewRadev/linediff.vim",
     cmd = { "Linediff" },
