@@ -618,7 +618,7 @@ M = {
           { name = "orgmode" },
           -- { name = 'neorg' },
           -- { name = 'codeium' },
-          -- { name = 'otter' },
+          { name = 'otter' },
         }, {
           { name = "buffer" },
         }),

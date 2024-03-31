@@ -34,57 +34,66 @@ local ft_prog_lsp = {
 local ft_prog = { "fish", "lua", "smarty", unpack(ft_prog_lsp) }
 
 return {
-  -- {
-  --   'jmbuhr/otter.nvim',
-  --   dependencies = {
-  --     'nvim-cmp',
-  --     'nvim-lspconfig',
-  --     'nvim-treesitter',
-  --   },
-  --   init = function()
-  --     vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  --       group = "initAutoGroup",
-  --       pattern = { "*.html", "*.htm", "*.md", "*.org" },
-  --       callback = function(ev)
-  --         local otter = require("otter")
-  --         otter.activate(ft_prog_lsp)
-  --         vim.keymap.set(
-  --           "n",
-  --           "<leader>ld",
-  --           otter.ask_definition,
-  --           { silent = true, buffer = ev.buf, desc = "Lsp definition" }
-  --         )
-  --         vim.keymap.set(
-  --           "n",
-  --           "<leader>lK",
-  --           otter.ask_hover,
-  --           { silent = true, buffer = ev.buf, desc = "Lsp hover" }
-  --         )
-  --         vim.keymap.set(
-  --           "n",
-  --           "<leader>lt",
-  --           otter.ask_type_definition,
-  --           { silent = true, buffer = ev.buf, desc = "Lsp type definition" }
-  --         )
-  --         vim.keymap.set(
-  --           "n",
-  --           "<leader>ln",
-  --           otter.ask_rename,
-  --           { silent = true, buffer = ev.buf, desc = "Lsp rename" }
-  --         )
-  --         vim.keymap.set(
-  --           "n",
-  --           "<leader>lr",
-  --           otter.ask_references,
-  --           { silent = true, buffer = ev.buf, desc = "Lsp references" }
-  --         )
-  --         vim.keymap.set({ "n", "v" }, "<leader>lf",
-  --           otter.ask_format,
-  --           { silent = true, buffer = ev.buf, desc = "Lsp format" })
-  --       end,
-  --     })
-  --   end
-  -- },
+  {
+    'jmbuhr/otter.nvim',
+    dependencies = {
+      'nvim-cmp',
+      'nvim-lspconfig',
+      'nvim-treesitter',
+    },
+    init = function()
+      vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+        group = "initAutoGroup",
+        pattern = { "*.html", "*.htm", "*.md", "*.org" },
+        callback = function(ev)
+          local otter = require("otter")
+          otter.activate(ft_prog_lsp)
+          vim.keymap.set(
+            "n",
+            "<leader>ld",
+            otter.ask_definition,
+            { silent = true, buffer = ev.buf, desc = "Lsp definition" }
+          )
+          vim.keymap.set(
+            "n",
+            "<leader>lK",
+            otter.ask_hover,
+            { silent = true, buffer = ev.buf, desc = "Lsp hover" }
+          )
+          vim.keymap.set(
+            "n",
+            "<leader>lt",
+            otter.ask_type_definition,
+            { silent = true, buffer = ev.buf, desc = "Lsp type definition" }
+          )
+          vim.keymap.set(
+            "n",
+            "<leader>ln",
+            otter.ask_rename,
+            { silent = true, buffer = ev.buf, desc = "Lsp rename" }
+          )
+          vim.keymap.set(
+            "n",
+            "<leader>lr",
+            otter.ask_references,
+            { silent = true, buffer = ev.buf, desc = "Lsp references" }
+          )
+          vim.keymap.set({ "n", "v" }, "<leader>lf",
+            otter.ask_format,
+            { silent = true, buffer = ev.buf, desc = "Lsp format" })
+        end,
+      })
+    end,
+    opts = {
+      lsp = {
+        diagnostic_update_events = {
+          "BufWritePost",
+          "InsertLeave",
+          "TextChanged",
+        }
+      },
+    }
+  },
   {
     "lukas-reineke/indent-blankline.nvim",
     ft = ft_prog,
