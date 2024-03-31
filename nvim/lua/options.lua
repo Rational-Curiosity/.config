@@ -39,6 +39,8 @@ opt.listchars = {
   extends = "⮞",
   precedes = "⮜",
 }
+o.conceallevel = 2
+-- o.concealcursor = "nc"
 o.cursorline = true
 o.wrap = false
 o.scrolloff = 1
