@@ -205,8 +205,8 @@ configuration {
 }
 
 window {
-    height: 67%;
-    width: 67%;
+    height: 90%;
+    width: 90%;
     background-color: @background;
     border: 0;
     padding: 2.5ch;
@@ -243,7 +243,7 @@ listview {
     spacing: 2px;
     scrollbar: true;
     padding: 2px 0px 0px;
-    columns: 5;
+    columns: 1;
 }
 
 element {
