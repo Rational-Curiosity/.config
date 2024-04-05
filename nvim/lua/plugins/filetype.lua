@@ -26,10 +26,8 @@ return {
     ft = { "org" },
     dependencies = "nvim-treesitter",
     config = function()
-      local orgmode = require("orgmode")
       local notes = vim.fn.expand("~/Prog/org/refile.org")
-      orgmode.setup_ts_grammar()
-      orgmode.setup({
+      require("orgmode").setup({
         org_startup_folded = "inherit",
         org_agenda_files = { "~/var/Dropbox/Orgzly/*", "~/my-orgs/**/*" },
         org_default_notes_file = vim.fn.filereadable(notes) ~= 0 and notes
