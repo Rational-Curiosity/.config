@@ -30,6 +30,7 @@ local ft_prog_lsp = {
   "typescript.tsx",
   "typescriptreact",
   "typst",
+  "yaml",
 }
 local ft_prog = { "fish", "lua", "smarty", unpack(ft_prog_lsp) }
 
@@ -456,6 +457,7 @@ return {
         ember = append_to_last(base_config, {
           root_dir = util.root_pattern("ember-cli-build.js"),
         }),
+        gitlab_ci_ls = base_config,
         html = base_config,
         intelephense = base_config,
         java_language_server = append_to_last(base_config, {
