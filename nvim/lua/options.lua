@@ -1080,6 +1080,7 @@ mapset("i", "<C-k>", "<C-o>D", noremap_silent)
 -- mapset('i', '<C-H>', '<Left><C-o>dvb', noremap_silent)
 mapset("i", "<A-BS>", "<Left><C-o>dvb", noremap_silent)
 -- <C-u> already exists
+mapset("c", "<Esc>", "<C-e><C-u><Esc>")
 mapset("c", "<A-p>", "<C-p>")
 mapset("c", "<A-n>", "<C-n>")
 mapset("c", "<A-b>", "<C-f>b<C-c>")
