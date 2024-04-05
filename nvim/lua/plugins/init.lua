@@ -529,6 +529,12 @@ M = {
         Operator = "󰆕",
         TypeParameter = "󰅲",
         Spell = "󰓆",
+        OrgHeadlineLevel1 = "❶",
+        OrgHeadlineLevel2 = "❷",
+        OrgHeadlineLevel3 = "❸",
+        OrgHeadlineLevel4 = "❹",
+        OrgHeadlineLevel5 = "❺",
+        OrgHeadlineLevel6 = "❻",
       }
       local source_names = {
         buffer = "Buf",
