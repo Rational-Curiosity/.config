@@ -11,7 +11,7 @@
 -- 2       e
 -- 3       g
 
-M = {
+return {
   {
     "nanotee/zoxide.vim",
     cmd = { "Z", "Zi" },
@@ -38,7 +38,7 @@ M = {
     lazy = false,
     config = function()
       require("bigfile").setup({
-        filesize = 25, -- in MB
+        filesize = 4, -- in MiB
       })
     end,
   },
@@ -46,7 +46,7 @@ M = {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     dependencies = {
-      "kyazdani42/nvim-web-devicons",
+      "nvim-tree/nvim-web-devicons",
       "tokyonight.nvim",
       -- 'arkav/lualine-lsp-progress',
     },
@@ -683,16 +683,3 @@ M = {
     end,
   },
 }
-
-vim.list_extend(M, require("plugins.edit"))
-vim.list_extend(M, require("plugins.language"))
-vim.list_extend(M, require("plugins.movement"))
-vim.list_extend(M, require("plugins.comment"))
-vim.list_extend(M, require("plugins.vcs"))
-vim.list_extend(M, require("plugins.syntax"))
-vim.list_extend(M, require("plugins.prog"))
-vim.list_extend(M, require("plugins.task"))
-vim.list_extend(M, require("plugins.visual"))
-vim.list_extend(M, require("plugins.filetype"))
-vim.list_extend(M, require("plugins.key"))
-return M
