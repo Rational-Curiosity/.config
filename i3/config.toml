@@ -1,7 +1,7 @@
 [theme]
 theme = "dracula"
 [theme.overrides]
-separator = "<span font='12'></span>"
+separator = "<span font='12.5'></span>"
 
 [icons]
 icons = "material-nf"

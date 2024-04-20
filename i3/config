@@ -16,7 +16,7 @@ default_border pixel $border_size
 default_floating_border pixel $border_size
 
 # sudo apt install xfonts-terminus
-set $font Hack Nerd Font Mono
+set $font DejaVuSansM Nerd Font Mono
 font xft:$font 9
 
 set $focused_ws i3-msg -t get_workspaces|jq '.[]|select(.focused).num'
