@@ -178,6 +178,10 @@ vim.cmd([[
   function Getcwdhead()
     return luaeval("vim.fn.getcwd():gsub('.*/', '')")
   endfunction
+  nm <silent> <F1> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
+    \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name")
+    \ . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
+    \ . ">"<CR>
 ]])
 do
   local tabstop2_ft = {
@@ -624,11 +628,43 @@ function _G.getcwdhead()
   return fn.getcwd():gsub(".*/", "")
 end
 
+function _G.set_next_win(reverse)
+  local curr_win = api.nvim_get_current_win()
+  local wins = api.nvim_tabpage_list_wins(0)
+  if reverse then
+    for i = 1, math.floor(#wins / 2) do
+      wins[i], wins[#wins - i + 1] = wins[#wins - i + 1], wins[i]
+    end
+  end
+  local last = #wins
+  while 1 <= last do
+    if wins[1] ~= curr_win then
+      table.insert(wins, table.remove(wins, 1))
+      last = last - 1
+    else
+      table.remove(wins, 1)
+      break
+    end
+  end
+  for k, win in ipairs(wins) do
+    if api.nvim_get_option_value(
+      "filetype",
+      { buf = api.nvim_win_get_buf(win) }
+    ) ~= "notify" then
+      api.nvim_set_current_win(win)
+      break
+    end
+  end
+end
+
 function _G.set_curr_win(index)
   local wins = api.nvim_tabpage_list_wins(0)
-  for k, win in ipairs(wins) do
-    if api.nvim_buf_get_name(api.nvim_win_get_buf(win)) == "" then
-      table.remove(wins, k)
+  local i = 1
+  while i <= #wins do
+    if api.nvim_buf_get_name(api.nvim_win_get_buf(wins[i])) == "" then
+      table.remove(wins, i)
+    else
+      i = i + 1
     end
   end
   local win = wins[index]
@@ -679,12 +715,28 @@ function _G.win_fit_width_to_content()
   end
 end
 
-function _G.win_half_width()
-  api.nvim_win_set_width(0, math.ceil(api.nvim_win_get_width(0) / 2))
+function _G.win_fit_height_to_content()
+  if wo.winfixheight then
+    vim.notify("Fixed height window", vim.log.levels.WARN)
+    return
+  end
+  local line_count = api.nvim_buf_line_count(0)
+  if line_count >= o.winminheight then
+    api.nvim_win_set_height(0, line_count)
+    wo.winfixheight = true
+    api.nvim_command("vertical wincmd =")
+    wo.winfixheight = false
+  end
 end
 
-function _G.win_double_width()
+function _G.win_half_size()
+  api.nvim_win_set_width(0, math.ceil(api.nvim_win_get_width(0) / 2))
+  api.nvim_win_set_height(0, math.ceil(api.nvim_win_get_height(0) / 2))
+end
+
+function _G.win_double_size()
   api.nvim_win_set_width(0, api.nvim_win_get_width(0) * 2)
+  api.nvim_win_set_height(0, api.nvim_win_get_height(0) * 2)
 end
 
 function _G.switch(_value)
@@ -829,8 +881,8 @@ mapset({ "n", "x" }, "<A-.>", "@:")
 mapset("n", "zdc", ":%g/^[ \t]*class /normal! zc<CR>")
 mapset("n", "zdf", ":%g/^[ \t]*\\(function\\|def\\) /normal! zc<CR>")
 mapset("n", "<leader><Return>", "i<CR><C-\\><C-n>")
-mapset("n", "<C-W>*", win_double_width, { desc = "Double width win" })
-mapset("n", "<C-W>/", win_half_width, { desc = "Half width win" })
+mapset("n", "<C-W>*", win_double_size, { desc = "Double win size" })
+mapset("n", "<C-W>/", win_half_size, { desc = "Half win size" })
 mapset("n", "<C-W>0", "<CMD>copen<CR>", { desc = "Goto quickfix" })
 mapset("n", "<C-W>1", function()
   set_curr_win(1)
@@ -859,6 +911,10 @@ end, { desc = "Goto win 8" })
 mapset("n", "<C-W>9", function()
   set_curr_win(9)
 end, { desc = "Goto win 9" })
+mapset("n", "<C-W><C-W>", set_next_win, { desc = "Go to next win" })
+mapset("n", "<C-W>W", function()
+  set_next_win(true)
+end, { desc = "Go to prev win" })
 mapset("n", "<C-W>e", function()
   o.signcolumn = o.signcolumn == "number" and "auto:1" or "number"
 end, { desc = "Toggle sign column" })
@@ -870,11 +926,17 @@ mapset("n", "<C-W>E", function()
 end, { desc = "Toggle sign column all windows" })
 mapset(
   "n",
-  "<C-W>w",
+  "<C-W>fw",
   win_fit_width_to_content,
   { desc = "Fit width to content" }
 )
-mapset("n", "<C-W>W", win_fit_filetype_width, { desc = "Width by filetype" })
+mapset(
+  "n",
+  "<C-W>fh",
+  win_fit_height_to_content,
+  { desc = "Fit height to content" }
+)
+mapset("n", "<C-W>F", win_fit_filetype_width, { desc = "Width by filetype" })
 mapset("n", "<leader>CC", "<CMD>lclose<CR>", { desc = "Close location list" })
 mapset("n", "<leader>Cc", "<CMD>cclose<CR>", { desc = "Close quickfix" })
 mapset("n", "<leader>CO", "<CMD>lopen<CR>", { desc = "Open location list" })
