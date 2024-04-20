@@ -138,4 +138,14 @@ return {
       vim.keymap.set("n", "zm", ufo.closeFoldsWith)
     end,
   },
+  {
+    "ziontee113/icon-picker.nvim",
+    cmd = { "IconPickerNormal", "IconPickerYank", "IconPickerInsert" },
+    dependencies = {
+      "telescope.nvim",
+    },
+    config = function()
+        require("icon-picker").setup({ disable_legacy_commands = true })
+    end,
+  },
 }
