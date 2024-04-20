@@ -14,6 +14,9 @@ return {
       require("lazy.core.loader").add_to_rtp(plugin)
       require("nvim-treesitter.query_predicates")
     end,
+    init = function()
+      vim.filetype.add({ extension = { rasi = "rasi" } })
+    end,
     config = function()
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
