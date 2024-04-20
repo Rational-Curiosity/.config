@@ -3,10 +3,12 @@ return {
     "rcarriga/nvim-notify",
     event = "VeryLazy",
     config = function()
-      local notify = require('notify')
+      local util = require("notify.stages.util")
+      local notify = require("notify")
       notify.setup({
         render = "compact",
-        stages = "static",
+        stages = "no_animation",
+        animate = false,
         level = 0,
         timeout = 10000,
         top_down = false,
@@ -34,6 +36,13 @@ return {
             icon = "¿",
             icon_hl_group = "NoiceCmdlinePrompt",
           },
+        },
+      },
+      lsp = {
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
         },
       },
       views = {
