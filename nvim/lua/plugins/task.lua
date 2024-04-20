@@ -2,7 +2,17 @@ return {
   {
     'stevearc/overseer.nvim',
     dependencies = { 'telescope.nvim' },
-    cmd = { 'OverseerRun', 'OverseerToggle' },
+    cmd = {
+      'OverseerBuild',
+      'OverseerInfo',
+      'OverseerLoadBundle',
+      'OverseerOpen',
+      'OverseerQuickAction',
+      'OverseerRun',
+      'OverseerRunCmd',
+      'OverseerTaskAction',
+      'OverseerToggle',
+    },
     keys = {
       { "<leader>ft", "<cmd>OverseerRun<cr>", desc = "Telescope overseer" },
     },
@@ -267,6 +277,9 @@ return {
   {
     "chipsenkbeil/distant.nvim",
     cmd = {
+      "Distant",
+      "DistantCheckHealth",
+      "DistantClientVersion",
       "DistantConnect",
       "DistantCopy",
       "DistantInstall",
@@ -276,19 +289,14 @@ return {
       "DistantOpen",
       "DistantRemove",
       "DistantRename",
-      "DistantRun",
+      "DistantSearch",
       "DistantSessionInfo",
+      "DistantShell",
+      "DistantSpawn",
       "DistantSystemInfo",
     },
     config = function()
-      require("distant").setup({
-        -- Applies Chip's personal settings to every machine you connect to
-        --
-        -- 1. Ensures that distant servers terminate with no connections
-        -- 2. Provides navigation bindings for remote directories
-        -- 3. Provides keybinding to jump into a remote file's parent directory
-        ["*"] = require("distant.settings").chip_default(),
-      })
+      require("distant"):setup()
     end,
   },
 }
