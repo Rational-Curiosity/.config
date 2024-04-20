@@ -4,7 +4,7 @@ gui:
   screenMode: "half"
 logs:
   since: ''
-  tail: 150
+  tail: 512
 commandTemplates:
   dockerCompose: docker compose
 customCommands:
@@ -15,7 +15,7 @@ customCommands:
       serviceNames: []
     - name: gigas CORE   stop
       attach: false
-      command: '{{ .DockerCompose }} stop db_maria db_mysql db_redis rabbitmq websockifier id-provider'
+      command: '{{ .DockerCompose }} stop  db_maria db_mysql db_redis rabbitmq websockifier id-provider'
       serviceNames: []
     - name: gigas MAPP   up
       attach: false
@@ -23,7 +23,7 @@ customCommands:
       serviceNames: []
     - name: gigas MAPP   stop
       attach: false
-      command: '{{ .DockerCompose }} stop apiproxy api-kvm api-vmware api-oracle mapp router'
+      command: '{{ .DockerCompose }} stop  apiproxy api-kvm api-vmware api-oracle mapp router'
       serviceNames: []
     - name: gigas KVM    up
       attach: false
@@ -31,7 +31,7 @@ customCommands:
       serviceNames: []
     - name: gigas KVM    stop
       attach: false
-      command: '{{ .DockerCompose }} stop apiproxy api-kvm kudeiro-kvm executor-kvm uploader-kvm controlpanel hapi router'
+      command: '{{ .DockerCompose }} stop  apiproxy api-kvm kudeiro-kvm executor-kvm uploader-kvm controlpanel hapi router'
       serviceNames: []
     - name: gigas VMWARE up
       attach: false
@@ -39,7 +39,7 @@ customCommands:
       serviceNames: []
     - name: gigas VMWARE stop
       attach: false
-      command: '{{ .DockerCompose }} stop apiproxy api-vmware kudeiro-vmware executor-vmware uploader-vmware controlpanel hapi router'
+      command: '{{ .DockerCompose }} stop  apiproxy api-vmware kudeiro-vmware executor-vmware uploader-vmware controlpanel hapi router'
       serviceNames: []
     - name: gigas ORACLE up
       attach: false
@@ -47,5 +47,5 @@ customCommands:
       serviceNames: []
     - name: gigas ORACLE stop
       attach: false
-      command: '{{ .DockerCompose }} stop apiproxy api-oracle kudeiro-oracle executor-oracle uploader-oracle controlpanel hapi router'
+      command: '{{ .DockerCompose }} stop  apiproxy api-oracle kudeiro-oracle executor-oracle uploader-oracle controlpanel hapi router'
       serviceNames: []
