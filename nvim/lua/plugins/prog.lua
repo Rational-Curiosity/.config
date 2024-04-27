@@ -823,4 +823,25 @@ return {
     --   })
     -- end
   },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    ft = ft_prog,
+    config = function()
+      local todo_comments = require("todo-comments")
+      todo_comments.setup({
+        signs = false,
+        highlight = {
+          keyword = "bg",
+          pattern = [[\s*<(KEYWORDS):]],
+        },
+      })
+      vim.keymap.set("n", "]t", function()
+        todo_comments.jump_next()
+      end, { desc = "Next todo comment" })
+      vim.keymap.set("n", "[t", function()
+        todo_comments.jump_prev()
+      end, { desc = "Previous todo comment" })
+    end,
+  },
 }
