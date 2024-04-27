@@ -730,14 +730,20 @@ function _G.win_fit_height_to_content()
   end
 end
 
-function _G.win_half_size()
-  api.nvim_win_set_width(0, math.ceil(api.nvim_win_get_width(0) / 2))
+function _G.win_half_height()
   api.nvim_win_set_height(0, math.ceil(api.nvim_win_get_height(0) / 2))
 end
 
-function _G.win_double_size()
-  api.nvim_win_set_width(0, api.nvim_win_get_width(0) * 2)
+function _G.win_half_width()
+  api.nvim_win_set_width(0, math.ceil(api.nvim_win_get_width(0) / 2))
+end
+
+function _G.win_double_height()
   api.nvim_win_set_height(0, api.nvim_win_get_height(0) * 2)
+end
+
+function _G.win_double_width()
+  api.nvim_win_set_width(0, api.nvim_win_get_width(0) * 2)
 end
 
 function _G.switch(_value)
@@ -882,8 +888,10 @@ mapset({ "n", "x" }, "<A-.>", "@:")
 mapset("n", "zdc", ":%g/^[ \t]*class /normal! zc<CR>")
 mapset("n", "zdf", ":%g/^[ \t]*\\(function\\|def\\) /normal! zc<CR>")
 mapset("n", "<leader><Return>", "i<CR><C-\\><C-n>")
-mapset("n", "<C-W>*", win_double_size, { desc = "Double win size" })
-mapset("n", "<C-W>/", win_half_size, { desc = "Half win size" })
+mapset("n", "<C-W>*h", win_double_height, { desc = "Double win height" })
+mapset("n", "<C-W>*w", win_double_width, { desc = "Double win width" })
+mapset("n", "<C-W>/h", win_half_height, { desc = "Half win height" })
+mapset("n", "<C-W>/w", win_half_width, { desc = "Half win width" })
 mapset("n", "<C-W>0", "<CMD>copen<CR>", { desc = "Goto quickfix" })
 mapset("n", "<C-W>1", function()
   set_curr_win(1)
