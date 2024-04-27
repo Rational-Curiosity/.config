@@ -124,8 +124,8 @@ return {
             ["Rv"] = "⇒", -- Virtual Replace |gR|
             ["Rvc"] = "⇒", -- Virtual Replace mode completion |compl-generic|
             ["Rvx"] = "⇒", -- Virtual Replace mode |i_CTRL-X| completion
-            ["c"] = "⸪", -- Command-line editing
-            ["cr"] = "⸪", -- Command-line editing overstrike mode |c_<Insert>|
+            ["c"] = "∵", -- Command-line editing
+            ["cr"] = "∵", -- Command-line editing overstrike mode |c_<Insert>|
             ["cv"] = "⌘", -- Vim Ex mode |gQ|
             ["cvr"] = "⌘", -- Vim Ex mode while in overstrike mode |c_<Insert>|
             ["r"] = "↲", -- Hit-enter prompt
