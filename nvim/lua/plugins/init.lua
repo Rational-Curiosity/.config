@@ -63,6 +63,12 @@ return {
         end
       end
       heirline.load_colors(colors)
+      vim.keymap.set(
+        "n", "<leader>Ic", function()
+          vim.notify(vim.inspect(colors), vim.log.levels.INFO)
+        end,
+        { desc = "Display tokyonight colors" }
+      )
 
       local mode_colors = {
         ["n"] = "MiniStatuslineModeNormal",
