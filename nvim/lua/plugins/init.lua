@@ -89,7 +89,7 @@ return {
         self.mode = vim.fn.mode(1)
       end
       local mode_hl = function(self)
-        return mode_colors[self.mode:sub(1, 1)]
+        return mode_colors[self.mode:sub(1, 1)] or "Error"
       end
       local ViMode = {
         init = mode_init,
