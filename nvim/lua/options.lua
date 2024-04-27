@@ -346,7 +346,7 @@ api.nvim_create_autocmd({
       and wo.relativenumber ~= false
     then
       wo.relativenumber = false
-      api.nvim_command("redraw")
+      -- api.nvim_command("redraw")
     end
   end,
 })
