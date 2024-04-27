@@ -130,7 +130,10 @@ function fish_title
 end
 
 function zoxide-add-for -a times folder
-    for i in $(seq $times); zoxide add $folder; end
+    for i in $(seq $times 2>/dev/null); zoxide add $folder; end
+    if test $status -ne 0
+        echo "Usage: zoxide-add-for <times> <folder>" >&2
+    end
 end
 zoxide init fish | source
 starship init fish | source
