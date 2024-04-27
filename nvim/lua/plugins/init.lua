@@ -160,6 +160,7 @@ return {
             or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
         end,
         hl = { bg = "bg_statusline" },
+        update = { "User", pattern = "GitSignsUpdate" },
         {
           provider = "",
           hl = { fg = "green2", bold = true },
@@ -179,21 +180,21 @@ return {
         {
             provider = function(self)
               return self.status_dict.added and self.status_dict.added > 0
-              and ("+" .. self.status_dict.added)
+                and ("+" .. self.status_dict.added)
             end,
             hl = { fg = "git_add" },
         },
         {
             provider = function(self)
               return self.status_dict.removed and self.status_dict.removed > 0
-              and ("-" .. self.status_dict.removed)
+                and ("-" .. self.status_dict.removed)
             end,
             hl = { fg = "git_delete" },
         },
         {
             provider = function(self)
               return self.status_dict.changed and self.status_dict.changed > 0
-              and ("~" .. self.status_dict.changed)
+                and ("~" .. self.status_dict.changed)
             end,
             hl = { fg = "git_change" },
         },
