@@ -33,7 +33,7 @@ return {
     dependencies = {
       { "nvim-lua/plenary.nvim" },
     },
-    event = "VeryLazy",
+    -- event = "VeryLazy",
     config = function()
       vim.api.nvim_set_hl(0, "GitSignsAddLnInline", { bg = "#004d00" })
       vim.api.nvim_set_hl(0, "GitSignsChangeLnInline", { bg = "#3d004d" })
