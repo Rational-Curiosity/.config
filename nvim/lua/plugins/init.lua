@@ -159,12 +159,16 @@ return {
           self.has_changes = self.status_dict.added ~= 0
             or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
         end,
-        hl = { fg = "#f99820", bg = "#16161e" },
+        hl = { bg = "bg_statusline" },
+        {
+          provider = "",
+          hl = { fg = "green2", bold = true },
+        },
         {
           provider = function(self)
-            return "" .. self.status_dict.head
+            return self.status_dict.head
           end,
-          hl = { bold = true },
+          hl = { fg = "green1", bold = true },
         },
         {
           condition = function(self)
@@ -210,7 +214,7 @@ return {
           self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
           self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
         end,
-        hl = { bg = "#16161e" },
+        hl = { bg = "bg_statusline" },
         update = { "DiagnosticChanged", "BufEnter" },
         {
           provider = function(self)
@@ -241,10 +245,17 @@ return {
 
       local VirtualEnv = {
         condition = function() return vim.env.VIRTUAL_ENV ~= nil end,
-        hl = { fg = "#ff9e64", bg = "#16161e", bold = true },
-        provider = function()
-          return "👾" .. vim.env.VIRTUAL_ENV:match("[^/]+$") .. " "
-        end,
+        hl = { bg = "bg_statusline" },
+        {
+          provider = "👾",
+          hl = { fg = "orange", bold = true },
+        },
+        {
+          provider = function()
+            return vim.env.VIRTUAL_ENV:match("[^/]+$") .. " "
+          end,
+          hl = { fg = "yellow", bold = true },
+        },
       }
 
       local WorkDir = {
@@ -252,7 +263,7 @@ return {
           self.icon = (vim.fn.haslocaldir(0) == 1 and "󰜛" or "")
           self.cwd = vim.fn.fnamemodify(vim.fn.getcwd(0), ":~")
         end,
-        hl = { fg = "#7aa2f7", bg = "#16161e" },
+        hl = { fg = "blue", bg = "bg_statusline" },
         flexible = 1,
         {
           -- evaluates to the full-lenth path
@@ -281,21 +292,21 @@ return {
               and vim.fn.filereadable(self.filename) == 0
           end,
           provider = "",
-          hl = { fg = "#90EE90", bg = "#16161e", bold = true },
+          hl = { fg = "green", bg = "bg_statusline", bold = true },
         },
         {
           condition = function()
             return vim.bo.modified
           end,
           provider = "",
-          hl = { fg = "#ff9e64", bg = "#16161e", bold = true },
+          hl = { fg = "orange", bg = "bg_statusline", bold = true },
         },
         {
           condition = function()
             return not vim.bo.modifiable or vim.bo.readonly
           end,
           provider = "",
-          hl = { fg = "#8b0000", bg = "#16161e", bold = true },
+          hl = { fg = "error", bg = "bg_statusline", bold = true },
         },
       }
       local FileName = {
@@ -333,7 +344,7 @@ return {
             self.search = search
           end
         end,
-        hl = { fg = "#f99820", bold = true },
+        hl = { fg = "orange", bold = true },
         utils.surround({ "[", "]" }, nil, {
           provider = function(self)
             return self.search.current .. "/"
@@ -350,7 +361,7 @@ return {
           return vim.fn.reg_recording() ~= "" and vim.o.cmdheight == 0
         end,
         provider = "",
-        hl = { fg = "#f99820", bold = true },
+        hl = { fg = "orange", bold = true },
         utils.surround({ "[", "]" }, nil, {
           provider = function()
             return vim.fn.reg_recording()
@@ -386,7 +397,7 @@ return {
         end,
       }
       local FileFormat = vim.tbl_extend("force", InactiveFileFormat, {
-        hl = { fg = "#7aa2f7", bg = "#16161e", bold = true },
+        hl = { fg = "blue", bg = "bg_statusline", bold = true },
         update = { "BufReadPost", "BufWritePre" },
       })
 
@@ -436,14 +447,14 @@ return {
         provider = function()
           return string.upper(vim.bo.filetype)
         end,
-        hl = { fg = utils.get_highlight("Type").fg, bg = "#16161e", bold = true },
+        hl = { fg = utils.get_highlight("Type").fg, bg = "bg_statusline", bold = true },
       }
 
       local TerminalName = {
         provider = function()
           return "" .. vim.api.nvim_buf_get_name(0):gsub("^.*//([0-9]+:)", "%1", 1)
         end,
-        hl = { fg = "#7aa2f7", bg = "#16161e", bold = true },
+        hl = { fg = "blue", bg = "bg_statusline", bold = true },
       }
 
       local HelpFileName = {
