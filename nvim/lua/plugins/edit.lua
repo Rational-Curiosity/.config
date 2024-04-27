@@ -124,7 +124,7 @@ return {
     end,
   },
   {
-    "ckolkey/ts-node-action",
+    "CKolkey/ts-node-action",
     cmd = { "NodeAction" },
     dependencies = { "nvim-treesitter" },
     keys = {
