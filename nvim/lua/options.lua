@@ -647,7 +647,8 @@ function _G.set_next_win(reverse)
     end
   end
   for k, win in ipairs(wins) do
-    if api.nvim_get_option_value(
+    if api.nvim_win_get_config(win).focusable
+      and api.nvim_get_option_value(
       "filetype",
       { buf = api.nvim_win_get_buf(win) }
     ) ~= "notify" then
