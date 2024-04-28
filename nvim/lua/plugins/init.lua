@@ -277,8 +277,7 @@ return {
         {
           -- evaluates to the shortened path
           provider = function(self)
-            local cwd = vim.fn.pathshorten(self.cwd)
-            return self.icon .. cwd .. "/"
+            return self.icon .. vim.fn.pathshorten(self.cwd) .. "/"
           end,
         },
         {
@@ -455,7 +454,7 @@ return {
 
       local TerminalName = {
         provider = function()
-          return "" .. vim.api.nvim_buf_get_name(0):gsub("^.*//([0-9]+:)", "%1", 1)
+          return "" .. vim.api.nvim_buf_get_name(0):gsub("^term://.*//([0-9]+)", "%1", 1)
         end,
         hl = { fg = "blue", bg = "bg_statusline", bold = true },
       }
