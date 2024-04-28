@@ -203,10 +203,33 @@ return {
                                     --# possible values are 'none', 'single', 'double', or 'shadow'
       })
       local sniprun_api = require("sniprun.api")
-      vim.api.nvim_create_user_command("SnipRange", function()
-        local code = vim.fn.getregion(vim.fn.getpos("'<"), vim.fn.getpos("'>"))
-        sniprun_api.run_string(table.concat(code, "\n"))
-      end, { range = true, bar = true })
+      local getregion_type = {
+        char = "v",
+        line = "V",
+        block = "<CTRL-V>",
+      }
+      vim.api.nvim_create_user_command(
+        "SnipRange",
+        function(opts)
+          local code = vim.fn.getregion(
+            vim.fn.getpos("'<"),
+            vim.fn.getpos("'>"),
+            { type = getregion_type[opts.args] or "v" }
+          )
+          return sniprun_api.run_string(table.concat(code, "\n"))
+        end,
+        {
+          range = true, bar = true, nargs = 1,
+          complete = function(arg_lead, cmd_line, cursor_pos)
+            local result = {}
+            for k, _ in pairs(getregion_type) do
+              table.insert(result, k)
+            end
+            return result
+          end,
+          desc = "SnipRun in range",
+        }
+      )
     end,
   },
   {
