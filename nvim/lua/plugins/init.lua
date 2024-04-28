@@ -54,12 +54,14 @@ return {
       local conditions = require("heirline.conditions")
       local utils = require("heirline.utils")
 
-      local colors = require("tokyonight.colors").setup()
-      for k1, v1 in pairs(colors) do
+      local colors = {}
+      for k1, v1 in pairs(require("tokyonight.colors").setup()) do
         if type(v1) == "table" then
           for k2, v2 in pairs(v1) do
             colors[k1 .. "_" .. k2] = v2
           end
+        else
+          colors[k1] = v1
         end
       end
       heirline.load_colors(colors)
