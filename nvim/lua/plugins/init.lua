@@ -98,16 +98,16 @@ return {
         static = {
           mode_map = {
             -- neovim/runtime/doc/builtin.txt
-            ["n"] = "ℕ", -- Normal
+            ["n"] = "ℵ", -- Normal
             ["no"] = "⊙", -- Operator-pending
             ["nov"] = "⊙", -- Operator-pending (forced charwise |o_v|)
             ["noV"] = "⊙", -- Operator-pending (forced linewise |o_V|)
             ["no"] = "⊙", -- Operator-pending (forced blockwise |o_CTRL-V|)
-            ["niI"] = "ℕ", -- Normal using |i_CTRL-O| in |Insert-mode|
-            ["niR"] = "ℕ", -- Normal using |i_CTRL-O| in |Replace-mode|
-            ["niV"] = "ℕ", -- Normal using |i_CTRL-O| in |Virtual-Replace-mode|
-            ["nt"] = "ℕ", -- Normal in |terminal-emulator| (insert goes to Terminal mode)
-            ["ntT"] = "ℕ", -- Normal using |t_CTRL-\_CTRL-O| in |Terminal-mode|
+            ["niI"] = "ℵ", -- Normal using |i_CTRL-O| in |Insert-mode|
+            ["niR"] = "ℵ", -- Normal using |i_CTRL-O| in |Replace-mode|
+            ["niV"] = "ℵ", -- Normal using |i_CTRL-O| in |Virtual-Replace-mode|
+            ["nt"] = "ℵ", -- Normal in |terminal-emulator| (insert goes to Terminal mode)
+            ["ntT"] = "ℵ", -- Normal using |t_CTRL-\_CTRL-O| in |Terminal-mode|
             ["v"] = "☱", -- Visual by character
             ["vs"] = "☲", -- Visual by character using |v_CTRL-O| in Select mode
             ["V"] = "☰", -- Visual by line
