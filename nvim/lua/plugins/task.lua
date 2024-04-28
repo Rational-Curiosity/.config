@@ -202,7 +202,7 @@ return {
         borders = 'single',         --# display borders around floating windows
                                     --# possible values are 'none', 'single', 'double', or 'shadow'
       })
-      local sniprun_api = require("sniprun.api")
+
       local getregion_type = {
         char = "v",
         line = "V",
@@ -211,12 +211,17 @@ return {
       vim.api.nvim_create_user_command(
         "SnipRange",
         function(opts)
+          local beg_pos = vim.fn.getpos("'<")
+          if beg_pos[2] == 0 or beg_pos[3] == 0 then
+            vim.notify("Range not defined", "error", { title = "SnipRun" })
+            return
+          end
           local code = vim.fn.getregion(
-            vim.fn.getpos("'<"),
+            beg_pos,
             vim.fn.getpos("'>"),
             { type = getregion_type[opts.args] or "v" }
           )
-          return sniprun_api.run_string(table.concat(code, "\n"))
+          return require("sniprun.api").run_string(table.concat(code, "\n"))
         end,
         {
           range = true, bar = true, nargs = 1,
