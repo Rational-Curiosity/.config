@@ -147,7 +147,7 @@ return {
   },
   {
     "michaelb/sniprun",
-    build = "bash ./install.sh",
+    build = "sh install.sh",
     keys = {
       { "<leader>Rr", ":SnipReplMemoryClean<CR>:SnipRun<CR>", mode = "v" },
       { "<leader>Rr", "<cmd>SnipReplMemoryClean<CR>:SnipRun<CR>" },
@@ -164,6 +164,7 @@ return {
       "SnipReplMemoryClean",
       "SnipInfo",
       "SnipTerminate",
+      "SnipRange",
     },
     config = function()
       require("sniprun").setup({
@@ -192,7 +193,7 @@ return {
           "Classic",
           -- "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
         },
-        live_mode_toggle='off',      --# live mode toggle, see Usage - Running for more info   
+        live_mode_toggle='off',      --# live mode toggle, see Usage - Running for more info
 
         --# miscellaneous compatibility/adjustement settings
         inline_messages = false,    --# boolean toggle for a one-line way to display messages
@@ -201,6 +202,11 @@ return {
         borders = 'single',         --# display borders around floating windows
                                     --# possible values are 'none', 'single', 'double', or 'shadow'
       })
+      local sniprun_api = require("sniprun.api")
+      vim.api.nvim_create_user_command("SnipRange", function()
+        local code = vim.fn.getregion(vim.fn.getpos("'<"), vim.fn.getpos("'>"))
+        sniprun_api.run_string(table.concat(code, "\n"))
+      end, { range = true, bar = true })
     end,
   },
   {
