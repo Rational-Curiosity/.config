@@ -224,7 +224,7 @@ return {
           return require("sniprun.api").run_string(table.concat(code, "\n"))
         end,
         {
-          range = true, bar = true, nargs = 1,
+          range = true, bar = true, nargs = "?",
           complete = function(arg_lead, cmd_line, cursor_pos)
             local result = {}
             for k, _ in pairs(getregion_type) do
