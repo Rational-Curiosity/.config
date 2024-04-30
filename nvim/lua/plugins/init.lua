@@ -268,20 +268,24 @@ return {
       local WorkDir = {
         init = function(self)
           self.icon = (vim.fn.haslocaldir(0) == 1 and "󰜛" or "")
-          self.cwd = vim.fn.fnamemodify(vim.fn.getcwd(0), ":~")
+          local cwd = vim.fn.getcwd(0)
+          self.cwd = cwd == "/" and "" or vim.fn.fnamemodify(cwd, ":~")
         end,
         hl = { fg = "blue", bg = "bg_statusline" },
         flexible = 1,
         {
-          -- evaluates to the full-lenth path
           provider = function(self)
             return self.icon .. self.cwd .. "/"
           end,
         },
         {
-          -- evaluates to the shortened path
           provider = function(self)
             return self.icon .. vim.fn.pathshorten(self.cwd) .. "/"
+          end,
+        },
+        {
+          provider = function(self)
+            return self.icon .. vim.fn.fnamemodify(self.cwd, ":t") .. "/"
           end,
         },
         {
@@ -298,21 +302,21 @@ return {
               and vim.fn.filereadable(self.filename) == 0
           end,
           provider = "",
-          hl = { fg = "green", bg = "bg_statusline", bold = true },
+          hl = { fg = "green" },
         },
         {
           condition = function()
             return vim.bo.modified
           end,
           provider = "",
-          hl = { fg = "orange", bg = "bg_statusline", bold = true },
+          hl = { fg = "orange" },
         },
         {
           condition = function()
             return not vim.bo.modifiable or vim.bo.readonly
           end,
           provider = "",
-          hl = { fg = "error", bg = "bg_statusline", bold = true },
+          hl = { fg = "error" },
         },
       }
       local FileName = {
@@ -321,6 +325,7 @@ return {
           self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
           if self.lfilename == "" then self.lfilename = "" end
         end,
+        hl = { bg = "bg_statusline", bold = true },
         flexible = 2,
         {
           {
@@ -334,6 +339,14 @@ return {
           {
             provider = function(self)
               return vim.fn.pathshorten(self.lfilename, 2)
+            end,
+          },
+          unpack(FileFlags),
+        },
+        {
+          {
+            provider = function(self)
+              return vim.fn.pathshorten(self.lfilename)
             end,
           },
           unpack(FileFlags),
