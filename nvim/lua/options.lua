@@ -45,6 +45,7 @@ o.cursorline = true
 o.wrap = false
 o.scrolloff = 1
 o.sidescrolloff = 1
+o.virtualedit = "block"
 o.foldmethod = "manual"
 o.foldexpr = "nvim_treesitter#foldexpr()"
 o.foldenable = true
@@ -836,12 +837,26 @@ for _, v in ipairs({'n', 'N', 'K'}) do
   end)
 end
 mapset("n", "ZZ", "<Nop>")
-mapset(
-  "",
-  "<leader>V",
-  '<CMD>if &virtualedit == ""|setlocal virtualedit=all|else|setlocal virtualedit=|endif<CR>',
-  { desc = "Toggle virtual edit" }
-)
+do
+  local virtualedits = { "block", "insert", "all", "onemore", "none" }
+  local virtualedits_idx = {
+    block = 2,
+    insert = 3,
+    all = 4,
+    onemore = 5,
+    none = 1,
+    NONE = 1,
+  }
+  mapset(
+    "",
+    "<leader>V",
+    function()
+      o.virtualedit = virtualedits[virtualedits_idx[o.virtualedit]]
+      vim.notify("Virtualedit = " .. o.virtualedit, vim.log.levels.INFO)
+    end,
+    { desc = "Cycle virtual edit" }
+  )
+end
 mapset("t", "<Esc><Esc>", "<C-\\><C-n>")
 mapset("t", "<C-q>", "<C-\\><C-n><C-w><C-w>")
 mapset(
