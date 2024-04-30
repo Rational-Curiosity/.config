@@ -137,6 +137,7 @@ function zoxide-add-for -a times folder
 end
 zoxide init fish | source
 starship init fish | source
+fnm env --use-on-cd | source
 
 function interface
     ip route | grep '^default' | cut -d' ' -f5
