@@ -67,7 +67,11 @@ return {
       heirline.load_colors(colors)
       vim.keymap.set(
         "n", "<leader>Ic", function()
-          vim.notify(vim.inspect(colors), vim.log.levels.INFO)
+          vim.notify(
+            vim.inspect(colors),
+            vim.log.levels.INFO,
+            { title = "Heirline" }
+          )
         end,
         { desc = "Display tokyonight colors" }
       )

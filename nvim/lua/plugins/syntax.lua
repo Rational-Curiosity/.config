@@ -210,7 +210,8 @@ return {
         function()
           vim.notify(
             vim.fn["nvim_treesitter#statusline"](),
-            vim.log.levels.INFO
+            vim.log.levels.INFO,
+            { title = "Treesitter" }
           )
         end,
         { desc = "Treesitter statusline" }

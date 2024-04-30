@@ -344,7 +344,8 @@ return {
           vim.keymap.set("n", "<leader>lL", function()
             vim.notify(
               table.concat(vim.lsp.buf.list_workspace_folders(), "\n"),
-              vim.log.levels.INFO
+              vim.log.levels.INFO,
+              { title = "LSP Workspace folders" }
             )
           end, {
             silent = true,
