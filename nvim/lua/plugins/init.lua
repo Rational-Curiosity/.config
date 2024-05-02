@@ -70,7 +70,7 @@ return {
           vim.notify(
             vim.inspect(colors),
             vim.log.levels.INFO,
-            { title = "Heirline" }
+            { title = "Heirline colors" }
           )
         end,
         { desc = "Display tokyonight colors" }
@@ -420,6 +420,8 @@ return {
         update = { "BufReadPost", "BufWritePre" },
       })
 
+      local InactiveRuler = { provider = " %l/%L:%c" }
+
       local Ruler = {
         static = {
           bar = { "▀", "🭶", "🭷", "🭸", "🭹", "🭺", "🭻", "▄" },
@@ -466,7 +468,6 @@ return {
         provider = function()
           return string.upper(vim.bo.filetype)
         end,
-        hl = { fg = utils.get_highlight("Type").fg, bg = "bg_statusline", bold = true },
       }
 
       local TerminalName = {
@@ -484,53 +485,69 @@ return {
           local filename = vim.api.nvim_buf_get_name(0)
           return vim.fn.fnamemodify(filename, ":t")
         end,
-        hl = { fg = colors.blue },
       }
 
-      local ActiveStatusline = {
-        ViMode,
-        Git,
-        Diagnostics,
-        VirtualEnv,
-        WorkDir,
-        FileName,
-        Align,
-        ShowCmd,
-        MacroRec,
-        SearchCount,
-        Codeium,
-        FileFormat,
-        Ruler,
+      local QuickFixTitle = {
+        provider = "<A-CR>: Select & close  <leader><CR>: Split & select",
       }
-      local InactiveStatusline = {
-        condition = conditions.is_not_active,
-        FileName,
-        Align,
-        InactiveFileFormat,
-        { provider = " %l/%L:%c" },
+
+      local Statusline = {
+        fallthrough = false,
+        {
+          condition = conditions.is_not_active,
+          FileName, Align, InactiveFileFormat, InactiveRuler,
+        },
+        {
+          ViMode, Git, Diagnostics, VirtualEnv, WorkDir, FileName, Align,
+          ShowCmd, MacroRec, SearchCount, Codeium, FileFormat, Ruler,
+        },
       }
       local QuickfixStatusline = {
+        fallthrough = false,
         condition = function()
           return vim.bo.buftype == "quickfix"
         end,
-        FileType, Space,
-        { provider = "<A-CR>: Select & close  <leader><CR>: Split & select" },
-        Align, HelpFileName
+        {
+          condition = conditions.is_not_active,
+          FileType, Space, QuickFixTitle, Align, HelpFileName, InactiveRuler
+        },
+        {
+          hl = { fg = "blue", bg = "bg_statusline", bold = true },
+          ViMode, FileType, Space, QuickFixTitle, Align,
+          ShowCmd, MacroRec, SearchCount, HelpFileName, Ruler
+        },
       }
       local SpecialStatusline = {
+        fallthrough = false,
         condition = function()
           return conditions.buffer_matches({
             buftype = { "nofile", "prompt", "help" },
             filetype = { "^git.*", "fugitive" },
           })
         end,
-        FileType, Align, HelpFileName
+        {
+          condition = conditions.is_not_active,
+          FileType, Align, HelpFileName, InactiveRuler
+        },
+        {
+          hl = { fg = utils.get_highlight("Type").fg, bg = "bg_statusline", bold = true },
+          ViMode, FileType, Align,
+          ShowCmd, MacroRec, SearchCount, HelpFileName, Ruler
+        },
       }
       local TerminalStatusline = {
+        fallthrough = false,
         condition = function()
           return conditions.buffer_matches({ buftype = { "terminal" } })
         end,
-        { condition = conditions.is_active, ViMode }, TerminalName, Align, FileType,
+        {
+          condition = conditions.is_not_active,
+          TerminalName, Align, FileType, InactiveRuler,
+        },
+        {
+          ViMode, TerminalName, Align,
+          ShowCmd, MacroRec, SearchCount, FileType, Ruler,
+        },
       }
       heirline.setup({
         statusline = {
@@ -538,8 +555,7 @@ return {
           QuickfixStatusline,
           SpecialStatusline,
           TerminalStatusline,
-          InactiveStatusline,
-          ActiveStatusline,
+          Statusline,
         }
       })
     end,
