@@ -137,8 +137,8 @@ function mtu -a itf
     ip link show "$itf" | sed -nr 's/^.* mtu ([0-9]+) .*$/\1/p'
 end
 
-function ansi
-    set -xg LAST_ANSI (random choice (find ~/Pictures/ansi -type f -not -name '*.txt'))
+function ansi -a folder
+    set -xg LAST_ANSI (random choice (find "$folder" -type f -not -name '*.txt'))
     set -l TXT (path change-extension txt $LAST_ANSI)
     if test -f $TXT
         if test $COLUMNS -lt 80
@@ -173,7 +173,7 @@ if test $status -eq 2
     #     set -a banners 'unsplash-feh &; disown'
     # end
     if test -d ~/Pictures/ansi
-        set -a banners 'ansi'
+        set -a banners 'ansi ~/Pictures/ansi'
     end
     set -xg LAST_BANNER (random choice $banners)
     eval $LAST_BANNER
