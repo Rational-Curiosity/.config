@@ -198,6 +198,12 @@ do
     typescript = true,
     typescriptreact = true,
   }
+  local numbersign_ft = {
+    hjson = true,
+    sql = true,
+    mysql = true,
+    plsql = true,
+  }
   api.nvim_create_autocmd({ "FileType" }, {
     group = "initAutoGroup",
     pattern = { "*" },
