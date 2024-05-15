@@ -124,6 +124,7 @@ function zoxide-add-for -a times folder
     end
 end
 zoxide init fish | source
+fzf --fish | source
 starship init fish | source
 fnm env --use-on-cd | source
 
