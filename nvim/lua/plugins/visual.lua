@@ -52,6 +52,11 @@ return {
           },
         },
       },
+      format = {
+        date = {
+          format = "%y-%m-%d %H:%M:%S",
+        }
+      },
     },
   },
   {

@@ -602,11 +602,19 @@ api.nvim_create_autocmd({ "VimLeave" }, {
     vim.cmd([[
     let @+=@"
     set nomore
-    let s:msgs = trim(execute('messages'))
-    if exists(':Notifications')
-      let s:msgs = s:msgs .. execute('Notifications')
+    if exists(':Noice')
+      Noice all
+      let s:msgs = getline(1, '$')
+      let s:save = s:msgs != []
+    else
+      let s:msgs = trim(execute('messages'))
+      if exists(':Notifications')
+        let s:msgs = s:msgs .. execute('Notifications')
+      endif
+      let s:save = s:msgs != ''
+      let s:msgs = split(s:msgs, '\n'),
     endif
-    if len(s:msgs) > 0
+    if s:save
       let s:file = stdpath('config') .. '/shada/messages'
       let s:filelist = split(glob(s:file .. '*.txt'), '\n')
       if len(s:filelist) > 4
@@ -615,8 +623,7 @@ api.nvim_create_autocmd({ "VimLeave" }, {
           call delete(file)
         endfor
       endif
-      call writefile(split(s:msgs, '\n'),
-      \ s:file .. strftime('%Y-%m-%d_%H.%M.%S') .. '.txt')
+      call writefile(s:msgs, s:file .. strftime('%Y-%m-%d_%H.%M.%S') .. '.txt')
     endif
     ]])
   end,
