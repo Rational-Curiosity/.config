@@ -213,7 +213,9 @@ return {
         function(opts)
           local beg_pos = vim.fn.getpos("'<")
           if beg_pos[2] == 0 or beg_pos[3] == 0 then
-            vim.notify("Range not defined", vim.log.levels.ERROR, { title = "SnipRun" })
+            vim.notify("Range not defined", vim.log.levels.ERROR, {
+              title = "SnipRun",
+            })
             return
           end
           local code = vim.fn.getregion(

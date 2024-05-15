@@ -280,12 +280,25 @@ return {
         },
         {
           provider = function(self)
+            return self.icon .. vim.fn.pathshorten(self.cwd, 2) .. "/"
+          end,
+        },
+        {
+          provider = function(self)
             return self.icon .. vim.fn.pathshorten(self.cwd) .. "/"
           end,
         },
         {
           provider = function(self)
             return self.icon .. vim.fn.fnamemodify(self.cwd, ":t") .. "/"
+          end,
+        },
+        {
+          provider = function(self)
+            return self.icon .. vim.fn.fnamemodify(
+              self.cwd,
+              ":t"
+            ):gsub("([^_-][^_-])[^_-]+", "%1") .. "/"
           end,
         },
         {
@@ -323,7 +336,11 @@ return {
         init = function(self)
           self.filename = vim.api.nvim_buf_get_name(0)
           self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
-          if self.lfilename == "" then self.lfilename = "" end
+          if self.lfilename == "" then
+            self.lfilename = ""
+          elseif self.lfilename == self.filename then
+            self.lfilename = vim.fn.fnamemodify(self.filename, ":~")
+          end
         end,
         hl = { bg = "bg_statusline", bold = true },
         flexible = 2,
@@ -353,26 +370,43 @@ return {
         },
       }
 
+      local exact_match = {
+        [0] = "orange",
+        [1] = "red",
+      }
+      local incomplete = {
+        [0] = "green",
+        [1] = "orange",
+        [2] = "red",
+      }
       local SearchCount = {
         condition = function()
           return vim.v.hlsearch ~= 0 and vim.o.cmdheight == 0
         end,
         init = function(self)
-          local ok, search = pcall(vim.fn.searchcount)
+          local ok, search = pcall(vim.fn.searchcount, {
+            timeout = 1000,
+            maxcount = 9999,
+          })
           if ok and search.total then
             self.search = search
           end
         end,
-        hl = { fg = "orange", bold = true },
+        hl = function(self)
+          return { fg = exact_match[self.search.exact_match], bold = true }
+        end,
         utils.surround({ "[", "]" }, nil, {
           provider = function(self)
+            if self.search.total == 0 then
+              return "∅"
+            end
             return self.search.current .. "/"
               .. math.min(self.search.total, self.search.maxcount)
           end,
-          hl = { fg = "green", bold = true },
+          hl = function(self)
+            return { fg = incomplete[self.search.incomplete], bold = true }
+          end,
         }),
-        provider = function(self)
-        end,
       }
 
       local MacroRec = {
@@ -1169,12 +1203,12 @@ return {
           -- revert: si el commit revierte un commit anterior. Debería
           --   indicarse el hash del commit que se revierte.
           { name = "conventionalcommits" },
-          { name = "git" }, -- You can specify the `cmp_git` source if you were installed it.
+          { name = "git" },
         }, {
           { name = "buffer" },
         }),
       })
-      require("cmp_git").setup({})
+      require("cmp_git").setup()
 
       -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline({ "/", "?" }, {
