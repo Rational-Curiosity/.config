@@ -83,106 +83,106 @@ o.undofile = true
 o.undolevels = 700
 
 vim.cmd([[
-  syn sync maxlines=200
-  syn sync minlines=80
-  augroup initAutoGroup
-    autocmd!
-    "  \ *.{c,cpp,h,hbs,htm,html,js,json,jsx,lua,php,py,rs,ts,tsx,md,org} setlocal number
-    " autocmd BufRead * if &buftype == '' | setlocal number | endif
-    " autocmd BufEnter,FocusGained,InsertLeave * if &buftype == '' | setlocal relativenumber | endif
-    " autocmd BufLeave,FocusLost,InsertEnter * if &buftype == '' | setlocal norelativenumber | endif
-    " Org, Neorg
-    "autocmd FileType org,norg setlocal tabstop=2 shiftwidth=2
-    "  \ foldenable foldmethod=expr foldtext=v:lua.require(\"pretty-fold\").foldtext.global()
-    "autocmd FileType lua,html,css,handlebars,json,javascript,javascriptreact,typescript,typescriptreact setlocal tabstop=2 shiftwidth=2
-    " autocmd FileType sh setlocal iskeyword+=$ iskeyword+={ iskeyword+=}|
-    "   \nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n|
-    "   \nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
-    " autocmd FileType php,htmldjango setlocal iskeyword+=$|
-    "   \nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n|
-    "   \nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
-    " autocmd FileType log setlocal nospell
-    " Recompile plugins.lua
-    "autocmd BufWritePost plugins.lua source | PackerCompile
-    " Terminal config
-    autocmd TermOpen term://* setlocal scrollback=100000 nospell nonumber norelativenumber|startinsert
-  augroup end
+syn sync maxlines=200
+syn sync minlines=80
+augroup initAutoGroup
+  autocmd!
+  "  \ *.{c,cpp,h,hbs,htm,html,js,json,jsx,lua,php,py,rs,ts,tsx,md,org} setlocal number
+  " autocmd BufRead * if &buftype == '' | setlocal number | endif
+  " autocmd BufEnter,FocusGained,InsertLeave * if &buftype == '' | setlocal relativenumber | endif
+  " autocmd BufLeave,FocusLost,InsertEnter * if &buftype == '' | setlocal norelativenumber | endif
+  " Org, Neorg
+  "autocmd FileType org,norg setlocal tabstop=2 shiftwidth=2
+  "  \ foldenable foldmethod=expr foldtext=v:lua.require(\"pretty-fold\").foldtext.global()
+  "autocmd FileType lua,html,css,handlebars,json,javascript,javascriptreact,typescript,typescriptreact setlocal tabstop=2 shiftwidth=2
+  " autocmd FileType sh setlocal iskeyword+=$ iskeyword+={ iskeyword+=}|
+  "   \nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n|
+  "   \nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
+  " autocmd FileType php,htmldjango setlocal iskeyword+=$|
+  "   \nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n|
+  "   \nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
+  " autocmd FileType log setlocal nospell
+  " Recompile plugins.lua
+  "autocmd BufWritePost plugins.lua source | PackerCompile
+  " Terminal config
+  autocmd TermOpen term://* setlocal scrollback=100000 nospell nonumber norelativenumber|startinsert
+augroup end
 
-  " MATCHPAREN
-  let g:matchparen_timeout = 150
-  let g:matchparen_insert_timeout = 50
+" MATCHPAREN
+let g:matchparen_timeout = 150
+let g:matchparen_insert_timeout = 50
 
-  " VISUAL MULTI
-  let g:VM_set_statusline = 0  " lualine conflict
-  let g:VM_silent_exit = 1
-  let g:VM_reselect_first = 1
-  let g:VM_leader = '\'
-  let g:VM_maps = {}
-  let g:VM_maps["Add Cursor Down"]    = '<M-j>'
-  let g:VM_maps["Add Cursor Up"]      = '<M-k>'
+" VISUAL MULTI
+let g:VM_set_statusline = 0  " lualine conflict
+let g:VM_silent_exit = 1
+let g:VM_reselect_first = 1
+let g:VM_leader = '\'
+let g:VM_maps = {}
+let g:VM_maps["Add Cursor Down"]    = '<M-j>'
+let g:VM_maps["Add Cursor Up"]      = '<M-k>'
 
-  " Abbreviations
-  cabbrev <expr> E getcmdpos() == 2 && getcmdtype() == ':' ? 'e '.expand('%:p:h') : 'E'
-  cabbrev <expr> T getcmdpos() == 2 && getcmdtype() == ':' ? 'Telescope' : 'T'
-  cabbrev <expr> VS getcmdpos() == 3 && getcmdtype() == ':' ? 'vs '.expand('%:p:h') : 'VS'
-  cabbrev <expr> SP getcmdpos() == 3 && getcmdtype() == ':' ? 'sp '.expand('%:p:h') : 'SP'
-  cabbrev <expr> vh getcmdpos() == 3 && getcmdtype() == ':' ? 'vert help' : 'vh'
-  cabbrev <expr> bdn getcmdpos() == 4 && getcmdtype() == ':' ? 'bn<bar>bd#' : 'bdn'
-  cabbrev <expr> bdp getcmdpos() == 4 && getcmdtype() == ':' ? 'bp<bar>bd#' : 'bdp'
-  cabbrev <expr> Mess getcmdpos() == 5 && getcmdtype() == ':' ? 'Messages' : 'Mess'
-  cabbrev <expr> lp getcmdpos() == 3 && getcmdtype() == ':' ? 'lua print' : 'lp'
-  cabbrev <expr> lpi getcmdpos() == 4 && getcmdtype() == ':' ? 'lua print(vim.inspect' : 'lpi'
-  cabbrev <expr> dn getcmdpos() == 3 && getcmdtype() == ':' ? 'DiagNext' : 'dn'
-  cabbrev <expr> dp getcmdpos() == 3 && getcmdtype() == ':' ? 'DiagPrev' : 'dp'
-  cabbrev <expr> te getcmdpos() == 3 && getcmdtype() == ':' ? 'Term' : 'te'
-  cabbrev <expr> ter getcmdpos() == 4 && getcmdtype() == ':' ? 'Term' : 'ter'
-  cabbrev <expr> term getcmdpos() == 5 && getcmdtype() == ':' ? 'Term' : 'term'
-  cabbrev <expr> termi getcmdpos() == 6 && getcmdtype() == ':' ? 'Term' : 'termi'
-  cabbrev <expr> termin getcmdpos() == 7 && getcmdtype() == ':' ? 'Term' : 'termin'
-  cabbrev <expr> termina getcmdpos() == 8 && getcmdtype() == ':' ? 'Term' : 'termina'
-  cabbrev <expr> terminal getcmdpos() == 9 && getcmdtype() == ':' ? 'Term' : 'terminal'
+" Abbreviations
+cabbrev <expr> E getcmdpos() == 2 && getcmdtype() == ':' ? 'e '.expand('%:p:h') : 'E'
+cabbrev <expr> T getcmdpos() == 2 && getcmdtype() == ':' ? 'Telescope' : 'T'
+cabbrev <expr> VS getcmdpos() == 3 && getcmdtype() == ':' ? 'vs '.expand('%:p:h') : 'VS'
+cabbrev <expr> SP getcmdpos() == 3 && getcmdtype() == ':' ? 'sp '.expand('%:p:h') : 'SP'
+cabbrev <expr> vh getcmdpos() == 3 && getcmdtype() == ':' ? 'vert help' : 'vh'
+cabbrev <expr> bdn getcmdpos() == 4 && getcmdtype() == ':' ? 'bn<bar>bd#' : 'bdn'
+cabbrev <expr> bdp getcmdpos() == 4 && getcmdtype() == ':' ? 'bp<bar>bd#' : 'bdp'
+cabbrev <expr> Mess getcmdpos() == 5 && getcmdtype() == ':' ? 'Messages' : 'Mess'
+cabbrev <expr> lp getcmdpos() == 3 && getcmdtype() == ':' ? 'lua print' : 'lp'
+cabbrev <expr> lpi getcmdpos() == 4 && getcmdtype() == ':' ? 'lua print(vim.inspect' : 'lpi'
+cabbrev <expr> dn getcmdpos() == 3 && getcmdtype() == ':' ? 'DiagNext' : 'dn'
+cabbrev <expr> dp getcmdpos() == 3 && getcmdtype() == ':' ? 'DiagPrev' : 'dp'
+cabbrev <expr> te getcmdpos() == 3 && getcmdtype() == ':' ? 'Term' : 'te'
+cabbrev <expr> ter getcmdpos() == 4 && getcmdtype() == ':' ? 'Term' : 'ter'
+cabbrev <expr> term getcmdpos() == 5 && getcmdtype() == ':' ? 'Term' : 'term'
+cabbrev <expr> termi getcmdpos() == 6 && getcmdtype() == ':' ? 'Term' : 'termi'
+cabbrev <expr> termin getcmdpos() == 7 && getcmdtype() == ':' ? 'Term' : 'termin'
+cabbrev <expr> termina getcmdpos() == 8 && getcmdtype() == ':' ? 'Term' : 'termina'
+cabbrev <expr> terminal getcmdpos() == 9 && getcmdtype() == ':' ? 'Term' : 'terminal'
 
-  " Commands
-  command! -complete=custom,LastSavedSession -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
-  command! -complete=custom,LastSavedSession -nargs=? Q mksession! ~/.config/nvim/session/_last_<args>.vim|qall
-  command! -complete=custom,LastSavedSession -nargs=? S mksession! ~/.config/nvim/session/_last_<args>.vim
-  command! -complete=shellcmd -nargs=* CSystem cexpr system(<q-args>)|copen
-  command! -count=1 DiagNext for i in range(<count>)|call luaeval('vim.diagnostic.goto_next()')|endfor
-  command! -count=1 DiagPrev for i in range(<count>)|call luaeval('vim.diagnostic.goto_prev()')|endfor
-  command! -count=10 -nargs=* HTerm botright <count>split|exe "Term ".<q-args>|setlocal wfh|exe "normal \<c-w>="
-  command! -count=7 -complete=command -nargs=* B exe "if bufexists('*".<q-args>."*')|
-    \sil! bdelete *".<q-args>."*|endif|bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
-    \file *".<q-args>."*|put =execute(\\\"".<q-args>."\\\")|setlocal nomod noma buftype=nofile|0goto"
-  command! -count=7 Messages if bufexists("*Messages*")|
-    \sil! bdelete *Messages*|endif|bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
-    \file *Messages*|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
-  command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
-  command! -nargs=* HistDel call histdel(<f-args>)|wshada!
-  command! -nargs=* Term set shell=fish|exe "term ".<q-args>|set shell=sh
-  command! -nargs=? Cd exec 'cd' fnameescape(finddir(<q-args> ?? '.git/..', escape(expand('%:p:h'), ' ').';'))
-  command! -nargs=? Lcd exec 'lcd' fnameescape(finddir(<q-args> ?? '.git/..', escape(expand('%:p:h'), ' ').';'))
-  command! ProfileStart profile start ~/nvim_profile.log|profile func *|profile file *
-  command! ProfileStop profile stop
-  command! SetStatusline lua vim.go.statusline = "%{%v:lua.require'lualine'.statusline()%}"
+" Commands
+command! -complete=custom,LastSavedSession -nargs=? L source ~/.config/nvim/session/_last_<args>.vim
+command! -complete=custom,LastSavedSession -nargs=? Q mksession! ~/.config/nvim/session/_last_<args>.vim|qall
+command! -complete=custom,LastSavedSession -nargs=? S mksession! ~/.config/nvim/session/_last_<args>.vim
+command! -complete=shellcmd -nargs=* CSystem cexpr system(<q-args>)|copen
+command! -count=1 DiagNext for i in range(<count>)|call luaeval('vim.diagnostic.goto_next()')|endfor
+command! -count=1 DiagPrev for i in range(<count>)|call luaeval('vim.diagnostic.goto_prev()')|endfor
+command! -count=10 -nargs=* HTerm botright <count>split|exe "Term ".<q-args>|setlocal wfh|exe "normal \<c-w>="
+command! -count=7 -complete=command -nargs=* B exe "if bufexists('*".<q-args>."*')|
+  \sil! bdelete *".<q-args>."*|endif|bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
+  \file *".<q-args>."*|put =execute(\\\"".<q-args>."\\\")|setlocal nomod noma buftype=nofile|0goto"
+command! -count=7 Messages if bufexists("*Messages*")|
+  \sil! bdelete *Messages*|endif|bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
+  \file *Messages*|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
+command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
+command! -nargs=* HistDel call histdel(<f-args>)|wshada!
+command! -nargs=* Term set shell=fish|exe "term ".<q-args>|set shell=sh
+command! -nargs=? Cd exec 'cd' fnameescape(finddir(<q-args> ?? '.git/..', escape(expand('%:p:h'), ' ').';'))
+command! -nargs=? Lcd exec 'lcd' fnameescape(finddir(<q-args> ?? '.git/..', escape(expand('%:p:h'), ' ').';'))
+command! ProfileStart profile start ~/nvim_profile.log|profile func *|profile file *
+command! ProfileStop profile stop
+command! SetStatusline lua vim.go.statusline = "%{%v:lua.require'lualine'.statusline()%}"
 
-  " Functions
-  function Params(...)
-    for param in a:000
-      echo param
-    endfor
-  endfunction
-  function LastSavedSession(A,L,P)
-    return substitute(
-      \ globpath("~/.config/nvim/session", "_last_"..a:A.."*.vim"),
-      \ "[^\n]*/_last_\\([^\n]*\\)\\.vim", "\\=submatch(1)", "g")
-  endfunction
-  function Getcwdhead()
-    return luaeval("vim.fn.getcwd():gsub('.*/', '')")
-  endfunction
-  nm <silent> <F1> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
-    \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name")
-    \ . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
-    \ . ">"<CR>
+" Functions
+function Params(...)
+  for param in a:000
+    echo param
+  endfor
+endfunction
+function LastSavedSession(A,L,P)
+  return substitute(
+    \ globpath("~/.config/nvim/session", "_last_"..a:A.."*.vim"),
+    \ "[^\n]*/_last_\\([^\n]*\\)\\.vim", "\\=submatch(1)", "g")
+endfunction
+function Getcwdhead()
+  return luaeval("vim.fn.getcwd():gsub('.*/', '')")
+endfunction
+nm <silent> <F1> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
+  \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name")
+  \ . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
+  \ . ">"<CR>
 ]])
 do
   local tabstop2_ft = {
@@ -205,20 +205,25 @@ do
       if bo.filetype == "sh" then
         vim.opt_local.spell = true
         vim.cmd([[
-setlocal iskeyword+=$ iskeyword+={ iskeyword+=}
-nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n
-nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
+        setlocal iskeyword+=$ iskeyword+={ iskeyword+=}
+        nnoremap <buffer> * :let @/=substitute(expand('<cword>'),'^\$\?{\?','$\\?{\\?',"").'}\?'<CR>n
+        nnoremap <buffer> # ?<C-R>=substitute(expand('<cword>'),'^\$\?{\?','$\\={\\=',"")<CR>}\=<CR>
         ]])
       elseif tabstop2_ft[bo.filetype] then
+        vim.opt_local.spell = true
         o.tabstop = 2
+      elseif numbersign_ft[bo.filetype] then
+        vim.opt_local.spell = true
+        vim.opt_local.commentstring = "# %s"
       elseif bo.filetype == "php" or bo.filetype == "htmldjango" then
         vim.opt_local.spell = true
         vim.cmd([[
-setlocal iskeyword+=$
-nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n
-nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
+        setlocal iskeyword+=$
+        nnoremap <buffer> * :let @/='\<$\?'.substitute(expand('<cword>'),'^\$','',"").'\>'<CR>n
+        nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
         ]])
       elseif bo.filetype == "qf" then
+        vim.opt_local.spell = false
         vim.keymap.set("n", "<A-CR>", "<CR>:cclose<CR>", {
           buffer = ev.buf,
           noremap = true,
