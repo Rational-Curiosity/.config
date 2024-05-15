@@ -849,11 +849,36 @@ for _, v in ipairs({'n', 'N', 'K'}) do
       { output = true }
     )
     if not status then
-      vim.notify(output, vim.log.levels.ERROR)
+      vim.notify(output, vim.log.levels.ERROR, { title = v })
     end
   end)
 end
 mapset("n", "ZZ", "<Nop>")
+mapset("n", "Q", function()
+  opt.lazyredraw = true
+  local ok, noice = pcall(require, "noice")
+  if ok then noice.disable() end
+  vim.cmd([[
+  syntax off
+  noautocmd norm! ]] .. vim.v.count1 .. [[@q
+  syntax on
+  ]])
+  if ok then noice.enable() end
+  opt.lazyredraw = false
+end)
+for _, v in ipairs({ "@m", "@n", "@o", "@p", "@q" }) do
+  mapset("n", v, function()
+    opt.lazyredraw = true
+    local ok, noice = pcall(require, "noice")
+    if ok then noice.disable() end
+    vim.cmd([[
+    syntax off
+    norm! ]] .. vim.v.count1 .. v .. '\
+    syntax on')
+    if ok then noice.enable() end
+    opt.lazyredraw = false
+  end)
+end
 do
   local virtualedits = { "block", "insert", "all", "onemore", "none" }
   local virtualedits_idx = {
