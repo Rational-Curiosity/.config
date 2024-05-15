@@ -577,7 +577,9 @@ do
   })
   function _G.win_fit_filetype_width()
     if wo.winfixwidth then
-      vim.notify("Fixed width window", vim.log.levels.WARN)
+      vim.notify("Fixed width window", vim.log.levels.WARN, {
+        title = "win_fit_filetype_width",
+      })
       return
     end
     local width = filetype_max_line_length[bo.filetype] or 80
@@ -698,7 +700,9 @@ end
 
 function _G.win_fit_width_to_content()
   if wo.winfixwidth then
-    vim.notify("Fixed width window", vim.log.levels.WARN)
+    vim.notify("Fixed width window", vim.log.levels.WARN, {
+      title = "win_fit_width_to_content",
+    })
     return
   end
   local line_count = api.nvim_buf_line_count(0)
@@ -730,7 +734,9 @@ end
 
 function _G.win_fit_height_to_content()
   if wo.winfixheight then
-    vim.notify("Fixed height window", vim.log.levels.WARN)
+    vim.notify("Fixed height window", vim.log.levels.WARN, {
+      title = "win_fit_height_to_content",
+    })
     return
   end
   local line_count = api.nvim_buf_line_count(0)
@@ -863,7 +869,9 @@ do
     "<leader>V",
     function()
       o.virtualedit = virtualedits[virtualedits_idx[o.virtualedit]]
-      vim.notify("Virtualedit = " .. o.virtualedit, vim.log.levels.INFO)
+      vim.notify("Virtualedit = " .. o.virtualedit, vim.log.levels.INFO, {
+        title = "Option",
+      })
     end,
     { desc = "Cycle virtual edit" }
   )
