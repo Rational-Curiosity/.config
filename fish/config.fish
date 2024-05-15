@@ -17,26 +17,14 @@ abbr -a v nvim
 abbr -a zd lazydocker
 abbr -a zj zellij
 abbr -a -- - 'cd -'
-abbr -a ... 'cd ../..'
-abbr -a ..2 'cd ../..'
-abbr -a .... 'cd ../../..'
-abbr -a ..3 'cd ../../..'
-abbr -a ..... 'cd ../../../..'
-abbr -a ..4 'cd ../../../..'
-abbr -a ...... 'cd ../../../../..'
-abbr -a ..5 'cd ../../../../..'
-abbr -a ....... 'cd ../../../../../..'
-abbr -a ..6 'cd ../../../../../..'
-abbr -a ........ 'cd ../../../../../../..'
-abbr -a ..7 'cd ../../../../../../..'
-abbr -a ......... 'cd ../../../../../../../..'
-abbr -a ..8 'cd ../../../../../../../..'
-abbr -a .......... 'cd ../../../../../../../../..'
-abbr -a ..9 'cd ../../../../../../../../..'
-abbr -a ........... 'cd ../../../../../../../../../..'
-abbr -a ..10 'cd ../../../../../../../../../..'
-abbr -a ............ 'cd ../../../../../../../../../../..'
-abbr -a ..11 'cd ../../../../../../../../../../..'
+set -l dots '..'
+set -l cddots 'cd ..'
+for i in (seq 2 11)
+    set dots "$dots."
+    set cddots "$cddots/.."
+    abbr -a $dots "$cddots"
+    abbr -a ..$i "$cddots"
+end
 
 # https://github.com/fish-shell/fish-shell/issues/8233
 function fish_vi_cursor; end
