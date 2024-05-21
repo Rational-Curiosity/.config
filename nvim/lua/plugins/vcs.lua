@@ -15,7 +15,6 @@ return {
     config = function()
       local neogit = require("neogit")
       neogit.setup({
-        disable_insert_on_commit = false,
         integrations = {
           telescope = true,
         },
@@ -31,7 +30,8 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     dependencies = {
-      { "nvim-lua/plenary.nvim" },
+      "nvim-lua/plenary.nvim",
+      "which-key.nvim",
     },
     -- event = "VeryLazy",
     config = function()
@@ -159,14 +159,15 @@ return {
             gs.toggle_word_diff,
             { buffer = bufnr, desc = "Toggle word diff" }
           )
-
           vim.keymap.set(
             { "o", "x" },
             "ih",
             ":<C-U>Gitsigns select_hunk<CR>",
             { buffer = bufnr, desc = "Select hunk" }
           )
-          require("which-key").register({
+
+          local which_key = require("which-key")
+          which_key.register({
             h = {
               name = "Gitsigns",
               t = {
@@ -174,7 +175,7 @@ return {
               },
             },
           }, { mode = "n", prefix = "<leader>", buffer = bufnr })
-          require("which-key").register({
+          which_key.register({
             h = {
               name = "Gitsigns",
             },

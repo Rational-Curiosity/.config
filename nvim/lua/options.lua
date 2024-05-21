@@ -633,7 +633,11 @@ api.nvim_create_autocmd({ "VimLeave" }, {
 -- do
 --   local orig_notify_once = vim.notify_once
 --   vim.notify_once = function(msg, level, opts)
---     local messages = { "fidget.nvim will soon be rewritten. " }
+--     local messages = {
+--       "vim.tbl_add_reverse_lookup is deprecated. ",
+--       "vim.lsp.get_active_clients() is deprecated, ",
+--       "vim.tbl_islist is deprecated, ",
+--     }
 --     for _, message in ipairs(messages) do
 --       if msg:sub(1, #message) == message then
 --         return

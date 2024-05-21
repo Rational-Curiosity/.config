@@ -24,7 +24,10 @@ return {
   {
     "nvim-orgmode/orgmode",
     ft = { "org" },
-    dependencies = "nvim-treesitter",
+    dependencies = {
+      "nvim-treesitter",
+      "which-key.nvim",
+    },
     config = function()
       local notes = vim.fn.expand("~/Prog/org/refile.org")
       require("orgmode").setup({
@@ -77,6 +80,15 @@ return {
         org_adapt_indentation = false,
         org_log_into_drawer = "LOGSTATE",
       })
+      require("which-key").register({
+        o = {
+          name = "Org",
+          b = "Block",
+          i = "Insert",
+          l = "Link",
+          x = "Clock",
+        },
+      }, { mode = "n", prefix = "<leader>" })
     end,
   },
   {
