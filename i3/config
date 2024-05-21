@@ -112,7 +112,7 @@ bindsym $Win+Shift+Return layout splitv;$root;layout splith;exec st -f "$font:si
 # start emacs
 bindsym $Win+i exec "emacsclient -c -n -a '' &"
 bindsym $Win+Shift+i layout splitv;$root;layout splith;exec "emacsclient -c -n -a '' &";resize set width 50 ppt
-bindsym $Win+Shift+o layout splitv;$root;layout splith;open;resize set width 50 ppt
+bindsym $Win+Shift+o layout splitv;$root;layout splith;exec --no-startup-id "rofi -m -1 -multi-select -show run $rofi_args";resize set width 50 ppt
 
 #? Change background:
 bindsym $Win+Shift+b exec --no-startup-id "if command -v ~/bin/unsplash-feh 2>&1 >/dev/null;\
