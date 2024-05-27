@@ -247,6 +247,9 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
         f = { name = "Telescope" },
       }, { mode = "x", prefix = "<leader>" })
       which_key.register({
+        d = { name = "Fold all" },
+      }, { mode = "n", prefix = "z" })
+      which_key.register({
         x = "Fold except region",
       }, { mode = "x", prefix = "z" })
       which_key.register({
