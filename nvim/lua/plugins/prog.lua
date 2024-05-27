@@ -209,15 +209,15 @@ return {
     },
     ft = ft_prog_lsp,
     config = function()
-      for type, icon in pairs({
-        Error = "",
-        Warn = "",
-        Hint = "",
-        Info = "",
-      }) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl })
-      end
+      -- for type, icon in pairs({
+      --   Error = "",
+      --   Warn = "",
+      --   Info = "",
+      --   Hint = "",
+      -- }) do
+      --   local hl = "DiagnosticSign" .. type
+      --   vim.fn.sign_define(hl, { text = icon, texthl = hl })
+      -- end
 
       -- Lsp config
       local lspconfig = require("lspconfig")
@@ -254,7 +254,14 @@ return {
           end,
         },
         float = { source = true },
-        signs = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "",
+            [vim.diagnostic.severity.HINT] = "",
+          },
+        },
         underline = true,
         update_in_insert = false,
       }
