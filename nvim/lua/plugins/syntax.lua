@@ -466,6 +466,8 @@ return {
       })
       vim.cmd.colorscheme("tokyonight")
       vim.api.nvim_set_hl(0, "LineNr", { fg = "#5081c0" })
+      vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#5b6291" })
+      vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#5b6291" })
       vim.api.nvim_set_hl(0, "CursorLineNR", { fg = "#ffba00" })
       vim.api.nvim_set_hl(0, "IncSearch", { fg = "#ff9e64", bg = "#2a52be" })
       vim.api.nvim_set_hl(0, "Whitespace", { bg = "#d2042d", ctermbg = "red" })
