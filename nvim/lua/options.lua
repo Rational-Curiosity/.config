@@ -11,6 +11,7 @@ local noremap = { noremap = true }
 -- local map = api.nvim_set_keymap
 local mapset = vim.keymap.set
 local fn = vim.fn
+local config_path = fn.stdpath("config")
 
 g.editorconfig = false
 g.tokyonight_style = "night"
@@ -59,9 +60,10 @@ o.fixendofline = false
 -- opt.iskeyword:prepend("$")
 -- opt.iskeyword:remove("_")
 o.shada = "!,'500,/100,:250,<50,@100,h,s8"
-o.shadafile = fn.stdpath("config") .. "/shada/main.shada"
+o.shadafile = config_path .. "/shada/main.shada"
 o.history = 600
 o.spelllang = "en_us,es"
+o.spellfile = config_path .. "/spell/en-es.utf-8.add"
 
 -- Programs
 o.grepprg = "rg --vimgrep --smart-case --follow"
@@ -78,7 +80,7 @@ g.loaded_ruby_provider = 0
 g.loaded_perl_provider = 0
 
 -- UNDO
-o.undodir = fn.stdpath("config") .. "/undo"
+o.undodir = config_path .. "/undo"
 o.undofile = true
 o.undolevels = 700
 
@@ -632,13 +634,13 @@ api.nvim_create_autocmd({ "VimLeave" }, {
 -- [ Notifications
 -- do
 --   local orig_notify_once = vim.notify_once
+--   local notify_once_messages = {
+--     "vim.tbl_add_reverse_lookup is deprecated. ",
+--     "vim.lsp.get_active_clients() is deprecated, ",
+--     "vim.tbl_islist is deprecated, ",
+--   }
 --   vim.notify_once = function(msg, level, opts)
---     local messages = {
---       "vim.tbl_add_reverse_lookup is deprecated. ",
---       "vim.lsp.get_active_clients() is deprecated, ",
---       "vim.tbl_islist is deprecated, ",
---     }
---     for _, message in ipairs(messages) do
+--     for _, message in ipairs(notify_once_messages) do
 --       if msg:sub(1, #message) == message then
 --         return
 --       end
@@ -955,8 +957,14 @@ mapset("n", "<C-x>", function()
   inc.decrease_at_cursor()
 end, { desc = "Decrease at cursor" })
 mapset({ "n", "x" }, "<A-.>", "@:")
-mapset("n", "zdc", ":%g/^[ \t]*class /normal! zc<CR>")
-mapset("n", "zdf", ":%g/^[ \t]*\\(function\\|def\\) /normal! zc<CR>")
+mapset("n", "zdc", ":%g/^[ \t]*class /normal! zc<CR>",
+  { desc = "Fold all classes" })
+mapset(
+  "n",
+  "zdf",
+  ":%g/^[ \t]*\\(def\\|fn\\|function\\|func\\) /normal! zc<CR>",
+  { desc = "Fold all functions" }
+)
 mapset("n", "<leader><Return>", "i<CR><C-\\><C-n>")
 mapset("n", "<C-W>*h", win_double_height, { desc = "Double win height" })
 mapset("n", "<C-W>*w", win_double_width, { desc = "Double win width" })
