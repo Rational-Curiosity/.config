@@ -13,6 +13,8 @@ abbr -a l ls
 abbr -a m math
 abbr -a se sudo -E
 abbr -a sv sudo -E nvim
+abbr -a tv vlc --intf ncurses
+abbr -a tc ncal -3Mb
 abbr -a v nvim
 abbr -a zd lazydocker
 abbr -a zj zellij
@@ -27,7 +29,7 @@ for i in (seq 2 11)
 end
 
 # https://github.com/fish-shell/fish-shell/issues/8233
-function fish_vi_cursor; end
+# function fish_vi_cursor; end
 fish_vi_key_bindings
 
 bind -M insert \ck kill-line
