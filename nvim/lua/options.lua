@@ -614,7 +614,6 @@ api.nvim_create_autocmd({ "VimLeave" }, {
         let s:msgs = s:msgs .. execute('Notifications')
       endif
       let s:save = s:msgs != ''
-      let s:msgs = split(s:msgs, '\n'),
     endif
     if s:save
       let s:file = stdpath('config') .. '/shada/messages'
