@@ -545,12 +545,12 @@ return {
         end,
         {
           condition = conditions.is_not_active,
-          FileType, Space, QuickFixTitle, Align, HelpFileName, InactiveRuler
+          FileType, Space, QuickFixTitle, Align, InactiveRuler
         },
         {
           hl = { fg = "blue", bg = "bg_statusline", bold = true },
           ViMode, FileType, Space, QuickFixTitle, Align,
-          ShowCmd, MacroRec, SearchCount, HelpFileName, Ruler
+          ShowCmd, MacroRec, SearchCount, Ruler
         },
       }
       local SpecialStatusline = {
@@ -563,12 +563,12 @@ return {
         end,
         {
           condition = conditions.is_not_active,
-          FileType, Align, HelpFileName, InactiveRuler
+          FileType, Space, HelpFileName, Align, InactiveRuler
         },
         {
           hl = { fg = utils.get_highlight("Type").fg, bg = "bg_statusline", bold = true },
-          ViMode, FileType, Align,
-          ShowCmd, MacroRec, SearchCount, HelpFileName, Ruler
+          ViMode, FileType, Space, HelpFileName, Align,
+          ShowCmd, MacroRec, SearchCount, Ruler
         },
       }
       local TerminalStatusline = {
