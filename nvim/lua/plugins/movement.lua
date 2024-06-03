@@ -316,12 +316,13 @@ return {
         extensions = {
           ["ui-select"] = {
             require("telescope.themes").get_dropdown({
-              initial_mode = "insert",
+              initial_mode = "normal",
               layout_config = {
+                prompt_position = "bottom",
                 width = 0.7,
                 height = 0.7,
               },
-            })
+            }),
           },
           fzf = {
             fuzzy = true, -- false will only do exact matching
