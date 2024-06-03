@@ -157,8 +157,20 @@ return {
     "stevearc/oil.nvim",
     cmd = { "Oil" },
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    init = function()
+      vim.api.nvim_create_autocmd({ "VimEnter", "BufNew" }, {
+        group = "initAutoGroup",
+        pattern = { "*" },
+        callback = function()
+          if vim.fn.isdirectory(vim.fn.expand("%")) == 1 then
+            require("oil")
+            return true
+          end
+        end,
+      })
+    end,
     opts = {
-      default_file_explorer = false,
+      default_file_explorer = true,
       columns = {
         "icon",
         "permissions",
