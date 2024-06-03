@@ -1114,6 +1114,7 @@ return {
 
       local cmp = require("cmp")
       cmp.setup({
+        preselect = cmp.PreselectMode.None,
         performance = {
           debounce = 50,
           throttle = 25,
@@ -1143,11 +1144,18 @@ return {
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
+          ["<CR>"] = cmp.mapping(function(fallback)
+            if cmp.visible() and cmp.get_active_entry() then
+              cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+            else
+              fallback()
+            end
+          end),
           ["<C-a>"] = cmp.mapping.abort(),
           ["<C-e>"] = cmp.mapping.close(),
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_next_item()
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
             -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
             -- that way you will only jump inside the snippet region
             elseif luasnip.expand_or_jumpable() then
@@ -1160,7 +1168,7 @@ return {
           end, { "i", "s" }),
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_prev_item()
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
             elseif luasnip.jumpable(-1) then
               luasnip.jump(-1)
             else
