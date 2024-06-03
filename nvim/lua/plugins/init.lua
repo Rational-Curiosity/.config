@@ -515,7 +515,7 @@ return {
 
       local HelpFileName = {
         condition = function()
-          return vim.bo.filetype == "help"
+          return vim.bo.buftype == "help"
         end,
         provider = function()
           local filename = vim.api.nvim_buf_get_name(0)
