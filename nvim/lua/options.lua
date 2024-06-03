@@ -604,17 +604,22 @@ api.nvim_create_autocmd({ "VimLeave" }, {
     vim.cmd([[
     let @+=@"
     set nomore
-    if exists(':Noice')
-      Noice all
-      let s:msgs = getline(1, '$')
-      let s:save = s:msgs != []
-    else
+    "if exists(':Noice')
+    "  Noice all
+    "  if &ft == 'noice'
+    "    let s:msgs = getline(1, '$')
+    "    let s:save = s:msgs != []
+    "  else
+    "    let s:save = 0
+    "  endif
+    "else
       let s:msgs = trim(execute('messages'))
       if exists(':Notifications')
         let s:msgs = s:msgs .. execute('Notifications')
       endif
       let s:save = s:msgs != ''
-    endif
+      let s:msgs = split(s:msgs, '\n')
+    "endif
     if s:save
       let s:file = stdpath('config') .. '/shada/messages'
       let s:filelist = split(glob(s:file .. '*.txt'), '\n')
