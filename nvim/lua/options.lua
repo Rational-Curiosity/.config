@@ -876,6 +876,57 @@ do
     ), "\n")
   end
 end
+
+-- User Commands
+api.nvim_create_user_command(
+  "InspectOpts",
+  function(opts)
+    print(vim.inspect(opts))
+  end,
+  {
+    range = true, bar = true, nargs = "*",
+  }
+)
+api.nvim_create_user_command(
+  "SendToTerm",
+  function(opts)
+    local text
+    if opts.range == 0 then
+      text = api.nvim_get_current_line()
+    else
+      text = get_region_text()
+      if not text then
+        vim.notify("Range not defined", vim.log.levels.ERROR, {
+          title = "SendToTerm",
+        })
+        return
+      end
+    end
+    local id = tonumber(opts.args)
+    if not id then
+      for _, chan in ipairs(api.nvim_list_chans()) do
+        if chan.mode == "terminal" then
+          id = chan.id
+        end
+      end
+    end
+    return api.nvim_chan_send(id, text .. "\n")
+  end,
+  {
+    range = true, bar = true, nargs = "?",
+    complete = function(arg_lead, cmd_line, cursor_pos)
+      local result = {}
+      for _, chan in ipairs(api.nvim_list_chans()) do
+        if chan.mode == "terminal" then
+          table.insert(result, tostring(chan.id))
+        end
+      end
+      return result
+    end,
+    desc = "Send region or line to terminal",
+  }
+)
+
 -- Keymap bindings
 for _, v in ipairs({'n', 'N', 'K'}) do
   mapset("n", v, function()
