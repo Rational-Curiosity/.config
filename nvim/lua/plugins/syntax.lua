@@ -265,6 +265,8 @@ return {
       { "di" },
       { "ya" },
       { "yi" },
+      { "va" },
+      { "vi" },
     },
     config = function()
       require("nvim-treesitter.configs").setup({
