@@ -858,6 +858,24 @@ function _G.append_to_last(...)
   return to
 end
 
+do
+  local region_type = {
+    ["v"] = "v",
+    ["V"] = "V",
+    [""] = "<CTRL-V>",
+  }
+  function _G.get_region_text()
+    local type = region_type[fn.mode()] or fn.visualmode()
+    if type == "" then
+      return nil
+    end
+    return table.concat(vim.fn.getregion(
+      fn.getpos("'<"),
+      fn.getpos("'>"),
+      { type = type }
+    ), "\n")
+  end
+end
 -- Keymap bindings
 for _, v in ipairs({'n', 'N', 'K'}) do
   mapset("n", v, function()
