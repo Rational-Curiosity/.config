@@ -211,29 +211,22 @@ return {
       vim.api.nvim_create_user_command(
         "SnipRange",
         function(opts)
-          local beg_pos = vim.fn.getpos("'<")
-          if beg_pos[2] == 0 or beg_pos[3] == 0 then
-            vim.notify("Range not defined", vim.log.levels.ERROR, {
-              title = "SnipRun",
-            })
-            return
+          local code
+          if opts.range == 0 then
+            code = api.nvim_get_current_line()
+          else
+            code = get_region_text()
+            if not code then
+              vim.notify("Range not defined", vim.log.levels.ERROR, {
+                title = "SnipRun",
+              })
+              return
+            end
           end
-          local code = vim.fn.getregion(
-            beg_pos,
-            vim.fn.getpos("'>"),
-            { type = getregion_type[opts.args] or "v" }
-          )
-          return require("sniprun.api").run_string(table.concat(code, "\n"))
+          return require("sniprun.api").run_string(code)
         end,
         {
-          range = true, bar = true, nargs = "?",
-          complete = function(arg_lead, cmd_line, cursor_pos)
-            local result = {}
-            for k, _ in pairs(getregion_type) do
-              table.insert(result, k)
-            end
-            return result
-          end,
+          range = true, bar = true,
           desc = "SnipRun in range",
         }
       )
