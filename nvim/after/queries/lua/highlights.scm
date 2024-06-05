@@ -1,4 +1,4 @@
-;; extends
+; extends
 ((true) @boolean (#set! conceal "⊤"))
 ((false) @boolean (#set! conceal "⊥"))
 ((nil) @constant.builtin (#set! conceal "∅"))

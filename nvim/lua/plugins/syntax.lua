@@ -91,7 +91,7 @@ return {
           "meson",
           "ninja",
           -- "norg", "norg_meta", "norg_table",
-          "org",
+          -- "org",
           "perl",
           "php",
           "php_only",
