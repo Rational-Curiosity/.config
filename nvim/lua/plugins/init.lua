@@ -508,9 +508,17 @@ return {
 
       local TerminalName = {
         provider = function()
-          return "" .. vim.api.nvim_buf_get_name(0):gsub("^term://.*//([0-9]+)", "%1", 1)
+          return " " .. vim.api.nvim_buf_get_name(0):gsub(
+            "^term://.*//([0-9]+)", "%1", 1
+          )
         end,
         hl = { fg = "blue", bg = "bg_statusline", bold = true },
+      }
+      local TerminalChannel = {
+        provider = function()
+          return "#" .. vim.bo.channel
+        end,
+        hl = "DiagnosticSignInfo",
       }
 
       local HelpFileName = {
@@ -578,10 +586,10 @@ return {
         end,
         {
           condition = conditions.is_not_active,
-          TerminalName, Align, FileType, InactiveRuler,
+          TerminalName, Space, TerminalChannel, Align, FileType, InactiveRuler,
         },
         {
-          ViMode, TerminalName, Align,
+          ViMode, TerminalName, Space, TerminalChannel, Align,
           ShowCmd, MacroRec, SearchCount, FileType, Ruler,
         },
       }
