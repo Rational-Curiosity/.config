@@ -20,9 +20,9 @@ short = " $marks$title.str(max_w:20,rot_interval:0.2,rot_separator:'║') |"
 block = "external_ip"
 interval = 600
 use_ipv4 = true
-error_format = "$short_error_message.str(max_w:15,rot_interval:0.4,rot_separator:'║')|$full_error_message.str(max_w:15,rot_interval:0.4,rot_separator:'║')"
+error_format = "$short_error_message.str(max_w:15,rot_interval:0.2,rot_separator:'║')|$full_error_message.str(max_w:15,rot_interval:0.2,rot_separator:'║')"
 error_interval = 1
-format = "$ip.str(max_w:15,rot_interval:0.4,rot_separator:'║')"
+format = "$ip.str(max_w:15,rot_interval:0.2,rot_separator:'║')"
 [block.theme_overrides]
 idle_bg = "#19FF70"
 idle_fg = "#101010"
@@ -35,8 +35,8 @@ inactive_format = "$icon 󰲜"
 missing_format = "󰲜"
 # format = "$icon ^icon_net_down $speed_down.eng(3,B,K) ^icon_net_up $speed_up.eng(3,B,K) {$signal_strength $ssid |}$ip"
 [block.format]
-full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid.str(max_w:16,rot_interval:0.4,rot_separator:'║') |}$ip"
-short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid.str(max_w:14,rot_interval:0.4,rot_separator:'║') |}$ip"
+full = "$icon ^icon_net_down $graph_down.str(max_w:5) ^icon_net_up $graph_up.str(max_w:5) {$signal_strength $ssid.str(max_w:16,rot_interval:0.2,rot_separator:'║') |}$ip"
+short = "$icon ^icon_net_down $graph_down.str(max_w:3) ^icon_net_up $graph_up.str(max_w:3) {$signal_strength $ssid.str(max_w:14,rot_interval:0.2,rot_separator:'║') |}$ip"
 [[block.click]]
 button = "left"
 cmd = "dunstify -a i3status-rs \"Whats my ip?\" \"Public ip: $(dig +short myip.opendns.com @resolver1.opendns.com)\""
@@ -110,7 +110,7 @@ idle_fg = "#101010"
 block = "custom"
 interval = 15
 command = """lsblk -nro MOUNTPOINT,LABEL|sed -nE '/(^ | $|^$)/!{s/^[^ ]+ //;H};${g;s/^\\n//;s/\\n/|/g;s/\\\\x20/ /g;s/([a-zA-Z]{3})[a-zA-Z]+ */\\1…/g;p}'"""
-format = "$text.str(max_w:25,rot_interval:0.4,rot_separator:'║')"
+format = "$text.str(max_w:25,rot_interval:0.2,rot_separator:'║')"
 [[block.click]]
 button = "left"
 cmd = "unmedia"
@@ -120,7 +120,7 @@ idle_fg = "#101010"
 
 [[block]]
 block = "sound"
-error_format = "$short_error_message.str(max_w:15,rot_interval:0.4,rot_separator:'║')|$full_error_message.str(max_w:15,rot_interval:0.4,rot_separator:'║')"
+error_format = "$short_error_message.str(max_w:15,rot_interval:0.2,rot_separator:'║')|$full_error_message.str(max_w:15,rot_interval:0.2,rot_separator:'║')"
 error_interval = 1
 format = "$icon{$volume.eng(w:2)|}"
 [[block.click]]
