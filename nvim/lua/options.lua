@@ -918,8 +918,26 @@ api.nvim_create_user_command(
           id = chan.id
         end
       end
+      if not id then
+        vim.notify("No terminal found", vim.log.levels.ERROR, {
+          title = "SendToTerm",
+        })
+        return
+      end
     end
-    return api.nvim_chan_send(id, text .. "\n")
+    api.nvim_chan_send(id, text .. "\n")
+    local info = api.nvim_get_chan_info(id)
+    if info.buffer then
+      local lines = api.nvim_buf_line_count(info.buffer)
+      for _, win in ipairs(api.nvim_list_wins()) do
+        if api.nvim_win_get_buf(win) == info.buffer then
+          api.nvim_win_set_cursor(
+            win,
+            { lines, 0 }
+          )
+        end
+      end
+    end
   end,
   {
     range = true, bar = true, nargs = "?",
