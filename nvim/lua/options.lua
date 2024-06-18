@@ -163,7 +163,7 @@ command! -count=7 Messages if bufexists("*Messages*")|
 command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
 command! -nargs=* HistDel call histdel(<f-args>)|wshada!
 command! -nargs=? HistDelLast call histdel(<q-args> ?? ':', <q-args> ? -1 : -2)
-command! -nargs=* Term set shell=fish|exe "term ".<q-args>|set shell=sh
+command! -nargs=* Term if <q-args> != ''|exe "term ".<q-args>|else|set shell=fish|exe "term"|set shell=sh|endif
 command! -nargs=? Cd exec 'cd' fnameescape(finddir(<q-args> ?? '.git/..', escape(expand('%:p:h'), ' ').';'))
 command! -nargs=? Lcd exec 'lcd' fnameescape(finddir(<q-args> ?? '.git/..', escape(expand('%:p:h'), ' ').';'))
 command! ProfileStart profile start ~/nvim_profile.log|profile func *|profile file *
