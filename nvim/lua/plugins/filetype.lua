@@ -92,11 +92,32 @@ return {
     end,
   },
   {
-    "chrisbra/csv.vim",
+    -- "chrisbra/csv.vim",
+    -- ft = { "csv" },
+    -- init = function()
+    --   vim.g.csv_no_conceal = 1
+    --   vim.g.csv_bind_B = 1
+    -- end,
+    -- <xor>
+    "emmanueltouzery/decisive.nvim",
     ft = { "csv" },
-    init = function()
-      vim.g.csv_no_conceal = 1
-      vim.g.csv_bind_B = 1
+    dependencies = {
+      "which-key.nvim",
+    },
+    config = function()
+      local decisive = require("decisive")
+      decisive.setup({})
+      vim.keymap.set('n', '<leader>ca', function()
+        decisive.align_csv({})
+      end, { desc="align CSV", silent=true })
+      vim.keymap.set('n', '<leader>cA', function()
+        decisive.align_csv_clear({})
+      end, { desc="align CSV clear", silent=true })
+      require("which-key").register({
+        c = {
+          name = "CSV",
+        },
+      }, { mode = "n", prefix = "<leader>" })
     end,
   },
   {
