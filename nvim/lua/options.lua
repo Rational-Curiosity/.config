@@ -607,7 +607,7 @@ api.nvim_create_autocmd({ "VimLeave" }, {
     vim.cmd([[
     let @+=@"
     set nomore
-    "if exists(':Noice')
+    if exists(':Noice')
     "  Noice all
     "  if &ft == 'noice'
     "    let s:msgs = getline(1, '$')
@@ -615,14 +615,17 @@ api.nvim_create_autocmd({ "VimLeave" }, {
     "  else
     "    let s:save = 0
     "  endif
-    "else
+      let s:msgs = execute('Notifications')
+      let s:save = s:msgs != ''
+      let s:msgs = split(s:msgs, '\n')
+    else
       let s:msgs = trim(execute('messages'))
       if exists(':Notifications')
         let s:msgs = s:msgs .. execute('Notifications')
       endif
       let s:save = s:msgs != ''
       let s:msgs = split(s:msgs, '\n')
-    "endif
+    endif
     if s:save
       let s:file = stdpath('config') .. '/shada/messages'
       let s:filelist = split(glob(s:file .. '*.txt'), '\n')
