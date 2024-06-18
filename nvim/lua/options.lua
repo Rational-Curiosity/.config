@@ -874,8 +874,12 @@ do
     if type == "" then
       return nil
     end
+    local begin_pos = fn.getpos("'<")
+    if begin_pos[2] == 0 or begin_pos[3] == 0 then
+      return nil
+    end
     return table.concat(vim.fn.getregion(
-      fn.getpos("'<"),
+      begin_pos,
       fn.getpos("'>"),
       { type = type }
     ), "\n")
