@@ -1154,7 +1154,10 @@ return {
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<CR>"] = cmp.mapping(function(fallback)
             if cmp.visible() and cmp.get_active_entry() then
-              cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+              cmp.confirm({
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = false,
+              })
             else
               fallback()
             end
@@ -1228,9 +1231,30 @@ return {
       })
       require("cmp_git").setup()
 
+      local c_e = vim.api.nvim_replace_termcodes("<C-e>", true, true, true)
+      local cr = vim.api.nvim_replace_termcodes("<CR>", true, true, true)
+      local mapping_cmdline = cmp.mapping.preset.cmdline({
+        ["<CR>"] = {
+          c = function(fallback)
+            if cmp.visible() then
+              local entry = cmp.get_active_entry()
+              if entry and entry.source.name == "cmdline_history" then
+                vim.api.nvim_feedkeys(c_e, "c", true)
+                cmp.confirm({
+                  behavior = cmp.ConfirmBehavior.Replace,
+                  select = false,
+                })
+                vim.api.nvim_feedkeys(cr, "c", true)
+                return
+              end
+            end
+            fallback()
+          end
+        },
+      })
       -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = mapping_cmdline,
         sources = {
           { name = "buffer" },
         },
@@ -1238,13 +1262,14 @@ return {
 
       -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = mapping_cmdline,
         sources = cmp.config.sources({
           { name = "path" },
         }, {
           { name = "cmdline" },
           { name = "cmdline_history" },
         }),
+        matching = { disallow_symbol_nonprefix_matching = false },
       })
       -- nvim-autopairs
       -- If you want insert `(` after select function or method item
