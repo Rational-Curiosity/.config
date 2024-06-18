@@ -444,7 +444,7 @@ return {
           "n",
         },
         normal_hl = "Cursor",
-        hint_hl = "Bold",
+        hint_hl = "Normal",
         border = "none",
       })
     end,
