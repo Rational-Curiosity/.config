@@ -1042,6 +1042,14 @@ mapset("n", "<leader>Y", '"+y$')
 mapset({ "n", "x" }, "<leader>p", '"+p')
 mapset({ "n", "x" }, "<leader>P", '"+P')
 mapset("n", '<leader><space>', '/\\s\\+$<CR>')
+mapset({ "n", "x" }, "<leader>Ts", ":SendToTerm<CR>",
+  { desc = "Send region to terminal" })
+mapset("n", "<leader>Tb", "]bvib:SendToTerm<CR>",
+  { remap = true, desc = "Send block to terminal" })
+mapset("n", "<leader>Tn", "]Bvib:SendToTerm<CR>",
+  { remap = true, desc = "Send next block to terminal" })
+mapset("n", "<leader>Tp", "[bvib:SendToTerm<CR>",
+  { remap = true, desc = "Send prev block to terminal" })
 mapset("n", "<leader>tc", function()
   o.clipboard = o.clipboard == "" and "unnamedplus" or ""
 end, { desc = "Toggle clipboard" })
