@@ -106,6 +106,8 @@ augroup initAutoGroup
   " autocmd FileType log setlocal nospell
   " Recompile plugins.lua
   "autocmd BufWritePost plugins.lua source | PackerCompile
+  autocmd InsertEnter * set conceallevel=0
+  autocmd InsertLeave * set conceallevel=2
   " Terminal config
   autocmd TermOpen term://* setlocal scrollback=100000 nospell nonumber norelativenumber|startinsert
 augroup end
