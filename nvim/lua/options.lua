@@ -1016,7 +1016,7 @@ do
   )
 end
 mapset("t", "<Esc><Esc>", "<C-\\><C-n>")
-mapset("t", "<C-q>", "<C-\\><C-n><C-w><C-w>")
+mapset("t", "<C-q>", "<C-\\><C-n><C-w><C-w>", { remap = true })
 mapset(
   "x",
   "zx",
