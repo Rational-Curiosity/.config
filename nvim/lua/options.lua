@@ -153,14 +153,14 @@ command! -complete=custom,LastSavedSession -nargs=? S mksession! ~/.config/nvim/
 command! -complete=shellcmd -nargs=* CSystem cexpr system(<q-args>)|copen
 command! -count=1 DiagNext for i in range(<count>)|call luaeval('vim.diagnostic.goto_next()')|endfor
 command! -count=1 DiagPrev for i in range(<count>)|call luaeval('vim.diagnostic.goto_prev()')|endfor
-command! -count=10 -nargs=* HTerm botright <count>split|exe "Term ".<q-args>|setlocal wfh|exe "normal \<c-w>="
+command! -count=10 -nargs=* HTerm if <count> >= 1|botright <count>split|else|botright split|endif|exe "Term ".<q-args>|setlocal wfh|exe "normal \<c-w>="
+command! -count=72 -nargs=* VTerm if <count> >= 1|vert botright <count>split|else|vert botright split|endif|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
 command! -count=7 -complete=command -nargs=* B exe "if bufexists('*".<q-args>."*')|
   \sil! bdelete *".<q-args>."*|endif|bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
   \file *".<q-args>."*|put =execute(\\\"".<q-args>."\\\")|setlocal nomod noma buftype=nofile|0goto"
 command! -count=7 Messages if bufexists("*Messages*")|
   \sil! bdelete *Messages*|endif|bel <count>new|nnoremap <silent> <buffer> q :bd<cr>|
   \file *Messages*|put =execute(\"messages\")|setlocal nomod noma buftype=nofile|0goto
-command! -count=72 -nargs=* VTerm vert botright <count>split|exe "Term ".<q-args>|setlocal wfw|exe "normal \<c-w>="
 command! -nargs=* HistDel call histdel(<f-args>)|wshada!
 command! -nargs=? HistDelLast call histdel(<q-args> ?? ':', <q-args> ? -1 : -2)
 command! -nargs=* Term if <q-args> != ''|exe "term ".<q-args>|else|set shell=fish|exe "term"|set shell=sh|endif
