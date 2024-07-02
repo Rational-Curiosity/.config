@@ -77,19 +77,19 @@ return {
       )
 
       local mode_colors = {
-        ["n"] = "MiniStatuslineModeNormal",
-        ["v"] = "MiniStatuslineModeVisual",
-        ["V"] = "MiniStatuslineModeVisual",
-        [""] = "MiniStatuslineModeVisual",
-        ["s"] = "MiniStatuslineModeOther",
-        ["S"] = "MiniStatuslineModeOther",
-        [""] = "MiniStatuslineModeOther",
-        ["i"] = "MiniStatuslineModeInsert",
-        ["R"] = "MiniStatuslineModeReplace",
-        ["c"] = "MiniStatuslineModeCommand",
-        ["r"] = "MiniStatuslineModeCommand",
-        ["!"] = "MiniStatuslineModeCommand",
-        ["t"] = "MiniStatuslineModeCommand",
+        ["n"] = { fg = "black", bg = "blue", bold = true },
+        ["v"] = { fg = "black", bg = "magenta", bold = true },
+        ["V"] = { fg = "black", bg = "magenta", bold = true },
+        [""] = { fg = "black", bg = "magenta", bold = true },
+        ["s"] = { fg = "black", bg = "teal", bold = true },
+        ["S"] = { fg = "black", bg = "teal", bold = true },
+        [""] = { fg = "black", bg = "teal", bold = true },
+        ["i"] = { fg = "black", bg = "green", bold = true },
+        ["R"] = { fg = "black", bg = "red", bold = true },
+        ["c"] = { fg = "black", bg = "yellow", bold = true },
+        ["r"] = { fg = "black", bg = "yellow", bold = true },
+        ["!"] = { fg = "black", bg = "yellow", bold = true },
+        ["t"] = { fg = "black", bg = "yellow", bold = true },
       }
       local mode_init = function(self)
         self.mode = vim.fn.mode(1)
