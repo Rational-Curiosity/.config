@@ -1050,6 +1050,8 @@ mapset("n", "<leader>Tn", "]Bvib:SendToTerm<CR>",
   { remap = true, desc = "Send next block to terminal" })
 mapset("n", "<leader>Tp", "[bvib:SendToTerm<CR>",
   { remap = true, desc = "Send prev block to terminal" })
+mapset("n", "<leader>TP", "<CMD>90VTerm ipython --no-autoindent<CR>",
+  { desc = "Start ipython" })
 mapset("n", "<leader>tc", function()
   o.clipboard = o.clipboard == "" and "unnamedplus" or ""
 end, { desc = "Toggle clipboard" })
