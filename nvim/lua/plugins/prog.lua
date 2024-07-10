@@ -17,6 +17,7 @@ local ft_prog_lsp = {
   "jsonc",
   "jsonnet",
   "jsx",
+  "lua",
   "make",
   "objc",
   "objcpp",
@@ -282,13 +283,13 @@ return {
       vim.keymap.set(
         "n",
         "[d",
-        vim.diagnostic.goto_prev,
+        function() vim.diagnostic.jump({ count = -1, float = true }) end,
         { silent = true, desc = "Previous diagnostic" }
       )
       vim.keymap.set(
         "n",
         "]d",
-        vim.diagnostic.goto_next,
+        function() vim.diagnostic.jump({ count = 1, float = true }) end,
         { silent = true, desc = "Next diagnostic" }
       )
       vim.keymap.set(
@@ -421,6 +422,14 @@ return {
             end,
             { silent = true, buffer = ev.buf, desc = "Lsp win type definition" }
           )
+          vim.keymap.set(
+            "n",
+            "<leader>lI",
+            function()
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+            end,
+            { buffer = ev.buf, desc = "Lsp toggle inlay hints" }
+          )
 
           -- require("lsp-inlayhints").on_attach(client, ev.buf)
           require("which-key").register({
@@ -451,6 +460,9 @@ return {
         flags = {
           debounce_text_changes = 1000,
         },
+        inlay_hints = {
+          enable = true,
+        },
       }
       for lsp, config in pairs({
         autotools_ls = base_config,
@@ -472,6 +484,24 @@ return {
           cmd = {
             vim.env.HOME
               .. "/tmp/java-language-server/dist/lang_server_linux.sh",
+          },
+        }),
+        lua_ls = append_to_last(base_config, {
+          settings = {
+            Lua = {
+              runtime = {
+                version = "LuaJIT",
+              },
+              diagnostics = {
+                globals = { "vim" },
+              },
+              workspace = {
+                library = vim.api.nvim_get_runtime_file("", true),
+              },
+              telemetry = {
+                enable = false,
+              },
+            },
           },
         }),
         pyright = base_config,
