@@ -167,19 +167,13 @@ return {
           )
 
           local which_key = require("which-key")
-          which_key.register({
-            h = {
-              name = "Gitsigns",
-              t = {
-                name = "Toggle gitsigns",
-              },
+          which_key.add({
+            {
+              "<leader>h", buffer = bufnr, group = "Gitsigns",
+              mode = { "n", "v" },
             },
-          }, { mode = "n", prefix = "<leader>", buffer = bufnr })
-          which_key.register({
-            h = {
-              name = "Gitsigns",
-            },
-          }, { mode = "v", prefix = "<leader>", buffer = bufnr })
+            { "<leader>ht", buffer = bufnr, group = "Toggle gitsigns" },
+          })
         end,
       })
     end,

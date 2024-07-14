@@ -70,7 +70,7 @@ return {
       { "<C-W>yc", ":YodeCreateSeditorFloating<CR>", mode = "x" },
       { "<C-W>yr", ":YodeCreateSeditorReplace<CR>", mode = "x" },
       { "<C-W>yd", ":YodeBufferDelete<CR>" },
-      { "<C-W>yd", "<ESC>:YodeBufferDelete<CR>", mode = "i" },
+      -- { "<C-W>yd", "<ESC>:YodeBufferDelete<CR>", mode = "i" },
       { "<C-W>yj", ":YodeLayoutShiftWinDown<CR>" },
       { "<C-W>yk", ":YodeLayoutShiftWinUp<CR>" },
       { "<C-W>yb", ":YodeLayoutShiftWinBottom<CR>" },

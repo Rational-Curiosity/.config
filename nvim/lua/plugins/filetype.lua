@@ -80,15 +80,13 @@ return {
         org_adapt_indentation = false,
         org_log_into_drawer = "LOGSTATE",
       })
-      require("which-key").register({
-        o = {
-          name = "Org",
-          b = "Block",
-          i = "Insert",
-          l = "Link",
-          x = "Clock",
-        },
-      }, { mode = "n", prefix = "<leader>" })
+      require("which-key").add({
+        { "<leader>o", group = "Org" },
+        { "<leader>ob", desc = "Block" },
+        { "<leader>oi", desc = "Insert" },
+        { "<leader>ol", desc = "Link" },
+        { "<leader>ox", desc = "Clock" },
+      })
     end,
   },
   {
@@ -113,11 +111,9 @@ return {
       vim.keymap.set('n', '<leader>cA', function()
         decisive.align_csv_clear({})
       end, { desc="align CSV clear", silent=true })
-      require("which-key").register({
-        c = {
-          name = "CSV",
-        },
-      }, { mode = "n", prefix = "<leader>" })
+      require("which-key").add({
+        { "<leader>c", group = "CSV" }
+      })
     end,
   },
   {

@@ -432,19 +432,10 @@ return {
           )
 
           -- require("lsp-inlayhints").on_attach(client, ev.buf)
-          require("which-key").register({
-            l = {
-              name = "Lsp",
-              w = {
-                name = "Other win",
-              },
-            },
-          }, { mode = "n", prefix = "<leader>", buffer = ev.buf })
-          require("which-key").register({
-            l = {
-              name = "Lsp",
-            },
-          }, { mode = "v", prefix = "<leader>", buffer = ev.buf })
+          require("which-key").add({
+            { "<leader>l", buffer = ev.buf, group = "Lsp", mode = { "n", "v" } },
+            { "<leader>lw", buffer = ev.buf, group = "Other win" },
+          })
         end,
       })
 
