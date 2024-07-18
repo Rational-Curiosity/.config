@@ -158,6 +158,16 @@ return {
     end,
   },
   {
+    "windwp/nvim-ts-autotag",
+    dependencies = {
+      "nvim-treesitter",
+    },
+    ft = { "xml", "html", "htmldjango" },
+    config = function()
+      require("nvim-ts-autotag").setup({})
+    end,
+  },
+  {
     "L3MON4D3/LuaSnip",
     build = "make install_jsregexp",
     dependencies = {

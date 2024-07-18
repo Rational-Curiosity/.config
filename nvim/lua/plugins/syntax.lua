@@ -4,7 +4,6 @@ return {
     build = ":TSUpdate",
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-refactor" },
-      { "windwp/nvim-ts-autotag" },
       --   { 'p00f/nvim-ts-rainbow', lazy = true },
       --   { 'nvim-treesitter/playground', lazy = true },
       { "tokyonight.nvim" },
@@ -167,7 +166,6 @@ return {
             },
           },
         },
-        autotag = { enable = true },
         -- rainbow = {
         --   enable = true,
         --   disable = {'org'}, -- list of languages you want to disable the plugin for
