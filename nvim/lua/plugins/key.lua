@@ -185,22 +185,22 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   },
   {
     "folke/which-key.nvim",
+    dependencies = {
+      "echasnovski/mini.icons",
+      "nvim-tree/nvim-web-devicons",
+    },
     event = "VeryLazy",
     config = function()
       local which_key = require("which-key")
       which_key.setup({
-        key_labels = {
-          ["<space>"] = "␣",
-          ["<Space>"] = "␣",
-          ["<SPACE>"] = "␣",
-          ["<cr>"] = "↲",
-          ["<Cr>"] = "↲",
-          ["<CR>"] = "↲",
-          ["<tab>"] = "⭾",
-          ["<Tab>"] = "⭾",
-          ["<TAB>"] = "⭾",
+        replace = {
+          key = {
+            { "<Space>", "␣" },
+            { "<Cr>", "↲" },
+            { "<Tab>", "⭾" },
+          },
         },
-        window = {
+        win = {
           padding = { 1, 1, 1, 1 },
         },
         layout = {
@@ -208,16 +208,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
           width = { min = 20, max = 1000 },
           spacing = 2,
           align = "center",
-        },
-        hidden = {
-          "<silent>",
-          "<cmd>",
-          "<Cmd>",
-          "<CR>",
-          "^:",
-          "^ ",
-          "^call ",
-          "^lua ",
         },
         spec = {
           { "<leader>C", group = "Quickfix" },
