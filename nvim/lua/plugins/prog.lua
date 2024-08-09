@@ -247,7 +247,9 @@ return {
       local diagnostic_config = {
         virtual_text = {
           spacing = 0,
-          prefix = "▪",
+          prefix = function(_, i, _)
+            return i == 1 and " ▪" or "▪"
+          end,
           format = function(diagnostic)
             return diagnostic.message
               :match("^[%s\u{a0}]*(.-)[%s\u{a0}]*$")
