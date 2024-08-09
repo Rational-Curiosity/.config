@@ -53,9 +53,9 @@ return {
       require("gitsigns").setup({
         signcolumn = false, -- Toggle with `:Gitsigns toggle_signs`
         numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
+        culhl = true,
         on_attach = function(bufnr)
           local gs = package.loaded.gitsigns
-          local opts = { buffer = bufnr }
 
           vim.keymap.set(
             "n",

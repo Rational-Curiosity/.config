@@ -555,7 +555,7 @@ do
         end
         api.nvim_buf_del_mark(ev.buf, "r")
         local first = vim.fn.line("w0")
-        lines =
+        local lines =
           api.nvim_buf_get_lines(ev.buf, first - 1, vim.fn.line("w$"), true)
         local max_index = #lines
         local max_len = fn.strdisplaywidth(table.remove(lines))
@@ -683,7 +683,7 @@ function _G.set_next_win(reverse)
       break
     end
   end
-  for k, win in ipairs(wins) do
+  for _, win in ipairs(wins) do
     if api.nvim_win_get_config(win).focusable
       and api.nvim_get_option_value(
       "filetype",
@@ -1119,7 +1119,7 @@ end, { desc = "Toggle sign column" })
 mapset("n", "<C-W>E", function()
   local signcolumn = o.signcolumn == "number" and "auto:1" or "number"
   for _, win in pairs(api.nvim_list_wins()) do
-    api.nvim_win_set_option(win, "signcolumn", signcolumn)
+    api.nvim_set_option_value("signcolumn", signcolumn, { win = win })
   end
 end, { desc = "Toggle sign column all windows" })
 mapset(

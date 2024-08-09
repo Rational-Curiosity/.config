@@ -17,6 +17,7 @@ return {
             peek.open()
             return true
           end
+          return false
         end, 500)
       end, { bar = true })
     end,

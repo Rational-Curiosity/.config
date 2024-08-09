@@ -263,7 +263,7 @@ return {
         if opts.ft == true then
           table.insert(
             args,
-            rg_filetype_args[vim.bo.filetype] or "-t" .. vim.bo.filetype
+            rg_filetype_args[vim.bo.filetype] or ("-t" .. vim.bo.filetype)
           )
         end
         return args
