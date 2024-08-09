@@ -157,3 +157,6 @@ block = "battery"
 interval = 10
 driver = "upower"
 format = "$icon$percentage $time"
+[[block.click]]
+button = "left"
+cmd = "dunstify -a i3status-rs \"Battery\" \"$(upower -e | grep battery | xargs -r -L 1 upower -i)\""
