@@ -203,17 +203,12 @@ return {
                                     --# possible values are 'none', 'single', 'double', or 'shadow'
       })
 
-      local getregion_type = {
-        char = "v",
-        line = "V",
-        block = "<CTRL-V>",
-      }
       vim.api.nvim_create_user_command(
         "SnipRange",
         function(opts)
           local code
           if opts.range == 0 then
-            code = api.nvim_get_current_line()
+            code = vim.api.nvim_get_current_line()
           else
             code = get_region_text()
             if not code then
