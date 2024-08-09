@@ -189,6 +189,13 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
       "echasnovski/mini.icons",
       "nvim-tree/nvim-web-devicons",
     },
+    keys = {
+      {
+        "<leader>?",
+        function() require("which-key").show({ global = false }) end,
+        desc = "Buffer local keymaps (which-key)",
+      },
+    },
     event = "VeryLazy",
     config = function()
       local which_key = require("which-key")
