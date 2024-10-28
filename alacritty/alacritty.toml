@@ -1,0 +1,512 @@
+[[colors.indexed_colors]]
+color = "0xff9e64"
+index = 16
+
+[[colors.indexed_colors]]
+color = "0xdb4b4b"
+index = 17
+
+[colors.bright]
+black = "0x414868"
+blue = "0x7aa2f7"
+cyan = "0x7dcfff"
+green = "0x9ece6a"
+magenta = "0xbb9af7"
+red = "0xf7768e"
+white = "0xc0caf5"
+yellow = "0xe0af68"
+
+[colors.hints.end]
+background = "#2642DF"
+foreground = "#FFFFFF"
+
+[colors.hints.start]
+background = "#B4002E"
+foreground = "#FFFFFF"
+
+[colors.normal]
+black = "0x15161E"
+blue = "0x7aa2f7"
+cyan = "0x7dcfff"
+green = "0x9ece6a"
+magenta = "0xbb9af7"
+red = "0xf7768e"
+white = "0xa9b1d6"
+yellow = "0xe0af68"
+
+[colors.primary]
+background = "0x1a1b26"
+foreground = "0xc0caf5"
+
+[colors.selection]
+background = "0x2d4f67"
+foreground = "0xc8c093"
+
+[font]
+size = 8.7
+
+[font.bold]
+family = "Hack Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "Hack Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "Hack Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "Hack Nerd Font Mono"
+style = "Regular"
+
+[hints]
+alphabet = "jfkdlsahgurieowpqmvcxznb"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = "[A-Za-z0-9À-ɏḀ-ỿ~@#,%_·$-]*([/.]+[A-Za-z0-9À-ɏḀ-ỿ~@#,%_·$-]*)+"
+
+[hints.enabled.binding]
+key = "P"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = "[^[:space:]│]*([Ee][Rr][Rr]|[Ee][Xx][Cc][Ee][Pp][Tt]|[Ff][Aa][Ii][Ll])[^│↲]*"
+
+[hints.enabled.binding]
+key = "E"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = "(❯|sudo|b?[as]sh|if|for|docker-compose|docker|git|ls|cd|mkdir|cat|n?vim?|c?make|cargo|rust|python[23]?|pip|pytest|mvn|apt|php|node|np[mx]|p?grep|p?kill|fdfind|find|rg|echo|g?awk|curl|sed|basename|dirname|head|tail) +[^│↲]*[^[:space:]│↲]+"
+
+[hints.enabled.binding]
+key = "C"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+command = "rofi-open"
+post_processing = true
+regex = "(magnet:|mailto:|gemini:|gopher:|https?:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`↲]+"
+
+[hints.enabled.binding]
+key = "K"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+\.[0-9]+)?(:[0-9]+)?'
+
+[hints.enabled.binding]
+key = "I"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = "[[:word:]-]+"
+
+[hints.enabled.binding]
+key = "W"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = '[0-9]*\.?[0-9]+'
+
+[hints.enabled.binding]
+key = "N"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = '''"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'|`([^`\\]*(\\.[^`\\]*)*)`'''
+
+[hints.enabled.binding]
+key = "Q"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = "[^[:space:]│↲]+"
+
+[hints.enabled.binding]
+key = "S"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[hints.enabled]]
+action = "Copy"
+post_processing = false
+regex = "[^[:space:]│][^│↲]*"
+
+[hints.enabled.binding]
+key = "L"
+mods = "Control|Shift"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Shift"
+
+[[keyboard.bindings]]
+chars = "\u001B\u007F"
+key = "Back"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "Paste"
+key = "Insert"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "Paste"
+key = "Y"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollPageUp"
+key = "U"
+mods = "Shift|Control"
+
+[[keyboard.bindings]]
+action = "ScrollPageDown"
+key = "D"
+mods = "Shift|Control"
+
+[[keyboard.bindings]]
+action = "CreateNewWindow"
+key = "A"
+mods = "Command"
+
+[[keyboard.bindings]]
+action = "ResetFontSize"
+key = "Key0"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Plus"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "DecreaseFontSize"
+key = "Minus"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "Escape"
+mode = "~Search"
+mods = "Shift|Control"
+
+[[keyboard.bindings]]
+action = "ScrollToBottom"
+key = "Space"
+mode = "Vi|~Search"
+mods = "Shift|Control"
+
+[[keyboard.bindings]]
+action = "ClearSelection"
+key = "Escape"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "I"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ScrollToBottom"
+key = "I"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "C"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollLineUp"
+key = "Y"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollLineDown"
+key = "E"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollToTop"
+key = "G"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ScrollToBottom"
+key = "G"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "ScrollPageUp"
+key = "B"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollPageDown"
+key = "F"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollHalfPageUp"
+key = "U"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ScrollHalfPageDown"
+key = "D"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "Copy"
+key = "Y"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ClearSelection"
+key = "Y"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ClearSelection"
+key = "Copy"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ToggleNormalSelection"
+key = "V"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "ToggleLineSelection"
+key = "V"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "ToggleBlockSelection"
+key = "V"
+mode = "Vi|~Search"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ToggleSemanticSelection"
+key = "V"
+mode = "Vi|~Search"
+mods = "Alt"
+
+[[keyboard.bindings]]
+action = "Open"
+key = "Return"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Up"
+key = "K"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Down"
+key = "J"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Left"
+key = "H"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Right"
+key = "L"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Up"
+key = "Up"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Down"
+key = "Down"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Left"
+key = "Left"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Right"
+key = "Right"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "First"
+key = "Key0"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "Last"
+key = 5
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "FirstOccupied"
+key = "Key6"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "High"
+key = "H"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "Middle"
+key = "M"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "Low"
+key = "L"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "SemanticLeft"
+key = "B"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "SemanticRight"
+key = "W"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "SemanticRightEnd"
+key = "E"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "WordLeft"
+key = "B"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "WordRight"
+key = "W"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "WordRightEnd"
+key = "E"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "Bracket"
+key = "Key5"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "SearchForward"
+key = "Slash"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "SearchBackward"
+key = "Slash"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "SearchNext"
+key = "N"
+mode = "Vi|~Search"
+
+[[keyboard.bindings]]
+action = "SearchPrevious"
+key = "N"
+mode = "Vi|~Search"
+mods = "Shift"
+
+[scrolling]
+history = 50000
+multiplier = 3
+
+[terminal.shell]
+program = "fish"
+
+[window]
+dynamic_title = true
+opacity = 0.7
+
+[terminal]
