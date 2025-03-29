@@ -1,0 +1,14 @@
+## Calibur V2 keyboard fn key
+# 1. edit or create: /etc/modprobe.d/hid_apple.conf
+# 2. append line:    options hid_apple fnmode=0
+# 3. shell command:  sudo update-initramfs -u -k all
+# 4. reboot.
+## swap alt gr and ctrl
+# edit: /usr/share/X11/xkb/symbols/ctrl
+partial modifier_keys
+xkb_symbols "swap_lalt_lctl" {
+    replace key <RALT> { [ Control_L ] };
+    replace key <RCTL> { [ ISO_Level3_Shift ] };
+    replace key <LCTL> { [ ISO_Level3_Shift ] };
+    replace key <ESC> { [ Escape, Escape, backslash ] };
+};
