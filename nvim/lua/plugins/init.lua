@@ -373,10 +373,12 @@ return {
       }
 
       local exact_match = {
+        [-1] = "yellow",
         [0] = "orange",
         [1] = "red",
       }
       local incomplete = {
+        [-1] = "yellow",
         [0] = "green",
         [1] = "orange",
         [2] = "red",
@@ -395,10 +397,15 @@ return {
           end
         end,
         hl = function(self)
-          return { fg = exact_match[self.search.exact_match], bold = true }
+          return { fg = exact_match[
+            self.search and self.search.exact_match or -1
+            ], bold = true }
         end,
         utils.surround({ "[", "]" }, nil, {
           provider = function(self)
+            if not self.search then
+              return "⚠"
+            end
             if self.search.total == 0 then
               return "∅"
             end
@@ -406,7 +413,9 @@ return {
               .. math.min(self.search.total, self.search.maxcount)
           end,
           hl = function(self)
-            return { fg = incomplete[self.search.incomplete], bold = true }
+            return { fg = incomplete[
+              self.search and self.search.incomplete or -1
+              ], bold = true }
           end,
         }),
       }
@@ -484,17 +493,32 @@ return {
         },
       }
 
+      -- local Codeium = {
+      --   condition = function() return vim.g.codeium_disable_bindings == 1 end,
+      --   static = {
+      --     status_map = {
+      --       [" ON"] = "",
+      --       OFF = "",
+      --     }
+      --   },
+      --   provider = function(self)
+      --     local status = vim.fn["codeium#GetStatusString"]()
+      --     return self.status_map[status] or status
+      --   end,
+      -- }
       local Codeium = {
-        condition = function() return vim.g.codeium_disable_bindings == 1 end,
+        condition = function()
+          return package.loaded["codeium"]
+        end,
         static = {
-          status_map = {
-            [" ON"] = "",
-            OFF = "",
+          state_map = {
+            waiting = "…",
+            idle = "",
           }
         },
         provider = function(self)
-          local status = vim.fn["codeium#GetStatusString"]()
-          return self.status_map[status] or status
+          local status = require("codeium.virtual_text").status()
+          return self.state_map[status.state] or string.format("%d/%d", status.current, status.total)
         end,
       }
 
@@ -601,6 +625,14 @@ return {
           TerminalStatusline,
           Statusline,
         }
+      })
+
+      vim.api.nvim_create_autocmd("DiagnosticChanged", {
+        group = "initAutoGroup",
+        callback = vim.schedule_wrap(function()
+          vim.api.nvim_command("redrawstatus")
+          -- vim.api.nvim_command("redrawtabline")
+        end),
       })
     end,
   },
@@ -1071,6 +1103,8 @@ return {
         Constructor = "",
         Field = "󰇽",
         Variable = "󰂡",
+        VariableParameter = "λ",
+        VariableMember = "ε",
         Class = "󰠱",
         Interface = "",
         Module = "",
@@ -1079,16 +1113,21 @@ return {
         Value = "󰎠",
         Enum = "",
         Keyword = "󰌋",
+        KeywordConditional = "",
+        KeywordRepeat = "󱕵",
         Snippet = "",
         Color = "󰏘",
         File = "󰈙",
         Reference = "",
         Folder = "󰉋",
         EnumMember = "",
+        Comment = "",
         Constant = "󰏿",
+        String ="",
         Struct = "",
         Event = "",
         Operator = "󰆕",
+        Type = "",
         TypeParameter = "󰅲",
         Spell = "󰓆",
         OrgHeadlineLevel1 = "❶",
@@ -1201,6 +1240,7 @@ return {
           { name = 'otter' },
         }, {
           { name = "buffer" },
+          { name = "path" },
         }),
       })
 

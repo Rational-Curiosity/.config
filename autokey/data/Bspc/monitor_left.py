@@ -1,1 +1,0 @@
-system.exec_command("bspc monitor -f prev", getOutput=False)

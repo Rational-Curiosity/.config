@@ -1,1 +1,0 @@
-system.exec_command("bspc desktop -l next", getOutput=False)

@@ -6,6 +6,7 @@ separator = "<span font='13'></span>"
 [icons]
 icons = "material-nf"
 [icons.overrides]
+memory_mem = ""
 memory_swap = "󰾵"
 
 # Separators: █
@@ -13,8 +14,8 @@ memory_swap = "󰾵"
 block = "focused_window"
 driver = "sway_ipc"
 [block.format]
-full = " $marks$title.str(max_w:40,rot_interval:0.2,rot_separator:'║') |"
-short = " $marks$title.str(max_w:20,rot_interval:0.2,rot_separator:'║') |"
+full = " $marks$title.str(max_w:90,rot_interval:0.2,rot_separator:'║') |"
+short = " $marks$title.str(max_w:40,rot_interval:0.2,rot_separator:'║') |"
 
 [[block]]
 block = "external_ip"
@@ -145,6 +146,7 @@ block = "custom"
 interval = 10
 command = """ps -do args|sed -nE "
 s|^/bin/sh $HOME/bin/daemon-gigas-vpn\\$||;th;
+s|^(/bin/sh $HOME/bin/)?i3-layout( debug)?\\$||;th;
 s|^\\./target/release/remap.*|󰞙|;th;
 s|^xss-lock.*|󰷛|;th;
 bl;:h;H;:l;\\${g;s/\\n//g;p}"
@@ -153,10 +155,19 @@ merge_with_next = true
 format = "$text.pango-str()"
 
 [[block]]
+block = "custom"
+interval = 15
+command = """xset q|sed -nE "26s|^  DPMS is Enabled\\$|󱡶|p""""
+merge_with_next = true
+format = "$text.pango-str()"
+[block.theme_overrides]
+idle_fg = "#0384F1"
+
+[[block]]
 block = "battery"
 interval = 10
 driver = "upower"
-format = "$icon$percentage $time"
+format = "$icon$percentage $time_remaining"
 [[block.click]]
 button = "left"
 cmd = "dunstify -a i3status-rs \"Battery\" \"$(upower -e | grep battery | xargs -r -L 1 upower -i)\""

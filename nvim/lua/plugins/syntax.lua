@@ -36,6 +36,7 @@ return {
           "dot",
           "doxygen",
           "dtd",
+          "editorconfig",
           "elixir",
           "elm",
           "erlang",
@@ -61,6 +62,7 @@ return {
           "html",
           "htmldjango",
           "http",
+          "hyprlang",
           "ini",
           "java",
           "javascript",
@@ -72,6 +74,7 @@ return {
           "jsonnet",
           "julia",
           "just",
+          "kconfig",
           "kdl",
           "kotlin",
           "latex",
@@ -87,8 +90,7 @@ return {
           "mermaid",
           "meson",
           "ninja",
-          -- "norg", "norg_meta", "norg_table",
-          -- "org",
+          "nu",
           "perl",
           "php",
           "php_only",
@@ -414,8 +416,8 @@ return {
     --     },
     --   })
     -- end,
-    "NvChad/nvim-colorizer.lua",
-    event = "VeryLazy",
+    "catgoose/nvim-colorizer.lua",
+    event = "BufReadPre",
     config = function()
       local colorizer = require("colorizer")
       colorizer.setup({
@@ -425,9 +427,12 @@ return {
           names = false,
           RRGGBBAA = true,
           AARRGGBB = true,
+          rgb_fn = true,
         }
       })
-      colorizer.attach_to_buffer(0)
+      -- for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      --   colorizer.attach_to_buffer(buf)
+      -- end
     end,
   },
   {
@@ -468,7 +473,8 @@ return {
       vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#5b6291" })
       vim.api.nvim_set_hl(0, "CursorLineNR", { fg = "#ffba00" })
       vim.api.nvim_set_hl(0, "IncSearch", { fg = "#ff9e64", bg = "#2a52be" })
-      vim.api.nvim_set_hl(0, "Whitespace", { bg = "#d2042d", ctermbg = "red" })
+      vim.api.nvim_set_hl(0, "Trailingspace", { bg = "#d2042d", ctermbg = "red" })
+      -- vim.api.nvim_set_hl(0, "Whitespace", { link = "NonText" })
       vim.api.nvim_set_hl(0, "Comment", { fg = "#767fa9" }) -- fg = '#565f89'
       vim.api.nvim_set_hl(0, "DiagnosticUnnecessary", { fg = "#616888" }) -- fg = '#414868'
     end,

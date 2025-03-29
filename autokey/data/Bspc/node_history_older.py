@@ -1,1 +1,0 @@
-system.exec_command("bspc wm -h off; bspc node older -f; bspc wm -h on", getOutput=False)

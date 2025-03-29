@@ -19,8 +19,10 @@ default_floating_border pixel $border_size
 set $font DejaVuSansM Nerd Font Mono
 font xft:$font 9
 
+set $master layout splitv;focus parent;layout splith
 set $focused_ws i3-msg -t get_workspaces|jq '.[]|select(.focused).num'
 set $focused_ws_name i3-msg -t get_workspaces|jq -r '.[]|select(.focused==true).name'
+set $focused_win xprop -root _NET_ACTIVE_WINDOW|cut -d' ' -f5
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
@@ -58,7 +60,6 @@ set $rofi_args -mesg 'Submit input: C-j/C-RET'\
  -kb-select-6 ctrl+6 -kb-select-7 ctrl+7 -kb-select-8 ctrl+8\
  -kb-select-9 ctrl+9 -kb-select-10 ctrl+0 -kb-page-prev alt+p\
  -kb-page-next alt+n -kb-secondary-paste ctrl+y
-set $focused_win xprop -root _NET_ACTIVE_WINDOW|cut -d' ' -f5
 #? Select transparency:
 bindsym $Win+Control+t exec --no-startup-id "TRA=$(seq 1 -0.05 0.6\
  |rofi -m -1 -dmenu $rofi_args);[ -n \\"$TRA\\" ]\
@@ -93,22 +94,27 @@ bindsym $Win+Control+Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_S
 bindsym $Win+Control+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1% &
 bindsym $Win+Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% &
 bindsym $Win+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% &
-bindsym $Win+Shift+Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +20% &
-bindsym $Win+Shift+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -20% &
+bindsym $Win+Shift+Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% &
+bindsym $Win+Shift+Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% &
 
 # Use Mouse+$Win to drag floating windows to their wanted position
 floating_modifier $Win
 
+# [
 #? Terminal with tmux
-bindsym $Win+Return exec st -f "$font:size=$(font-size $font)" tmux
-#? Terminal with tmux restoring last session
-bindsym $Win+$Alt+Return exec st -f "$font:size=$(font-size $font)" tmux a
-bindsym $Win+Shift+Return layout splitv;$root;layout splith;exec st -f "$font:size=$(font-size $font)" tmux;resize set width 50 ppt
-# bindsym $Win+Return exec wezterm &
-# bindsym $Win+Shift+Return $root;layout splith;exec wezterm &;resize set width 50 ppt
+bindsym $Win+Return exec exec st -f "$font:size=$(font-size $font)" tmux
+# <xor>
 # bindsym $Win+Return exec alacritty msg create-window || alacritty &
+# ]
+# [
+#? Terminal with tmux restoring last session
+bindsym $Win+$Alt+Return exec exec st -f "$font:size=$(font-size $font)" tmux a
+bindsym $Win+Shift+Return layout splitv;$root;layout splith;exec exec st -f "$font:size=$(font-size $font)" tmux;resize set width 50 ppt
+# <xor>
 # bindsym $Win+Shift+Return $root;layout splith;exec alacritty msg create-window || alacritty &;resize set width 50 ppt
 # bindsym $Win+$Alt+Return exec "alacritty msg create-window --class Alacritty,TilingFloat &"
+# ]
+
 # start emacs
 bindsym $Win+i exec "emacsclient -c -n -a '' &"
 bindsym $Win+Shift+i layout splitv;$root;layout splith;exec "emacsclient -c -n -a '' &";resize set width 50 ppt
@@ -245,8 +251,11 @@ mode $edit_mode {
   bindsym Up move up 10 ppt
   bindsym Right move right 10 ppt
 
-  bindsym Return exec st -f "$font:size=$(font-size $font)" tmux
+  # [
+  bindsym Return exec exec st -f "$font:size=$(font-size $font)" tmux
+  # <xor>
   # bindsym Return exec alacritty msg create-window || alacritty &
+  # ]
 
   bindsym $Win+m mode "default"
   bindsym Escape mode "default"
@@ -363,13 +372,16 @@ for_window [class="^(Chromium\
 |Navigator\
 |qBittorrent\
 |Tor Browser\
+|Brave-browser\
+|Vivaldi-stable\
 )"] exec --no-startup-id "transset --id $(printf '%d' $($focused_win)) 0.9"
-for_window [class="^(Evince|Totem)"] border pixel $border_size
+for_window [class="^(Evince|Totem|Eog|Vivaldi-stable)$"] border pixel
 for_window [class="^Scratchpad$"] move scratchpad
 for_window [title="^Peek preview$"] resize set width 30 ppt, focus left
 for_window [title="^xzoom x[0-9]"] floating enable
 for_window [title="^Live Caption$"] floating enable
 for_window [window_role="^pop-up$"] floating enable
+for_window [instance="^Places$" class="^firefox$"] floating enable
 for_window [instance=":\*$"] sticky enable
 for_window [instance=":\+$"] exec --no-startup-id "W=$($focused_ws);i3-msg move container to workspace number $((W + 1))"
 for_window [instance=":-$"] exec --no-startup-id "W=$($focused_ws);i3-msg move container to workspace number $((W - 1))"
@@ -407,22 +419,24 @@ bar {
   tray_output primary
   # output primary
   # status_command i3status -c ~/.config/i3/status-$(uname -n)
-  status_command i3status-rs ~/.config/i3/config.toml
+  status_command exec i3status-rs ~/.config/i3/config.toml
 }
 
+exec_always --no-startup-id i3-layout
+# [
 exec_always --no-startup-id \
 "case $(tmux ls|sed -nE 's/^(scratchpad: )[^)]+\) ?(\(attached\))?$/\1\2/p') in
  'scratchpad: (attached)') :;;
- 'scratchpad: ') st -f \"$font:size=$(font-size $font)\" -c Scratchpad tmux a -t scratchpad;;
- *) st -f \"$font:size=$(font-size $font)\" -c Scratchpad tmux new -s scratchpad;;
+ 'scratchpad: ') exec st -f \"$font:size=$(font-size $font)\" -c Scratchpad tmux a -t scratchpad;;
+ *) exec st -f \"$font:size=$(font-size $font)\" -c Scratchpad tmux new -s scratchpad;;
 esac &"
-# exec_always --no-startup-id "wezterm cli --no-auto-start --class Scratchpad list-clients\
-#  || wezterm start --class Scratchpad &"
+# <xor>
 # exec_always --no-startup-id "case $(tmux ls|sed -nE 's/^(scratchpad: )[^)]+\) ?(\(attached\))?$/\1\2/p') in
 #  'scratchpad: (attached)') :;;
 #  'scratchpad: ') alacritty --class Scratchpad,Alacritty -e tmux a -t scratchpad;;
 #  *) alacritty --class Scratchpad,Alacritty -e tmux new -s scratchpad;;
 # esac &"
+# ]
 exec_always --no-startup-id "PID=$(pgrep -x i3bar); while [ -z $PID ];\
  do sleep 1; PID=$(pgrep -x i3bar); done;\
  kill -s STOP $PID && kill -s CONT $PID && pkill -f 'sh -c i3bar'"

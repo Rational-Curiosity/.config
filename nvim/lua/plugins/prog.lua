@@ -35,6 +35,13 @@ local ft_prog_lsp = {
 }
 local ft_prog = { "fish", "lua", "smarty", unpack(ft_prog_lsp) }
 
+local provider
+if vim.env.GEMINI_API_KEY then
+  provider = 'gemini'
+elseif vim.env.OLLAMA_HOST then
+  provider = 'ollama'
+end
+
 return {
   {
     'jmbuhr/otter.nvim',
@@ -163,7 +170,7 @@ return {
           cmake = filetypes.cmake.cmakeformat,
           cpp = filetypes.cpp.clangformat,
           cs = filetypes.cs.clangformat,
-          css = filetypes.css.eslint_d,
+          css = filetypes.css.prettier,
           dart = filetypes.dart.dartfmt,
           elixir = filetypes.elixir.mixformat,
           fish = filetypes.fish.fishindent,
@@ -269,10 +276,10 @@ return {
         update_in_insert = false,
       }
       vim.diagnostic.config(diagnostic_config)
-      vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics,
-        diagnostic_config
-      )
+      -- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+      --   vim.lsp.diagnostic.on_publish_diagnostics,
+      --   diagnostic_config
+      -- )
 
       -- Mappings.
       -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -463,7 +470,13 @@ return {
         biome = append_to_last(base_config, {
           root_dir = util.root_pattern("biome.json", "biome.jsonc", ".git"),
         }),
-        ccls = base_config,
+        ccls = append_to_last(base_config, {
+          root_dir = function(fname)
+            return util.root_pattern('compile_commands.json', '.ccls')(fname)
+              or vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
+              or "."
+          end,
+        }),
         denols = append_to_last(base_config, {
           root_dir = util.root_pattern("deno.json", "deno.jsonc"),
         }),
@@ -498,9 +511,9 @@ return {
           },
         }),
         pyright = base_config,
-        -- <xor>
+        -- <XOR>
         -- pylyzer = base_config,
-        ruff_lsp = {
+        ruff = {
           init_options = {
             settings = {
               args = { "--line-length", "79" },
@@ -536,8 +549,19 @@ return {
             },
           },
         }),
-        tsserver = base_config,
-        typst_lsp = append_to_last(base_config, {
+        ts_ls = base_config,
+        -- typst_lsp = append_to_last(base_config, {
+        --   settings = {
+        --     exportPdf = "onType",
+        --   },
+        -- }),
+        -- <XOR>
+        tinymist = append_to_last(base_config, {
+          root_dir = function(fname)
+            return vim.fs.dirname(
+              vim.fs.find('.git', { path = fname, upward = true })[1]
+            ) or "."
+          end,
           settings = {
             exportPdf = "onType",
           },
@@ -562,9 +586,11 @@ return {
   {
     "nvim-neotest/neotest",
     dependencies = {
+      "nvim-neotest/nvim-nio",
       "nvim-lua/plenary.nvim",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter",
+      -- modules
       "nvim-neotest/neotest-python",
       "nvim-neotest/neotest-jest",
       "olimorris/neotest-phpunit",
@@ -805,56 +831,6 @@ return {
     end,
   },
   {
-    -- 'codota/tabnine-nvim',
-    -- build = './dl_binaries.sh',
-    -- ft = ft_prog,
-    -- config = function()
-    --   require'tabnine'.setup {}
-    -- end
-    -- <XOR>
-    "Exafunction/codeium.vim",
-    ft = ft_prog,
-    cmd = { "Codeium" },
-    config = function()
-      vim.g.codeium_disable_bindings = 1
-      vim.g.codeium_filetypes = { TelescopePrompt = false }
-      vim.keymap.set("i", "<A-h>", vim.fn["codeium#CycleOrComplete"])
-      vim.keymap.set(
-        "i",
-        "<A-l>",
-        vim.fn["codeium#Accept"],
-        { script = true, silent = true, nowait = true, expr = true }
-      )
-      vim.keymap.set("i", "<A-k>", function()
-        vim.fn["codeium#CycleCompletions"](-1)
-      end)
-      vim.keymap.set("i", "<A-j>", function()
-        vim.fn["codeium#CycleCompletions"](1)
-      end)
-      vim.keymap.set("i", "<C-x>", vim.fn["codeium#Clear"])
-      vim.api.nvim_create_user_command(
-        "CodeiumStart",
-        "call codeium#server#Start()",
-        -- <XOR>
-        -- "call timer_start(0, function('codeium#server#Start'))",
-        { bar = true, desc = "Start codeium server" }
-      )
-    end,
-    -- <XOR>
-    -- "jcdickinson/codeium.nvim",
-    -- dependencies = {
-    --   "nvim-lua/plenary.nvim",
-    --   "MunifTanjim/nui.nvim",
-    --   "nvim-cmp",
-    -- },
-    -- cmd = { 'Codeium' },
-    -- ft = ft_prog,
-    -- config = function()
-    --   require("codeium").setup({
-    --   })
-    -- end
-  },
-  {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     ft = ft_prog,
@@ -874,5 +850,77 @@ return {
         todo_comments.jump_prev()
       end, { desc = "Previous todo comment" })
     end,
+  },
+  provider and {
+    -- "Exafunction/codeium.nvim",
+    -- dependencies = {
+    --   "nvim-lua/plenary.nvim",
+    --   "hrsh7th/nvim-cmp",
+    -- },
+    -- ft = ft_prog,
+    -- config = function()
+    --   require("codeium").setup({
+    --     enable_cmp_source = false,
+    --     virtual_text = {
+    --       enabled = true,
+    --       key_bindings = {
+    --         accept = "<M-l>",
+    --         next = "<M-j>",
+    --         prev = "<M-k>",
+    --       }
+    --     }
+    --   })
+    -- end
+    -- </XOR>
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    lazy = false,
+    version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
+    opts = {
+      provider = provider,
+      auto_suggestions_provider = provider,
+      ollama = {
+        model = "qwen2.5-coder:14b",
+      },
+      behaviour = {
+        auto_suggestions = true,
+      },
+      mappings = {
+        suggestion = {
+          accept = "<M-l>",
+          next = "<M-j>",
+          prev = "<M-k>",
+          dismiss = "<C-h>",
+        },
+      },
+    },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = "make",
+    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    dependencies = {
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+      "ibhagwan/fzf-lua", -- for file_selector provider fzf
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      -- {
+      --   "zbirenbaum/copilot.lua",
+      --   config = function()
+      --     require('copilot').setup({
+      --       suggestion = {
+      --         auto_trigger = true,
+      --         keymap = {
+      --           accept = '<M-l>',
+      --           next = '<M-j>',
+      --           prev = '<M-k>',
+      --           dimiss = '<M-h>',
+      --         },
+      --       },
+      --     })
+      --   end
+      -- },
+    },
   },
 }

@@ -1,1 +1,0 @@
-system.exec_command("gnome-screenshot", getOutput=False)

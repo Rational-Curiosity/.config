@@ -311,6 +311,7 @@ return {
       end
 
       local telescope = require("telescope")
+      local actions = require("telescope.actions")
       local action_layout = require("telescope.actions.layout")
       telescope.setup({
         extensions = {
@@ -355,6 +356,7 @@ return {
               ["<A-e>"] = action_layout.toggle_preview,
               ["<A-o>"] = action_layout.cycle_layout_prev,
               ["<A-i>"] = action_layout.cycle_layout_next,
+              ["<C-f>"] = actions.to_fuzzy_refine,
             },
             n = {
               ["<A-e>"] = action_layout.toggle_preview,
@@ -631,5 +633,14 @@ return {
         desc = "TS nodes",
       },
     },
+  },
+  {
+    'mawkler/demicolon.nvim',
+    keys = { ';', ',', 't', 'f', 'T', 'F', ']', '[' },
+    dependencies = {
+      'nvim-treesitter',
+      'nvim-treesitter-textobjects',
+    },
+    opts = {}
   },
 }

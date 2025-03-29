@@ -97,25 +97,31 @@ return {
     --   vim.g.csv_no_conceal = 1
     --   vim.g.csv_bind_B = 1
     -- end,
-    -- <xor>
-    "emmanueltouzery/decisive.nvim",
-    ft = { "csv" },
-    dependencies = {
-      "which-key.nvim",
-    },
+    -- <XOR>
+    -- "emmanueltouzery/decisive.nvim",
+    -- ft = { "csv" },
+    -- dependencies = {
+    --   "which-key.nvim",
+    -- },
+    -- config = function()
+    --   local decisive = require("decisive")
+    --   decisive.setup({})
+    --   vim.keymap.set('n', '<leader>ca', function()
+    --     decisive.align_csv({})
+    --   end, { desc="align CSV", silent=true })
+    --   vim.keymap.set('n', '<leader>cA', function()
+    --     decisive.align_csv_clear({})
+    --   end, { desc="align CSV clear", silent=true })
+    --   require("which-key").add({
+    --     { "<leader>c", group = "CSV" }
+    --   })
+    -- end,
+    -- <XOR>
+    'hat0uma/csvview.nvim',
+    ft = { "csv", "tsv" },
     config = function()
-      local decisive = require("decisive")
-      decisive.setup({})
-      vim.keymap.set('n', '<leader>ca', function()
-        decisive.align_csv({})
-      end, { desc="align CSV", silent=true })
-      vim.keymap.set('n', '<leader>cA', function()
-        decisive.align_csv_clear({})
-      end, { desc="align CSV clear", silent=true })
-      require("which-key").add({
-        { "<leader>c", group = "CSV" }
-      })
-    end,
+      require('csvview').setup()
+    end
   },
   {
     "kaarmu/typst.vim",

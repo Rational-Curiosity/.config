@@ -1,1 +1,0 @@
-system.exec_command("bspc node -d '^4'", getOutput=False)

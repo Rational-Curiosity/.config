@@ -153,9 +153,7 @@ return {
     "altermo/ultimate-autopair.nvim",
     build = "git checkout doc/tags",
     event = { "InsertEnter", "CmdlineEnter" },
-    config = function()
-      require("ultimate-autopair").setup({})
-    end,
+    opts = {},
   },
   {
     "windwp/nvim-ts-autotag",

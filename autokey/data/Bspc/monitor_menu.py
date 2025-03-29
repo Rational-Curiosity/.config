@@ -1,1 +1,0 @@
-system.exec_command("bspwm-actions monitor", getOutput=False)

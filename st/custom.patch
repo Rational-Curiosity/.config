@@ -69,7 +69,7 @@ index 2cd740a..bfc1073 100644
 +// Active style
 +#define UNDERCURL_STYLE UNDERCURL_SPIKY
 diff --git a/st.c b/st.c
-index 57c6e96..5abf832 100644
+index 2e3800e..45513f8 100644
 --- a/st.c
 +++ b/st.c
 @@ -33,6 +33,7 @@
@@ -180,7 +180,7 @@ index 57c6e96..5abf832 100644
  			if (BETWEEN(attr[i], 30, 37)) {
  				term.c.attr.fg = attr[i] - 30;
 diff --git a/st.h b/st.h
-index fd3b0d8..f741073 100644
+index fd3b0d8..5d398b5 100644
 --- a/st.h
 +++ b/st.h
 @@ -34,6 +34,7 @@ enum glyph_attribute {
@@ -195,7 +195,7 @@ index fd3b0d8..f741073 100644
  	ushort mode;      /* attribute flags */
  	uint32_t fg;      /* foreground  */
  	uint32_t bg;      /* background  */
-+	int ustyle;       /* underline style */
++	int ustyle;	  /* underline style */
 +	int ucolor[3];    /* underline color */
  } Glyph;
  
@@ -211,7 +211,7 @@ index efab2cf..23b1875 100644
  	am,
  	bce,
 diff --git a/x.c b/x.c
-index bd23686..b7ec1ad 100644
+index d73152b..1eedb31 100644
 --- a/x.c
 +++ b/x.c
 @@ -45,6 +45,14 @@ typedef struct {
@@ -270,8 +270,8 @@ index bd23686..b7ec1ad 100644
  	return 0;
  }
  
-@@ -1134,11 +1153,23 @@ xinit(int cols, int rows)
- 	Window parent;
+@@ -1134,11 +1153,25 @@ xinit(int cols, int rows)
+ 	Window parent, root;
  	pid_t thispid = getpid();
  	XColor xmousefg, xmousebg;
 +	XWindowAttributes attr;
@@ -282,20 +282,22 @@ index bd23686..b7ec1ad 100644
  	xw.scr = XDefaultScreen(xw.dpy);
 -	xw.vis = XDefaultVisual(xw.dpy, xw.scr);
 +
-+	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0)))) {
-+		parent = XRootWindow(xw.dpy, xw.scr);
-+		xw.depth = 32;
++	root = XRootWindow(xw.dpy, xw.scr);
++	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0))))
++		parent = root;
++
++	if (XMatchVisualInfo(xw.dpy, xw.scr, 32, TrueColor, &vis) != 0) {
++		xw.vis = vis.visual;
++		xw.depth = vis.depth;
 +	} else {
 +		XGetWindowAttributes(xw.dpy, parent, &attr);
++		xw.vis = attr.visual;
 +		xw.depth = attr.depth;
 +	}
-+
-+	XMatchVisualInfo(xw.dpy, xw.scr, xw.depth, TrueColor, &vis);
-+	xw.vis = vis.visual;
  
  	/* font */
  	if (!FcInit())
-@@ -1148,7 +1179,7 @@ xinit(int cols, int rows)
+@@ -1148,7 +1181,7 @@ xinit(int cols, int rows)
  	xloadfonts(usedfont, 0);
  
  	/* colors */
@@ -304,30 +306,30 @@ index bd23686..b7ec1ad 100644
  	xloadcols();
  
  	/* adjust fixed window geometry */
-@@ -1168,19 +1199,15 @@ xinit(int cols, int rows)
+@@ -1168,11 +1201,8 @@ xinit(int cols, int rows)
  		| ButtonMotionMask | ButtonPressMask | ButtonReleaseMask;
  	xw.attrs.colormap = xw.cmap;
  
+-	root = XRootWindow(xw.dpy, xw.scr);
 -	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0))))
--		parent = XRootWindow(xw.dpy, xw.scr);
- 	xw.win = XCreateWindow(xw.dpy, parent, xw.l, xw.t,
+-		parent = root;
+-	xw.win = XCreateWindow(xw.dpy, root, xw.l, xw.t,
 -			win.w, win.h, 0, XDefaultDepth(xw.dpy, xw.scr), InputOutput,
++	xw.win = XCreateWindow(xw.dpy, parent, xw.l, xw.t,
 +			win.w, win.h, 0, xw.depth, InputOutput,
  			xw.vis, CWBackPixel | CWBorderPixel | CWBitGravity
  			| CWEventMask | CWColormap, &xw.attrs);
- 
- 	memset(&gcvalues, 0, sizeof(gcvalues));
- 	gcvalues.graphics_exposures = False;
--	dc.gc = XCreateGC(xw.dpy, parent, GCGraphicsExposures,
--			&gcvalues);
--	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h,
+ 	if (parent != root)
+@@ -1183,7 +1213,7 @@ xinit(int cols, int rows)
+ 	dc.gc = XCreateGC(xw.dpy, xw.win, GCGraphicsExposures,
+ 			&gcvalues);
+ 	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h,
 -			DefaultDepth(xw.dpy, xw.scr));
-+	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h, xw.depth);
-+	dc.gc = XCreateGC(xw.dpy, xw.buf, GCGraphicsExposures, &gcvalues);
++			xw.depth);
  	XSetForeground(xw.dpy, dc.gc, dc.col[defaultbg].pixel);
  	XFillRectangle(xw.dpy, xw.buf, dc.gc, 0, 0, win.w, win.h);
  
-@@ -1371,6 +1398,51 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
+@@ -1374,6 +1404,51 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
  	return numspecs;
  }
  
@@ -379,7 +381,7 @@ index bd23686..b7ec1ad 100644
  void
  xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, int y)
  {
-@@ -1493,8 +1565,357 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
+@@ -1496,8 +1571,357 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
  
  	/* Render underline and strikethrough. */
  	if (base.mode & ATTR_UNDERLINE) {
@@ -480,7 +482,7 @@ index bd23686..b7ec1ad 100644
 +			*/
 +			wh *= 2;
 +
-+			// Set the angle of the slope to 45Â°
++			// Set the angle of the slope to 45°
 +			ww = wh;
 +
 +			// Position of wave is independent of word, it's absolute
@@ -580,7 +582,7 @@ index bd23686..b7ec1ad 100644
 +			// Make the underline corridor larger
 +			wh *= 2;
 +
-+			// Set the angle of the slope to 45Â°
++			// Set the angle of the slope to 45°
 +			ww = wh;
 +			ww *= 1 + capRatio; // Add a bit of width for the cap
 +
@@ -739,7 +741,7 @@ index bd23686..b7ec1ad 100644
  	}
  
  	if (base.mode & ATTR_STRUCK) {
-@@ -2044,6 +2465,10 @@ main(int argc, char *argv[])
+@@ -2047,6 +2471,10 @@ main(int argc, char *argv[])
  	case 'a':
  		allowaltscreen = 0;
  		break;

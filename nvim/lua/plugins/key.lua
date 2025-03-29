@@ -186,7 +186,6 @@ _<Esc>_/_q_: exit  _U_: User interface        _Q_: terminate]],
   {
     "folke/which-key.nvim",
     dependencies = {
-      "echasnovski/mini.icons",
       "nvim-tree/nvim-web-devicons",
     },
     keys = {

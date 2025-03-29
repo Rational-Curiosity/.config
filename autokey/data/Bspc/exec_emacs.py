@@ -1,1 +1,0 @@
-system.exec_command('emacsclient -c -n -a ""', getOutput=False)

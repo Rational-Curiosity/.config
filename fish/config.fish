@@ -29,7 +29,7 @@ for i in (seq 2 11)
 end
 
 # https://github.com/fish-shell/fish-shell/issues/8233
-# function fish_vi_cursor; end
+function fish_vi_cursor; end
 fish_vi_key_bindings
 
 bind -M insert \ck kill-line

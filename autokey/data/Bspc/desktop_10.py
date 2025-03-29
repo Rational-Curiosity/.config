@@ -1,1 +1,0 @@
-system.exec_command("bspc desktop -f '^10'", getOutput=False)

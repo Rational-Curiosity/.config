@@ -13,12 +13,16 @@ local mapset = vim.keymap.set
 local fn = vim.fn
 local config_path = fn.stdpath("config")
 
+api.nvim_command('syntax off')
+o.spell = false
+g.mapleader = ' '
+
 g.editorconfig = false
 g.tokyonight_style = "night"
 g.tokyonight_transparent = true
 o.shortmess = o.shortmess .. "AsScIW"
 o.updatetime = 2000
-o.cmdheight = 0
+-- o.cmdheight = 0  -- noice.nvim
 o.showcmdloc = "statusline"
 o.showmode = false
 o.fileencoding = "utf-8"
@@ -40,7 +44,7 @@ opt.listchars = {
   extends = "⮞",
   precedes = "⮜",
 }
-o.conceallevel = 2
+-- o.conceallevel = 2
 -- o.concealcursor = "nc"
 o.cursorline = true
 o.wrap = false
@@ -59,9 +63,6 @@ o.fixendofline = false
 -- opt.iskeyword:prepend("-")
 -- opt.iskeyword:prepend("$")
 -- opt.iskeyword:remove("_")
-o.shada = "!,'500,/100,:250,<50,@100,h,s8"
-o.shadafile = config_path .. "/shada/main.shada"
-o.history = 600
 o.spelllang = "en_us,es"
 o.spellfile = config_path .. "/spell/en-es.utf-8.add"
 
@@ -72,17 +73,24 @@ o.ignorecase = true
 o.smartcase = true
 o.shell = "sh"
 vim.env.SHELL = "sh"
-g.python3_host_prog = fn.executable("/usr/local/bin/python3") == 1
-  and "/usr/local/bin/python3"
-  or "/usr/bin/python3"
+g.python3_host_prog = "python"
 g.netrw_scp_cmd = "yad --separator= --form --field=Password:H|sshpass scp -q"
 g.loaded_ruby_provider = 0
 g.loaded_perl_provider = 0
 
--- UNDO
-o.undodir = config_path .. "/undo"
-o.undofile = true
-o.undolevels = 700
+if vim.env.SUDO_USER then
+  o.shada = ""
+
+  o.undofile = false
+else
+  o.shada = "!,'500,/100,:250,<50,@100,h,s8"
+  o.shadafile = config_path .. "/shada/main.shada"
+  o.history = 600
+
+  o.undodir = config_path .. "/undo"
+  o.undofile = true
+  o.undolevels = 700
+end
 
 vim.cmd([[
 syn sync maxlines=200
@@ -105,12 +113,16 @@ augroup initAutoGroup
   "   \nnoremap <buffer> # ?\<$\=<C-R>=substitute(expand('<cword>'),'^\$','',"")<CR>\><CR>
   " autocmd FileType log setlocal nospell
   " Recompile plugins.lua
+  au BufWritePre */.__* setlocal noundofile
   "autocmd BufWritePost plugins.lua source | PackerCompile
-  autocmd InsertEnter * set conceallevel=0
-  autocmd InsertLeave * set conceallevel=2
+  "autocmd ModeChanged *:\(v\|vs\|V\|Vs\|\|s\|s\|S\|\|i\|ic\|ix\) set conceallevel=0
+  "autocmd ModeChanged \(v\|vs\|V\|Vs\|\|s\|s\|S\|\|i\|ic\|ix\):* set conceallevel=2
   " Terminal config
   autocmd TermOpen term://* setlocal scrollback=100000 nospell nonumber norelativenumber|startinsert
 augroup end
+
+" MATCH
+syntax match Trailingspace /\s\+$/
 
 " MATCHPAREN
 let g:matchparen_timeout = 150
@@ -209,10 +221,21 @@ do
     mysql = true,
     plsql = true,
   }
+  local nospell_ft = {
+    [""] = true,
+    log = true,
+    notify = true,
+  }
+  local conceallevel_ft = {
+    markdown = 2,
+    org = 2,
+    typst = 2,
+  }
   api.nvim_create_autocmd({ "FileType" }, {
     group = "initAutoGroup",
     pattern = { "*" },
     callback = function(ev)
+      vim.opt_local.conceallevel = conceallevel_ft[bo.filetype] or 0
       if bo.filetype == "sh" then
         vim.opt_local.spell = true
         vim.cmd([[
@@ -250,10 +273,29 @@ do
             silent = true,
           }
         )
-      elseif bo.filetype == "" or bo.filetype == "log" then
+      elseif nospell_ft[bo.filetype] then
         vim.opt_local.spell = false
       else
         vim.opt_local.spell = true
+      end
+    end,
+  })
+  api.nvim_create_autocmd({ "ModeChanged" }, {
+    group = "initAutoGroup",
+    pattern = { [[\(v\|vs\|V\|Vs\|\|s\|s\|S\|\|i\|ic\|ix\):*]] },
+    callback = function()
+      local cl = conceallevel_ft[bo.filetype]
+      if cl then
+        vim.opt_local.conceallevel = cl
+      end
+    end,
+  })
+  api.nvim_create_autocmd({ "ModeChanged" }, {
+    group = "initAutoGroup",
+    pattern = { [[*:\(v\|vs\|V\|Vs\|\|s\|s\|S\|\|i\|ic\|ix\)]] },
+    callback = function()
+      if conceallevel_ft[bo.filetype] then
+        vim.opt_local.conceallevel = 0
       end
     end,
   })
@@ -600,6 +642,15 @@ do
     wo.winfixwidth = false
   end
 end
+if fn.executable("capslock_off") then
+  api.nvim_create_autocmd({ "InsertLeave" }, {
+    group = "initAutoGroup",
+    pattern = { "*" },
+    callback = function()
+      fn.system("capslock_off")
+    end,
+  })
+end
 api.nvim_create_autocmd({ "VimLeave" }, {
   group = "initAutoGroup",
   pattern = { "*" },
@@ -635,7 +686,11 @@ api.nvim_create_autocmd({ "VimLeave" }, {
           call delete(file)
         endfor
       endif
-      call writefile(s:msgs, s:file .. strftime('%Y-%m-%d_%H.%M.%S') .. '.txt')
+      let s:filename = s:file .. strftime('%Y-%m-%d_%H.%M.%S') .. '.txt'
+      call writefile(s:msgs, s:filename)
+      if !empty($SUDO_USER)
+        call system('chown ' .. $SUDO_USER .. ' ' .. s:filename)
+      endif
     endif
     ]])
   end,
@@ -1375,26 +1430,3 @@ mapset("c", "<A-BS>", function()
     return "<C-f>db<C-c>"
   end
 end, noremap_expr)
-
-return {
-  defaults = { lazy = true },
-  install = { colorscheme = { "tokyonight" } },
-  performance = {
-    cache = {
-      enabled = true,
-    },
-    rtp = {
-      reset = true,
-      disabled_plugins = {
-        "gzip",
-        "matchit",
-        "matchparen",
-        "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
-      },
-    },
-  },
-}
